@@ -1,0 +1,34 @@
+{
+	"info": {
+		"_postman_id": "a01121d0-0dcc-4539-b66d-86f4186f1caa",
+		"name": "email",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13906554"
+	},
+	"item": [
+		{
+			"name": "v2",
+			"item": [
+				{
+					"name": "email",
+					"item": [
+						{
+							"name": "send",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "http://localhost:9000"
+		}
+	]
+}
