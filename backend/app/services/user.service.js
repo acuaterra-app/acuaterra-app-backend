@@ -3,6 +3,8 @@ const { Sequelize } = require('sequelize');
 const bcrypt = require('bcrypt');
 const ejs = require('ejs');
 const path = require('path');
+const ApiResponse = require('../utils/apiResponse')
+
 
 class UserService {
     constructor(mailer) {
@@ -36,12 +38,7 @@ class UserService {
         try {
             const { name, email, dni, id_rol, address } = userData;
 
-            const existingUser = await User.findOne({ where: { email } });
-            if (existingUser) {
-                throw new Error('El usuario ya está registrado');
-            }
-
-            const tempPassword = Math.random().toString(36).slice(-8); // Genera una contraseña aleatoria
+            const tempPassword = Math.random().toString(36).slice(-8);
             const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
             const user = await User.create({
@@ -68,7 +65,12 @@ class UserService {
             return userWithoutPassword;
 
         } catch (error) {
-            throw new Error(`Error al crear usuario: ${error.message}`);
+            const response = ApiResponse.createApiResponse(
+                "Error creating user",
+                [],
+                [error.message]
+            );
+            return res.status(500).send(response);
         }
     }
 
