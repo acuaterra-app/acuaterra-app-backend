@@ -7,7 +7,7 @@ const BlackListService = require("../services/blacklist.service");
 const ValidateRoleMiddleware = require("../middleware/validateRole.middleware");
 const Role = require("../enums/roles.enum");
 const {validate} = require("../middleware/validate.middleware");
-const {validateListModules} = require("../validators/module.validator");
+const {validateListModules, validateModuleIndex} = require("../validators/module.validator");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const validateRoleMiddleware = new ValidateRoleMiddleware();
@@ -20,6 +20,7 @@ router.get(
     '/:farm_id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validate(validateListModules),
+    validate(validateModuleIndex),
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
     (req, res) => moduleController.index(req, res)
 );

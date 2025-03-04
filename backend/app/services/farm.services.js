@@ -44,8 +44,8 @@ class FarmService {
             const offset = (page - 1) * limit;
             
             const { count, rows } = await Farm.findAndCountAll({
-                limit,
-                offset,
+                limit: limit,
+                offset: offset,
                 order: [[sortField, sortOrder]],
                 include: [
                     {
@@ -59,8 +59,8 @@ class FarmService {
             });
             
             return {
-                count,
-                rows,
+                count: count,
+                rows: rows,
                 totalPages: Math.ceil(count / limit),
                 currentPage: page,
                 perPage: limit

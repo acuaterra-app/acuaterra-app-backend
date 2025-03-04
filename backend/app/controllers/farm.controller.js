@@ -12,10 +12,10 @@ class FarmController {
 
     async index(req, res) {
         try {
-            const page = req.query.page || 1;
-            const limit = req.query.limit || 10;
-            const sortField = req.query.sortField || 'createdAt';
-            const sortOrder = req.query.sortOrder || 'DESC';
+            const page = req.query.page;
+            const limit = req.query.limit;
+            const sortField = req.query.sortField;
+            const sortOrder = req.query.sortOrder;
             
             const result = await this.farmService.findAll(page, limit, sortField, sortOrder);
             

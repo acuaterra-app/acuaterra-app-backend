@@ -113,6 +113,7 @@ const validateFarmIndex = [
     query('sortOrder')
         .optional()
         .isIn(['ASC', 'DESC', 'asc', 'desc'])
+        .default('DESC')
         .withMessage('Sort order must be ASC or DESC')
         .customSanitizer(value => value ? value.toUpperCase() : 'DESC'),
     

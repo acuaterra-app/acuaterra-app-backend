@@ -29,6 +29,7 @@ router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.ADMIN]),
+    validate(validateFarmIndex),
     (req, res) => farmController.index(req, res)
 );
 
