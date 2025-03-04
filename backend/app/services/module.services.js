@@ -9,8 +9,8 @@ class ModuleService {
             const offset = (page - 1) * limit;
             
             const { count, rows } = await Module.findAndCountAll({
-                limit,
-                offset,
+                limit: limit,
+                offset: offset,
                 order: [[sortField, sortOrder]],
                 include: [
                     {
@@ -31,8 +31,8 @@ class ModuleService {
             });
             
             return {
-                count,
-                rows,
+                count: count,
+                rows: rows,
                 totalPages: Math.ceil(count / limit),
                 currentPage: page,
                 perPage: limit
