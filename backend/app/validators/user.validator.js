@@ -16,7 +16,7 @@ const validateUserRegistration = [
       .custom(async (value) => {
           const user = await User.findOne({ where: { email: value } });
           if (user) {
-              throw new Error('Email already exists'); // Lanza una excepción si el email ya está registrado
+              throw new Error('Email already exists');
           }
           return true;
       }),
