@@ -14,11 +14,11 @@ const validateUserRegistration = [
       .trim()
       .normalizeEmail()
       .custom(async (value) => {
-        const user = await User.findOne({ where: { email: value } });
-        if (user) {
-          return Promise.reject('Email already exists'); // Retorna una promesa rechazada
-        }
-        return true;
+          const user = await User.findOne({ where: { email: value } });
+          if (user) {
+              throw new Error('Email already exists'); // Lanza una excepción si el email ya está registrado
+          }
+          return true;
       }),
 
   body('dni')
