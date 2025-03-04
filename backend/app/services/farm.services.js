@@ -36,9 +36,17 @@ class FarmService {
         }
     }
 
-    async findAll() {
+    async findAll(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
         try {
-            return await Farm.findAll({
+            page = parseInt(page);
+            limit = parseInt(limit);
+
+            const offset = (page - 1) * limit;
+            
+            const { count, rows } = await Farm.findAndCountAll({
+                limit,
+                offset,
+                order: [[sortField, sortOrder]],
                 include: [
                     {
                         as: 'users',
@@ -46,8 +54,17 @@ class FarmService {
                         attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
                         through: {attributes: []}
                     }
-                ]
+                ],
+                distinct: true
             });
+            
+            return {
+                count,
+                rows,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page,
+                perPage: limit
+            };
         } catch (error) {
             console.error("Error fetching farms:", error);
             throw error;

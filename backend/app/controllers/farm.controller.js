@@ -12,11 +12,40 @@ class FarmController {
 
     async index(req, res) {
         try {
-            const result = await this.farmService.findAll();
-            const response = ApiResponse.createApiResponse("All farms retrieved successfully", result)
+            const page = req.query.page || 1;
+            const limit = req.query.limit || 10;
+            const sortField = req.query.sortField || 'createdAt';
+            const sortOrder = req.query.sortOrder || 'DESC';
+            
+            const result = await this.farmService.findAll(page, limit, sortField, sortOrder);
+            
+            const paginationMeta = {
+                pagination: {
+                    total: result.count,
+                    totalPages: result.totalPages,
+                    currentPage: result.currentPage,
+                    perPage: result.perPage,
+                    hasNext: result.currentPage < result.totalPages,
+                    hasPrev: result.currentPage > 1
+                }
+            };
+            
+            const response = ApiResponse.createApiResponse(
+                "Farms retrieved successfully", 
+                result.rows,
+                [],
+                paginationMeta
+            );
+            
             return res.json(response);
         } catch (error) {
-            res.status(500).json({ error: `Failed to retrieve farms: ${error.message}` });
+            console.error("Error retrieving farms:", error);
+            const response = ApiResponse.createApiResponse(
+                "Failed to retrieve farms", 
+                [], 
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
         }
     }
 
