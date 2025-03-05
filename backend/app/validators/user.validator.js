@@ -6,7 +6,14 @@ const validateUserRegistration = [
       .notEmpty().withMessage('Name is required')
       .isString().withMessage('Name must be a string')
       .trim()
-      .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters'),
+      .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters')
+      .custom(async (value) => {
+            const user = await User.findOne({ where: { name: value } });
+            if (user) {
+                throw new Error('Name already exists');
+            }
+            return true;
+        }),
 
   body('email')
       .notEmpty().withMessage('Email is required')
@@ -21,11 +28,18 @@ const validateUserRegistration = [
           return true;
       }),
 
-  body('dni')
-      .notEmpty().withMessage('DNI is required')
-      .isString().withMessage('DNI must be a string')
-      .trim()
-      .isLength({ min: 5, max: 20 }).withMessage('DNI must be between 5 and 20 characters'),
+    body('dni')
+        .notEmpty().withMessage('DNI is required')
+        .isString().withMessage('DNI must be a string')
+        .trim()
+        .isLength({ min: 5, max: 20 }).withMessage('DNI must be between 5 and 20 characters')
+        .custom(async (value) => {
+            const user = await User.findOne({ where: { dni: value } });
+            if (user) {
+                throw new Error('DNI already exists');
+            }
+            return true;
+        }),
 
   body('id_rol')
       .notEmpty().withMessage('Role ID is required')
@@ -37,7 +51,7 @@ const validateUserRegistration = [
       .trim()
       .isLength({ max: 100 }).withMessage('Address must be a maximum of 100 characters')
       .matches(/\d+/).withMessage('Address must contain at least one number')
-      .matches(/\b\w+\b/).withMessage('Address must contain at least a street name'),
+      .matches(/[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+/).withMessage('Address must contain at least one word'),
 ];
 
 module.exports = {

@@ -1,5 +1,6 @@
 const UserService = require('../services/user.service');
 const ApiResponse = require('../utils/apiResponse')
+const { validationResult } = require('express-validator');
 
 class UserController {
 
@@ -16,7 +17,12 @@ class UserController {
             const response = ApiResponse.createApiResponse('User registered successfully', result);
             return res.json(response);
         } catch (error) {
-            res.status(500).json({ error: `Registration failed: ${error.message}` });
+            const response = ApiResponse.createApiResponse(
+                "Failed to create user",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
         }
     }
 

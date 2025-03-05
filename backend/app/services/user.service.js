@@ -65,12 +65,7 @@ class UserService {
             return userWithoutPassword;
 
         } catch (error) {
-            const response = ApiResponse.createApiResponse(
-                "Error creating user",
-                [],
-                [error.message]
-            );
-            return res.status(500).send(response);
+            throw new Error("Error creating user.");
         }
     }
 
