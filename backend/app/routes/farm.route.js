@@ -18,12 +18,11 @@ const validateRoleMiddleware = new ValidateRoleMiddleware();
 router.post(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validate(validateFarmCreation),
     validateRoleMiddleware.validate([Role.ADMIN]),
+    validate(validateFarmCreation),
     (req, res) => farmController.create(req, res)
 );
 
-//Get all farms
 router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -31,7 +30,6 @@ router.get(
     (req, res) => farmController.index(req, res)
 );
 
-//Get a farm by ID
 router.get(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -39,7 +37,6 @@ router.get(
     (req, res) => farmController.show(req, res)
 );
 
-//Update a farm by ID
 router.put(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -48,7 +45,6 @@ router.put(
     (req, res) => farmController.update(req, res)
 );
 
-//Delete a farm by ID
 router.delete(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),

@@ -14,14 +14,17 @@ const userService = new UserService(mailer);
 const userController = new UserController(userService);
 const Role = require("../enums/roles.enum");
 const ValidateRoleMiddleware = require("../middleware/validateRole.middleware");
+const ValidateUserCreationMiddleware = require("../middleware/validateUserCreation.middleware");
+
 const validateRoleMiddleware = new ValidateRoleMiddleware();
+const validateUserCreation = new ValidateUserCreationMiddleware();
 
 router.post(
     '/',
-    validate(validateUserRegistration),
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
-    (req, res, next) => validateRoleMiddleware.validateUserCreation(req, res, next),
+    validate(validateUserRegistration),
+    (req, res, next) => validateUserCreation.validateUserCreation(req, res , next),
     (req, res) => userController.register(req, res)
     );
 router.get('/',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.index);

@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const {User} = require("../../models");
 
 class AuthService {
 
@@ -11,12 +12,15 @@ class AuthService {
         this.tokenGenerator = tokenGenerator;
     }
 
-    async login(password, user) {
+    async login(password, email) {
 
+        const user = await User.findOne({where: {email}});
+        if (!user) {
+            throw Error('Credentials does not match');
+        }
         const isPasswordValid = await bcrypt.compare(password, user.password);
-
         if (!isPasswordValid) {
-            throw Error(`Password not match`);
+            throw Error('Credentials does not match');
         }
 
         return await this.tokenGenerator.generateToken(user);
