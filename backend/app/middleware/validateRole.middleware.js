@@ -83,10 +83,26 @@ class ValidateRoleMiddleware {
             const { id_rol } = req.body;
             const authenticatedUser = req.user;
 
-            if (authenticatedUser.id_rol === ROLES.OWNER && id_rol !== ROLES.USER) {
+            if (authenticatedUser.id_rol === ROLES.ADMIN) {
+                if (id_rol !== ROLES.ADMIN && id_rol !== ROLES.OWNER) {
+                    return res.status(403).json(
+                        ApiResponse.createApiResponse('Authorization failed', [], [{
+                            'error': 'Admins can only create Admins or Owners'
+                        }])
+                    );
+                }
+            } else if (authenticatedUser.id_rol === ROLES.OWNER) {
+                if (id_rol !== ROLES.USER) {
+                    return res.status(403).json(
+                        ApiResponse.createApiResponse('Authorization failed', [], [{
+                            'error': 'Owners can only create Users'
+                        }])
+                    );
+                }
+            } else {
                 return res.status(403).json(
                     ApiResponse.createApiResponse('Authorization failed', [], [{
-                        'error': 'You do not have permission to access this resource '
+                        'error': 'You do not have permission to create users'
                     }])
                 );
             }
