@@ -15,13 +15,13 @@ const validateRoleMiddleware = new ValidateRoleMiddleware();
 const moduleService = new ModuleService();
 const moduleController = new ModuleController(moduleService);
 
-// Get all modules
 router.get(
     '/:farm_id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validate(validateListModules),
     validate(validateModuleIndex),
+    validate(validateListModules),
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
+    validate(validateListModules),
     (req, res) => moduleController.index(req, res)
 );
 

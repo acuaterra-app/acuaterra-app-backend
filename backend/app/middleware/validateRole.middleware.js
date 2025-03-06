@@ -45,9 +45,6 @@ class ValidateRoleMiddleware {
                         }])
                     );
                 }
-                console.log('Allowed roles:', allowedRoles);
-                console.log('User role:', user.id_rol);
-                console.log('Does user have permission?', allowedRoles.includes(user.id_rol));
 
                 const hasPermission = allowedRoles.includes(Number(user.id_rol));
                 
@@ -76,46 +73,6 @@ class ValidateRoleMiddleware {
                 );
             }
         };
-    }
-
-    async validateUserCreation(req, res, next) {
-        try {
-            const { id_rol } = req.body;
-            const authenticatedUser = req.user;
-
-            if (authenticatedUser.id_rol === ROLES.ADMIN) {
-                if (id_rol !== ROLES.ADMIN && id_rol !== ROLES.OWNER) {
-                    return res.status(403).json(
-                        ApiResponse.createApiResponse('Authorization failed', [], [{
-                            'error': 'Admins can only create Admins or Owners'
-                        }])
-                    );
-                }
-            } else if (authenticatedUser.id_rol === ROLES.OWNER) {
-                if (id_rol !== ROLES.USER) {
-                    return res.status(403).json(
-                        ApiResponse.createApiResponse('Authorization failed', [], [{
-                            'error': 'Owners can only create Users'
-                        }])
-                    );
-                }
-            } else {
-                return res.status(403).json(
-                    ApiResponse.createApiResponse('Authorization failed', [], [{
-                        'error': 'You do not have permission to create users'
-                    }])
-                );
-            }
-
-            next();
-        } catch (error) {
-            console.error('User creation validation error:', error);
-            return res.status(500).json(
-                ApiResponse.createApiResponse('Server error', [], [{
-                    'error': 'Error validating user creation role'
-                }])
-            );
-        }
     }
 }
 
