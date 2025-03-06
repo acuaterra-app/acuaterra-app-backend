@@ -1,24 +1,24 @@
-const ApiResponse = require("../utils/apiResponse");
+const ApiResponse = require("../../utils/apiResponse");
 
-class ModuleController {
+class FarmOwnerController {
 
     /**
      *
-     * @param {ModuleService} moduleService
+     * @param {FarmOwnerService} farmOwnerService
      */
-    constructor(moduleService) {
-        this.moduleService = moduleService;
+    constructor(farmOwnerService) {
+        this.farmOwnerService = farmOwnerService;
     }
 
     async index(req, res) {
         try {
-            const farmId = req.params.farm_id;
+            const userId = req.user.id;
             const page = req.query.page;
             const limit = req.query.limit;
             const sortField = req.query.sortField;
             const sortOrder = req.query.sortOrder;
             
-            const result = await this.moduleService.findAll(farmId, page, limit, sortField, sortOrder);
+            const result = await this.farmOwnerService.findFarmsByUserId(userId, page, limit, sortField, sortOrder);
             
             const paginationMeta = {
                 pagination: {
@@ -32,7 +32,7 @@ class ModuleController {
             };
             
             const response = ApiResponse.createApiResponse(
-                "All modules retrieved successfully", 
+                "User farms retrieved successfully", 
                 result.rows,
                 [],
                 paginationMeta
@@ -40,9 +40,9 @@ class ModuleController {
             
             return res.json(response);
         } catch (error) {
-            console.error("Error retrieving modules:", error);
+            console.error("Error retrieving user farms:", error);
             const response = ApiResponse.createApiResponse(
-                "Failed to retrieve modules", 
+                "Failed to retrieve user farms", 
                 [], 
                 [{ msg: error.message }]
             );
@@ -51,5 +51,5 @@ class ModuleController {
     }
 }
 
-module.exports = ModuleController;
+module.exports = FarmOwnerController;
 

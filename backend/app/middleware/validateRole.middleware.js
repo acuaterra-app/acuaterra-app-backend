@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ApiResponse = require('../utils/apiResponse');
-const ROLES = require('../enums/roles.enum');
+const { ROLES } = require('../enums/roles.enum');
 const { User } = require('../../models');
 
 class ValidateRoleMiddleware {

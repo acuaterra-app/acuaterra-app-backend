@@ -1,6 +1,6 @@
-const {User} = require("../../models");
-const ApiResponse = require("../utils/apiResponse");
-const {getRoleNameById} = require("../enums/roles.enum");
+const {User} = require("../../../models");
+const ApiResponse = require("../../utils/apiResponse");
+const {getRoleNameById} = require("../../enums/roles.enum");
 
 class AuthController {
 

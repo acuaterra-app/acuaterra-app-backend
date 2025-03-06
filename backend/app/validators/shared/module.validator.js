@@ -1,7 +1,7 @@
 const { param, query } = require('express-validator');
-const { Module } = require('../../models');
+const { Module } = require('../../../models');
 
-const validateListModules = [
+const validateIndexModules = [
         param('farm_id')
             .exists()
             .withMessage('Module ID is required')
@@ -16,7 +16,7 @@ const validateListModules = [
             }),
     ];
 
-const validateModuleIndex = [
+const validateModulePaginate = [
     query('sortField')
         .optional()
         .default('createdAt')
@@ -45,5 +45,5 @@ const validateModuleIndex = [
         .toInt()
 ];
 
-module.exports = { validateListModules, validateModuleIndex };
+module.exports = { validateIndexModules, validateModulePaginate };
 

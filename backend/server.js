@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const BlackListService = require('./app/services/blacklist.service');
+const BlackListService = require('./app/services/shared/blacklist.service');
 const cors = require('cors');
 const morgan = require('morgan');
 // Import the new ray module
@@ -17,10 +17,11 @@ app.get('/', (req, res) => {
 /**
  * Load Routes groups
  */
-const userRoues = require('./app/routes/admin/user.route');
+const userSharedRoutes = require('./app/routes/shared/user.route');
 const authRoutes = require('./app/routes/auth.route');
-const farmRoutes = require('./app/routes/admin/farm.route');
-const moduleRoutes = require('./app/routes/admin/module.route');
+const farmRoutes = require('./app/routes/admin/farm.admin.route');
+const sharedModuleRoutes = require('./app/routes/shared/module.route');
+const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
 
 app.use(morgan('tiny')); 
 app.use(express.json()); 
@@ -42,14 +43,20 @@ app.options('*', cors());
 app.use('/api/v2/auth', authRoutes);
 
 /*
+ * Shared Routes
+ */
+app.use('/api/v2/shared/modules', sharedModuleRoutes);
+app.use('/api/v2/shared/users', userSharedRoutes);
+
+
+/*
  * Owner Routes
  */
-app.use('/api/v2/modules', moduleRoutes);
+app.use('/api/v2/owner/farms', ownerFarmRoutes);
 
 /*
  * Admin Routes
  */
-app.use('/api/v2/admin/users', userRoues);
 app.use('/api/v2/admin/farms', farmRoutes);
 
 const PORT = process.env.PORT || 3000;

@@ -1,4 +1,4 @@
-const { Blacklist } = require("../../models");
+const { Blacklist } = require("../../../models");
 
 class BlackListService {
     async addToken(token) {

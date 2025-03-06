@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-const {validateUserRegistration} =require('../../validators/user.validator');
+const {validateUserRegistration} =require('../../validators/shared/user.validator');
 const {validate} = require("../../middleware/validate.middleware");
-const UserController = require('../../controllers/user.controller');
+const UserController = require('../../controllers/shared/user.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
-const BlackListService = require('../../services/blacklist.service');
-const UserService = require("../../services/user.service");
+const BlackListService = require('../../services/shared/blacklist.service');
+const UserService = require("../../services/shared/user.service");
 const Mailer = require('../../utils/Mailer');
-const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
-const mailer = new Mailer(process.env.RESEND_API_KEY);
-const userService = new UserService(mailer);
-const userController = new UserController(userService);
-const Role = require("../../enums/roles.enum");
+const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 const ValidateUserCreationMiddleware = require("../../middleware/validateUserCreation.middleware");
 
+const mailer = new Mailer(process.env.RESEND_API_KEY);
+const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
+const userService = new UserService(mailer);
+const userController = new UserController(userService);
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 const validateUserCreation = new ValidateUserCreationMiddleware();
 

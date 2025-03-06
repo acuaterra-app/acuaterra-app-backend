@@ -1,6 +1,5 @@
-const UserService = require('../services/user.service');
-const ApiResponse = require('../utils/apiResponse')
-const { validationResult } = require('express-validator');
+const UserService = require('../../services/shared/user.service');
+const ApiResponse = require('../../utils/apiResponse')
 
 class UserController {
 
