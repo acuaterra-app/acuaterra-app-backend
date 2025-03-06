@@ -14,7 +14,7 @@ const Role = require("../enums/roles.enum");
 
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 
-//List all farms
+// Create a Farm
 router.post(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -23,6 +23,7 @@ router.post(
     (req, res) => farmController.create(req, res)
 );
 
+// List all Farms
 router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -31,6 +32,7 @@ router.get(
     (req, res) => farmController.index(req, res)
 );
 
+// Get a Farm
 router.get(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -38,6 +40,7 @@ router.get(
     (req, res) => farmController.show(req, res)
 );
 
+// Update a Farm
 router.put(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -46,6 +49,7 @@ router.put(
     (req, res) => farmController.update(req, res)
 );
 
+// Delete a Farm
 router.delete(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
