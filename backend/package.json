@@ -28,7 +28,8 @@
     "nodemon": "^3.1.9",
     "path-to-regexp": "^8.2.0",
     "resend": "^4.1.2",
-    "sequelize": "^6.37.5",
+    "path-to-regexp": "^8.2.0",
+    "sequelize": "^6.37.6",
     "undici": "^7.4.0"
   },
   "description": "",
