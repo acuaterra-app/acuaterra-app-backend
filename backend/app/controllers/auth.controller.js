@@ -1,5 +1,6 @@
 const {User} = require("../../models");
 const ApiResponse = require("../utils/apiResponse");
+const {getRoleNameById} = require("../enums/roles.enum");
 
 class AuthController {
 
@@ -20,7 +21,7 @@ class AuthController {
             const user = await User.findOne({where: {email}});
             const result = ApiResponse.createApiResponse('Successful login', [{
                 token,
-                user: {id: user.id, identification: user.n_documento_identidad}
+                user: {id: user.id, dni: user.dni, name: user.name, email: user.email, id_rol: user.id_rol, rol: getRoleNameById(user.id_rol)}
             }]);
 
             res.json(result);
