@@ -17,10 +17,10 @@ app.get('/', (req, res) => {
 /**
  * Load Routes groups
  */
-const userRoues = require('./app/routes/user.route');
+const userRoues = require('./app/routes/admin/user.route');
 const authRoutes = require('./app/routes/auth.route');
-const farmRoutes = require('./app/routes/farm.route');
-const moduleRoutes = require('./app/routes/module.route');
+const farmRoutes = require('./app/routes/admin/farm.route');
+const moduleRoutes = require('./app/routes/admin/module.route');
 
 app.use(morgan('tiny')); 
 app.use(express.json()); 
@@ -37,13 +37,20 @@ app.use(cors({
   }));
 
  
-app.options('*', cors()); 
+app.options('*', cors());
 
-//--------------Rutas con implementacion del orm sequelize-------------------------------
-app.use('/api/v2/users', userRoues);
 app.use('/api/v2/auth', authRoutes);
-app.use('/api/v2/farms', farmRoutes);
+
+/*
+ * Owner Routes
+ */
 app.use('/api/v2/modules', moduleRoutes);
+
+/*
+ * Admin Routes
+ */
+app.use('/api/v2/admin/users', userRoues);
+app.use('/api/v2/admin/farms', farmRoutes);
 
 const PORT = process.env.PORT || 3000;
 

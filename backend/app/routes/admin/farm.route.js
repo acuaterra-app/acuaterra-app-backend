@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const FarmService = require("../services/farm.services");
-const FarmController = require("../controllers/farm.controller");
-const ValidateTokenMiddleware = require("../middleware/validateToken.middleware");
-const BlackListService = require("../services/blacklist.service");
-const { validate } = require("../middleware/validate.middleware");
-const { validateFarmCreation, validateFarmUpdate, validateFarmIndex} = require("../validators/farm.validator");
-const ValidateRoleMiddleware = require("../middleware/validateRole.middleware");
+const FarmService = require("../../services/farm.services");
+const FarmController = require("../../controllers/farm.controller");
+const ValidateTokenMiddleware = require("../../middleware/validateToken.middleware");
+const BlackListService = require("../../services/blacklist.service");
+const { validate } = require("../../middleware/validate.middleware");
+const { validateFarmCreation, validateFarmUpdate, validateFarmIndex} = require("../../validators/farm.validator");
+const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const farmService = new FarmService();
 const farmController = new FarmController(farmService);
-const Role = require("../enums/roles.enum");
+const Role = require("../../enums/roles.enum");
 
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 

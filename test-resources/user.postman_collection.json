@@ -36,7 +36,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+									"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    //\"email\": \"admin@example.com\",\n    \"email\": \"acuaterra_3@test.test\",\n    \"password\": \"rued2rgp\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -70,7 +70,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"NewPrueba1\",\r\n    \"email\": \"acuaterra_1@test.test\",\r\n    \"dni\": \"197895434\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
+									"raw": "{\r\n    \"name\": \"NewPrueba1\",\r\n    \"email\": \"acuaterra_4@test.test\",\r\n    \"dni\": \"197895434\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -78,13 +78,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/users",
+									"raw": "{{server}}/api/v2/admin/users",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"users"
 									]
 								}
