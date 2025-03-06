@@ -6,14 +6,7 @@ const validateUserRegistration = [
       .notEmpty().withMessage('Name is required')
       .isString().withMessage('Name must be a string')
       .trim()
-      .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters')
-      .custom(async (value) => {
-            const user = await User.findOne({ where: { name: value } });
-            if (user) {
-                throw new Error('Name already exists');
-            }
-            return true;
-        }),
+      .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters'),
 
   body('email')
       .notEmpty().withMessage('Email is required')
