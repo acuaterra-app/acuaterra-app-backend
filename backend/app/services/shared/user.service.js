@@ -1,10 +1,8 @@
-const { User, Rol } = require('../../models');
+const { User, Rol } = require('../../../models');
 const { Sequelize } = require('sequelize');
 const bcrypt = require('bcrypt');
 const ejs = require('ejs');
 const path = require('path');
-const ApiResponse = require('../utils/apiResponse')
-
 
 class UserService {
     constructor(mailer) {
@@ -55,7 +53,7 @@ class UserService {
             const subject = 'Registro Exitoso - Credenciales de Acceso - Configura tu contraseña';
 
             const htmlContent = await ejs.renderFile(
-                path.join(__dirname, '../views/emails/new_user.ejs'),
+                path.join(__dirname, '../../views/emails/new_user.ejs'),
                 { name, email, tempPassword, resetPasswordUrl }
             );
 
@@ -65,6 +63,7 @@ class UserService {
             return userWithoutPassword;
 
         } catch (error) {
+            console.log(error)
             throw new Error("Error creating user.");
         }
     }

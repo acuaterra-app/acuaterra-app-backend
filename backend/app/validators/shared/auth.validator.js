@@ -10,4 +10,4 @@ const validateUserLogin = [
         .notEmpty().withMessage('Password is required'),
 ];
 
-module.exports = { validateUserLogin: validateUserLogin };
+module.exports = { validateUserLogin };

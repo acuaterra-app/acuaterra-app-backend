@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const ModuleService = require("../../services/module.services");
-const ModuleController = require("../../controllers/module.controller");
+const ModuleService = require("../../services/admin/module.admin.services");
+const ModuleController = require("../../controllers/shared/module.controller");
 const ValidateTokenMiddleware = require("../../middleware/validateToken.middleware");
-const BlackListService = require("../../services/blacklist.service");
+const BlackListService = require("../../services/shared/blacklist.service");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const Role = require("../../enums/roles.enum");
+const { ROLES: Role } = require("../../enums/roles.enum");
 const {validate} = require("../../middleware/validate.middleware");
-const {validateListModules, validateModuleIndex} = require("../../validators/module.validator");
+const {validateModulePaginate, validateIndexModules} = require("../../validators/shared/module.validator");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const validateRoleMiddleware = new ValidateRoleMiddleware();
@@ -19,10 +19,9 @@ const moduleController = new ModuleController(moduleService);
 router.get(
     '/:farm_id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validate(validateModuleIndex),
-    validate(validateListModules),
+    validate(validateIndexModules),
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
-    validate(validateListModules),
+    validate(validateModulePaginate),
     (req, res) => moduleController.index(req, res)
 );
 

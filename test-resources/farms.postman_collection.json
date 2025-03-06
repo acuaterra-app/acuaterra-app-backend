@@ -10,12 +10,12 @@
 			"name": "v2",
 			"item": [
 				{
-					"name": "farms",
+					"name": "admin",
 					"item": [
 						{
-							"name": "list",
+							"name": "delete",
 							"request": {
-								"method": "GET",
+								"method": "DELETE",
 								"header": [
 									{
 										"key": "Authorization",
@@ -24,7 +24,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/admin/farms?page=3&limit=2&sortField=name&sortOrder=ASC",
+									"raw": "{{server}}/api/v2/admin/farms/6",
 									"host": [
 										"{{server}}"
 									],
@@ -32,25 +32,8 @@
 										"api",
 										"v2",
 										"admin",
-										"farms"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "3"
-										},
-										{
-											"key": "limit",
-											"value": "2"
-										},
-										{
-											"key": "sortField",
-											"value": "name"
-										},
-										{
-											"key": "sortOrder",
-											"value": "ASC"
-										}
+										"farms",
+										"6"
 									]
 								}
 							},
@@ -69,7 +52,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "\n{\n    \"name\": \"Nombre de la granja\",\n    \"address\": \"Dirección de la granja\",\n    \"latitude\": \"12.345678\",\n    \"longitude\": \"-12.345678\",\n    \"users\": [2, 3, 3] \n}\n",
+									"raw": "\n{\n    \"name\": \"Mi granjita\",\n    \"address\": \"Dirección de la granja\",\n    \"latitude\": \"12.345678\",\n    \"longitude\": \"-12.345678\",\n    \"users\": [2, 3 , 2] \n}\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -140,7 +123,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/admin/farms/5",
+									"raw": "{{server}}/api/v2/admin/farms/6",
 									"host": [
 										"{{server}}"
 									],
@@ -149,16 +132,16 @@
 										"v2",
 										"admin",
 										"farms",
-										"5"
+										"6"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "delete",
+							"name": "list",
 							"request": {
-								"method": "DELETE",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Authorization",
@@ -167,7 +150,7 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/admin/farms/5",
+									"raw": "{{server}}/api/v2/admin/farms?page=1&limit=10&sortField=id&sortOrder=DESC",
 									"host": [
 										"{{server}}"
 									],
@@ -175,8 +158,25 @@
 										"api",
 										"v2",
 										"admin",
-										"farms",
-										"5"
+										"farms"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "sortField",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "DESC"
+										}
 									]
 								}
 							},
@@ -185,55 +185,46 @@
 					]
 				},
 				{
-					"name": "auth",
+					"name": "owner",
 					"item": [
 						{
-							"name": "login",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const response = pm.response.json();",
-											"",
-											"// Verifica si la respuesta contiene el token",
-											"if (response.data && response.data[0].token) {",
-											"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
-											"}"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
+							"name": "list",
 							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
 									}
-								},
+								],
 								"url": {
-									"raw": "{{server}}/api/v2/auth/login",
+									"raw": "{{server}}/api/v2/owner/farms?page=1&limit=10&sortField=id&sortOrder=DESC",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
-										"auth",
-										"login"
+										"owner",
+										"farms"
 									],
 									"query": [
 										{
-											"key": "email",
-											"value": "afelipe.vega@gmail.com",
-											"disabled": true
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "sortField",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "DESC"
 										}
 									]
 								}
@@ -241,6 +232,59 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"// Verifica si la respuesta contiene el token",
+									"if (response.data && response.data[0].token) {",
+									"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n   //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v2/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "afelipe.vega@gmail.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

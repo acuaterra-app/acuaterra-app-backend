@@ -1,4 +1,4 @@
-const { Module, User, Farm } = require('../../models');
+const { Module, User, Farm } = require('../../../models');
 
 class ModuleService {
     async findAll(farmId, page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {

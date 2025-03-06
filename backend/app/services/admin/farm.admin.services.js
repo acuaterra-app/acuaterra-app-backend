@@ -1,6 +1,6 @@
-const { Farm, User } = require('../../models');
+const { Farm, User } = require('../../../models');
 
-class FarmService {
+class FarmAdminService {
     async create(farmData) {
         try {
             const {name, address, latitude, longitude, users} = farmData;
@@ -151,4 +151,4 @@ class FarmService {
     }
 }
 
-module.exports = FarmService;
+module.exports = FarmAdminService;

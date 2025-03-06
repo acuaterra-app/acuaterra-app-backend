@@ -1,6 +1,6 @@
 // middlewares/validarToken.js
 const jwt = require('jsonwebtoken');
-const BlackListService = require('../services/blacklist.service');
+const BlackListService = require('../services/shared/blacklist.service');
 const ApiResponse = require("../utils/apiResponse");
 
 class ValidateTokenMiddleware {

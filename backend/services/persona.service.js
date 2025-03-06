@@ -1,7 +1,7 @@
 const Persona = require('../models.sql_bck/persona.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {blackListService } = require('../app/services/blacklist.service')
+const {blackListService } = require('../app/services/shared/blacklist.service')
 require('dotenv').config();
 
 const CrearToken =  async function (user){

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { validateUserLogin } = require("../validators/auth.validator");
+const { validateUserLogin } = require("../validators/shared/auth.validator");
 const {validate} = require("../middleware/validate.middleware");
-const AuthController = require("../controllers/auth.controller");
+const AuthController = require("../controllers/shared/auth.controller");
 const ValidateTokenMiddleware = require("../middleware/validateToken.middleware");
-const TokenGeneratorService = require("../services/tokenGenerator.service");
-const BlackListService = require("../services/blacklist.service");
-const AuthService = require("../services/auth.service");
+const TokenGeneratorService = require("../services/shared/tokenGenerator.service");
+const BlackListService = require("../services/shared/blacklist.service");
+const AuthService = require("../services/shared/auth.service");
 
 
 const authService = new AuthService(new BlackListService(), new TokenGeneratorService());

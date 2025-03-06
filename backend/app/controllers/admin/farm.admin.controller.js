@@ -1,13 +1,13 @@
-const ApiResponse = require("../utils/apiResponse");
+const ApiResponse = require("../../utils/apiResponse");
 
-class FarmController {
+class FarmAdminController {
 
     /**
      *
-     * @param {FarmService} farmService
+     * @param {FarmAdminService} farmAdminService
      */
-    constructor(farmService) {
-        this.farmService = farmService;
+    constructor(farmAdminService) {
+        this.farmAdminService = farmAdminService;
     }
 
     async index(req, res) {
@@ -17,7 +17,7 @@ class FarmController {
             const sortField = req.query.sortField;
             const sortOrder = req.query.sortOrder;
             
-            const result = await this.farmService.findAll(page, limit, sortField, sortOrder);
+            const result = await this.farmAdminService.findAll(page, limit, sortField, sortOrder);
             
             const paginationMeta = {
                 pagination: {
@@ -53,7 +53,7 @@ class FarmController {
         try {
             const { name, address, latitude, longitude, users = [] } = req.body;
             
-            const newFarm = await this.farmService.create({
+            const newFarm = await this.farmAdminService.create({
                 name,
                 address,
                 latitude,
@@ -80,7 +80,7 @@ class FarmController {
     async show(req, res) {
         try {
             const { id } = req.params;
-            const farm = await this.farmService.findById(id);
+            const farm = await this.farmAdminService.findById(id);
             
             const response = ApiResponse.createApiResponse(
                 "Farm retrieved successfully", 
@@ -108,7 +108,7 @@ class FarmController {
             const { id } = req.params;
             const { name, address, latitude, longitude, users = [] } = req.body;
             
-            const updatedFarm = await this.farmService.update(id, {
+            const updatedFarm = await this.farmAdminService.update(id, {
                 name,
                 address,
                 latitude,
@@ -140,7 +140,7 @@ class FarmController {
     async destroy(req, res) {
         try {
             const { id } = req.params;
-            await this.farmService.delete(id);
+            await this.farmAdminService.delete(id);
             
             const response = ApiResponse.createApiResponse(
                 "Farm deleted successfully", 
@@ -164,4 +164,5 @@ class FarmController {
     }
 }
 
-module.exports = FarmController;
+module.exports = FarmAdminController;
+
