@@ -24,14 +24,33 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/farms",
+									"raw": "{{server}}/api/v2/admin/farms?page=3&limit=2&sortField=name&sortOrder=ASC",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"farms"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "3"
+										},
+										{
+											"key": "limit",
+											"value": "2"
+										},
+										{
+											"key": "sortField",
+											"value": "name"
+										},
+										{
+											"key": "sortOrder",
+											"value": "ASC"
+										}
 									]
 								}
 							},
@@ -50,7 +69,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "\n    {\n     \"name\": \"Nombre de la granja\",\n     \"address\": \"Dirección de la granja\",\n     \"latitude\": \"12.345678\",\n     \"longitude\": \"-12.345678\",\n     \"users\": [2, 3, 3] \n   }\n",
+									"raw": "\n{\n    \"name\": \"Nombre de la granja\",\n    \"address\": \"Dirección de la granja\",\n    \"latitude\": \"12.345678\",\n    \"longitude\": \"-12.345678\",\n    \"users\": [2, 3, 3] \n}\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -58,13 +77,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/farms/",
+									"raw": "{{server}}/api/v2/admin/farms/",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"farms",
 										""
 									]
@@ -93,13 +113,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/farms/1",
+									"raw": "{{server}}/api/v2/admin/farms/1",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"farms",
 										"1"
 									]
@@ -119,13 +140,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/farms/5",
+									"raw": "{{server}}/api/v2/admin/farms/5",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"farms",
 										"5"
 									]
@@ -145,13 +167,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/farms/5",
+									"raw": "{{server}}/api/v2/admin/farms/5",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"admin",
 										"farms",
 										"5"
 									]

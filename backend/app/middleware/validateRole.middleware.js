@@ -5,7 +5,6 @@ const { User } = require('../../models');
 
 class ValidateRoleMiddleware {
     constructor() {
-        //
     }
     validate(roles) {
         return async (req, res, next) => {
@@ -46,8 +45,8 @@ class ValidateRoleMiddleware {
                         }])
                     );
                 }
-                
-                const hasPermission = allowedRoles.includes(user.id_rol);
+
+                const hasPermission = allowedRoles.includes(Number(user.id_rol));
                 
                 if (!hasPermission) {
                     return res.status(403).json(
@@ -56,7 +55,7 @@ class ValidateRoleMiddleware {
                         }])
                     );
                 }
-                
+
                 req.user = user;
                 
                 next();
