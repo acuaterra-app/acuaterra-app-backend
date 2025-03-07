@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e3b8e4ba-dd42-48c3-af2e-83999394cb9a",
-		"name": "auth",
+		"_postman_id": "a8855ff7-8f5e-4bff-8087-1dff75046c0f",
+		"name": "user",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -36,7 +36,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+									"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"admin123\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -53,13 +53,6 @@
 										"v2",
 										"auth",
 										"login"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": "afelipe.vega@gmail.com",
-											"disabled": true
-										}
 									]
 								}
 							},
@@ -95,6 +88,65 @@
 										"v2",
 										"auth",
 										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "register",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"NewPrueba2\",\r\n    \"email\": \"newPrueba2@gmail.com\",\r\n    \"password\": \"Newprueba2\",\r\n    \"dni\": \"197895434\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/users",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMzc3NzcwMjUxNSIsImlhdCI6MTc0MTM4NDY4MCwiZXhwIjoxNzQxNDAyNjgwfQ.ISDH0yV5XC27fzeoBwQ1mqH1t5lXLcjASOsTCr05IDk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/shared/users",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"users"
 									]
 								}
 							},
