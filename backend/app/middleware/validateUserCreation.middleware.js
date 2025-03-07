@@ -1,7 +1,6 @@
 const ROLES = require("../enums/roles.enum");
 const ApiResponse = require("../utils/apiResponse");
 
-
 class ValidateUserCreationMiddleware {
     constructor() {
     }
@@ -11,9 +10,8 @@ class ValidateUserCreationMiddleware {
             const { id_rol: idRolNewUSer } = req.body;
             const authenticatedUser = req.user;
 
-
-            if (authenticatedUser.id_rol === ROLES.ADMIN) {
-                if (idRolNewUSer !== ROLES.ADMIN && idRolNewUSer !== ROLES.OWNER) {
+            if (authenticatedUser.id_rol === ROLES.ROLES.ADMIN) {
+                if (idRolNewUSer !== ROLES.ROLES.ADMIN && idRolNewUSer !== ROLES.ROLES.OWNER) {
                     return res.status(403).json(
                         ApiResponse.createApiResponse('Authorization failed', [], [{
                             'error': 'Admins can only create Admins or Owners'
@@ -22,8 +20,8 @@ class ValidateUserCreationMiddleware {
                 }
             }
 
-            if( authenticatedUser.id_rol === ROLES.OWNER) {
-                if (idRolNewUSer !== ROLES.USER) {
+            if( authenticatedUser.id_rol === ROLES.ROLES.OWNER) {
+                if (idRolNewUSer !== ROLES.ROLES.USER) {
                     return res.status(403).json(
                         ApiResponse.createApiResponse('Authorization failed', [], [{
                             'error': 'Owners can only create Users'
