@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {validateUserRegistration} =require('../../validators/shared/user.validator');
+const {validateUserRegistration, validatePagination} =require('../../validators/shared/user.validator');
 const {validate} = require("../../middleware/validate.middleware");
 const UserController = require('../../controllers/shared/user.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
@@ -27,7 +27,12 @@ router.post(
     (req, res, next) => validateUserCreation.validateUserCreation(req, res , next),
     (req, res) => userController.register(req, res)
     );
-router.get('/',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.index);
+router.get('/',  
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.ADMIN]),
+    validate(validatePagination),
+    (req, res) => userController.index(req, res)
+);
 router.get('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.find);
 router.put('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.upgrade);
 router.delete('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.delete);
