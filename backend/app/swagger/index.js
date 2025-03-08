@@ -58,7 +58,19 @@ function loadSwaggerSpec() {
     
     // Combinar todas las definiciones de rutas
     Object.values(pathFiles).forEach(pathDef => {
-      Object.assign(swaggerSpec.paths, pathDef);
+      // Iteramos sobre cada ruta en la definición
+      Object.entries(pathDef).forEach(([path, methods]) => {
+        if (!swaggerSpec.paths[path]) {
+          // Si la ruta no existe, la agregamos directamente
+          swaggerSpec.paths[path] = methods;
+        } else {
+          // Si la ruta ya existe, combinamos los métodos HTTP
+          // en lugar de sobrescribir toda la definición
+          Object.entries(methods).forEach(([method, definition]) => {
+            swaggerSpec.paths[path][method] = definition;
+          });
+        }
+      });
     });
   }
 

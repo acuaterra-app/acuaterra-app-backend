@@ -12,7 +12,7 @@ class ValidateTokenMiddleware {
     const token = req.headers.authorization;
 
     if (!token) {
-      return res.status(400).json(ApiResponse.createApiResponse('Logout failed', [], [{
+      return res.status(401).json(ApiResponse.createApiResponse('Logout failed', [], [{
         'error' : 'No token provided'
       }]));
     }
@@ -20,14 +20,14 @@ class ValidateTokenMiddleware {
     try {
       const isTokenInBlackList = await this.blackListService.isTokenInBlackList(token);
       if (isTokenInBlackList) {
-        return res.status(400).json(ApiResponse.createApiResponse('Logout failed', [], [{
+        return res.status(401).json(ApiResponse.createApiResponse('Logout failed', [], [{
           'error' : 'Invalid Token'
         }]));
       }
 
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-          return res.status(400).json(ApiResponse.createApiResponse('Logout failed', [], [{
+          return res.status(401).json(ApiResponse.createApiResponse('Logout failed', [], [{
             'error' : 'Token Malformed'
           }]));
         }
