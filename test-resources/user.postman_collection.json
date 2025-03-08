@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "057aaf5a-36e0-451b-8fe5-76ab82d35d23",
+		"_postman_id": "bfe54c08-3527-4478-84e5-26e6c3b854fa",
 		"name": "user",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "13906554"
@@ -10,12 +10,12 @@
 			"name": "v2",
 			"item": [
 				{
-					"name": "shared",
+					"name": "admin",
 					"item": [
 						{
-							"name": "register",
+							"name": "list",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Authorization",
@@ -23,9 +23,34 @@
 										"type": "text"
 									}
 								],
+								"url": {
+									"raw": "{{server}}/api/v2/admin/users",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"admin",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shared",
+					"item": [
+						{
+							"name": "register",
+							"request": {
+								"method": "POST",
+								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"NewPrueba1\",\r\n    \"email\": \"acuaterra_52@test.test\",\r\n    \"dni\": \"197895434222\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
+									"raw": "{\r\n    \"name\": \"NewPrueba2\",\r\n    \"email\": \"newPrueba2@gmail.com\",\r\n    \"password\": \"Newprueba2\",\r\n    \"dni\": \"197895434\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -33,14 +58,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/shared/users",
+									"raw": "{{server}}/api/v2/users",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
-										"shared",
 										"users"
 									]
 								}
@@ -73,7 +97,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    \"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

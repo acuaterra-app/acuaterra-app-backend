@@ -50,15 +50,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "\n{\n    \"name\": \"Mi granjita\",\n    \"address\": \"Dirección de la granja\",\n    \"latitude\": \"12.345678\",\n    \"longitude\": \"-12.345678\",\n    \"users\": [2, 3 , 2] \n}\n",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{server}}/api/v2/admin/farms/",
 									"host": [
