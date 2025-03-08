@@ -11,7 +11,9 @@ const swaggerConfig = require('./app/swagger/index.js');
 // Initialize express app
 const app = express();
 
-// Set up Ray with express
+// Serve static files from the public directory
+app.use(express.static('public'));
+
 // Set up swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
