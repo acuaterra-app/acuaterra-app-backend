@@ -35,13 +35,42 @@ class UserController {
         }
     }
 
-    static async index(req, res) {
+    async index(req, res) {
         try {
-            const result = await UserService.getAllUsers();
-            const response = ApiResponse.createApiResponse("All users retrieved successfully", result)
+            const page = req.query.page;
+            const limit = req.query.limit;
+            const sortField = req.query.sortField;
+            const sortOrder = req.query.sortOrder;
+
+            const result = await this.userService.getAllUsers(page, limit, sortField, sortOrder);
+
+            const paginationMeta = {
+                pagination:{
+                    total: result.count,
+                    totalPages: result.totalPages,
+                    currentPage: result.currentPage,
+                    perPage: result.perPage,
+                    hasNext: result.currentPage < result.totalPages,
+                    hasPrev: result.currentPage > 1
+                }
+            }
+
+            const response = ApiResponse.createApiResponse(
+                "All users retrieved successfully", 
+                result.rows,
+                [],
+                paginationMeta
+            );
+
             return res.json(response);
         } catch (error) {
-            res.status(500).json({ error: `Failed to retrieve users: ${error.message}` });
+            console.error("Error getting users index", error);
+            const response = ApiResponse.createApiResponse(
+                "Failed to retrieve users",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
         }
     }
 

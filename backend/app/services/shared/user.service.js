@@ -9,25 +9,36 @@ class UserService {
         this.mailer = mailer;
     }
 
-    static async getAllUsers() {
+    async getAllUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
         try {
-            return await User.findAll({
+            page = parseInt(page);
+            limit = parseInt(limit);
+
+            const offset = (page - 1) * limit;
+
+            return await User.findAndCountAll({
                 attributes: [
                     'id',
                     'name',
                     'email',
                     'dni',
-                    [Sequelize.col('rol.name'), 'id_rol']
+                    'id_rol',
+                    'address',
+                    'createdAt',
+                    'updatedAt'
                 ],
                 include: [
                     {
                         model: Rol,
-                        attributes: [],
+                        attributes: ['name'],
                         as: 'rol'
                     }
-                ]
+                ],
+                order: [[sortField, sortOrder]],
+                limit,
+                offset
             });
-        } catch (error) {
+        }catch(error){
             throw new Error(`Error getting users: ${error.message}`);
         }
     }

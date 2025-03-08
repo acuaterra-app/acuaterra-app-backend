@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const { User } = require('../../../models');
 
 const validateUserRegistration = [
@@ -47,6 +47,35 @@ const validateUserRegistration = [
       .matches(/[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+/).withMessage('Address must contain at least one word'),
 ];
 
+const validatePagination = [
+query('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be a positive integer')
+    .toInt()
+    .default(1),
+
+query('limit')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Limit must be a positive integer')
+    .toInt()
+    .default(10),
+
+query('sortField')
+    .optional()
+    .isIn(['id', 'name', 'email', 'dni', 'createdAt', 'updatedAt'])
+    .withMessage('Sort field must be one of: id, name, email, dni, createdAt, updatedAt')
+    .default('createdAt'),
+
+query('sortOrder')
+    .optional()
+    .isIn(['ASC', 'DESC'])
+    .withMessage('Sort order must be ASC or DESC')
+    .default('DESC'),
+];
+
 module.exports = {
-  validateUserRegistration,
+validateUserRegistration,
+validatePagination,
 };
