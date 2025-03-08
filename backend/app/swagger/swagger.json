@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "2.0.0",
+    "description": "Documentation for the REST API",
+    "license": {
+      "name": "Licensed Under MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    },
+    "contact": {
+      "name": "API Support",
+      "url": "https://www.example.com/support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter your token (without Bearer prefix)"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "paths": {},
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "API endpoints for user authentication"
+    },
+    {
+      "name": "Admin/Users",
+      "description": "API Admin endpoints for user management"
+    },
+    {
+      "name": "Admin/Farms",
+      "description": "API Admin endpoints for farm management"
+    },
+    {
+      "name": "Admin/Modules",
+      "description": "API Admin endpoints for module management"
+    },
+    {
+      "name": "Owner/Modules",
+      "description": "API Owner endpoints for module management"
+    }
+  ]
+}
+

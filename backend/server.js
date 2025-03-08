@@ -4,15 +4,19 @@ const dotenv = require('dotenv');
 const BlackListService = require('./app/services/shared/blacklist.service');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerConfig = require('./app/swagger/index.js');
 // Import the new ray module
 
 // Initialize express app
 const app = express();
 
 // Set up Ray with express
+// Set up swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 app.get('/', (req, res) => {
-    res.send('Acuaterra Backend service running OK!');
+    res.redirect('/api-docs');
 });
 /**
  * Load Routes groups

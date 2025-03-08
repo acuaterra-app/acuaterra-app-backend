@@ -1,0 +1,169 @@
+{
+  "/api/v2/admin/farms": {
+    "get": {
+      "tags": ["Admin/Farms"],
+      "summary": "Get list of farms",
+      "description": "Retrieves a paginated list of all farms with their associated users",
+      "parameters": [
+        {
+          "name": "page",
+          "in": "query",
+          "description": "Page number for pagination",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+          }
+        },
+        {
+          "name": "perPage",
+          "in": "query",
+          "description": "Number of items per page",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Farms retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farms retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Mi granjita"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "Dirección de la granja"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "12.345678"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "-12.345678"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-08T04:46:45.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-08T04:46:45.000Z"
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Brenda Schmeler"
+                              },
+                              "email": {
+                                "type": "string",
+                                "format": "email",
+                                "example": "owner_1@example.com"
+                              },
+                              "dni": {
+                                "type": "string",
+                                "example": "4772205787"
+                              },
+                              "id_rol": {
+                                "type": "integer",
+                                "example": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "example": 5
+                          },
+                          "totalPages": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "currentPage": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "perPage": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "hasNext": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "hasPrev": {
+                            "type": "boolean",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Authentication credentials were missing or invalid"
+        },
+        "403": {
+          "description": "Forbidden - User doesn't have admin privileges"
+        },
+        "500": {
+          "description": "Internal Server Error"
+        }
+      }
+    }
+  }
+}
+
