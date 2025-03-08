@@ -29,6 +29,7 @@ El servidor estará disponible en `http://localhost:9000`.
 
 Revise el folder del repositorio ahi encontrara las colecciones de Postman para revisar los campos. 
 test-resources
+Revise el enlace (/api-docs/)[http://localhost:9000/api-docs]
 
 ---
 

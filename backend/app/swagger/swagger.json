@@ -46,20 +46,16 @@
       "description": "API endpoints for shared module operations accessible to multiple roles"
     },
     {
+      "name": "Shared/Users",
+      "description": "API endpoints for shared user operations accessible to multiple roles"
+    },
+    {
       "name": "Admin/Users",
       "description": "API Admin endpoints for user management"
     },
     {
       "name": "Admin/Farms",
       "description": "API Admin endpoints for farm management"
-    },
-    {
-      "name": "Admin/Modules",
-      "description": "API Admin endpoints for module management"
-    },
-    {
-      "name": "Owner/Modules",
-      "description": "API Owner endpoints for module management"
     }
   ]
 }

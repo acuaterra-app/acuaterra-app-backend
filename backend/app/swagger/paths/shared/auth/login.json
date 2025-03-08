@@ -3,7 +3,7 @@
     "post": {
       "summary": "User login",
       "tags": ["Authentication"],
-      "description": "Authenticates a user and returns an access token",
+      "description": "Authenticates a user with their email and password and returns an access token for accessing protected resources.\n\n## Form Fields and Validation Rules\n\n### Required Fields\nAll fields listed below are required for successful authentication.\n\n### Field Specifications\n\n- **email**\n  - **Type**: String\n  - **Format**: Email\n  - **Validation**: \n    - Must be a valid email format\n    - Must exist in the system\n    - Case insensitive\n  - **Purpose**: Identifies the user account\n\n- **password**\n  - **Type**: String\n  - **Validation**: \n    - Must match the stored password for the associated email\n    - Case sensitive\n    - Minimum 8 characters recommended for security\n  - **Purpose**: Verifies user identity\n\nOn successful authentication, the system returns a JWT token and user details including ID, email, name, and role. This token must be included in the Authorization header for subsequent authenticated requests.",
       "requestBody": {
         "required": true,
         "content": {
@@ -18,13 +18,13 @@
                 "email": {
                   "type": "string",
                   "format": "email",
-                  "description": "User's email address",
+                  "description": "User's email address. Required. Must be a valid email format that exists in the system. Case insensitive.",
                   "example": "user@example.com"
                 },
                 "password": {
                   "type": "string",
                   "format": "password",
-                  "description": "User's password",
+                  "description": "User's password. Required. Must match the stored password for the associated email. Case sensitive. Minimum 8 characters recommended for security.",
                   "example": "********"
                 }
               }
