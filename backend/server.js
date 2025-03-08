@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
  * Load Routes groups
  */
 const userSharedRoutes = require('./app/routes/shared/user.route');
+const userAdminRoutes = require('./app/routes/admin/user.admin.route');
 const authRoutes = require('./app/routes/auth.route');
 const farmRoutes = require('./app/routes/admin/farm.admin.route');
 const sharedModuleRoutes = require('./app/routes/shared/module.route');
@@ -62,6 +63,7 @@ app.use('/api/v2/owner/farms', ownerFarmRoutes);
  * Admin Routes
  */
 app.use('/api/v2/admin/farms', farmRoutes);
+app.use('/api/v2/admin/users', userAdminRoutes);
 
 const PORT = process.env.PORT || 3000;
 
