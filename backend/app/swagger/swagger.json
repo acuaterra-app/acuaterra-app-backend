@@ -16,8 +16,8 @@
   },
   "servers": [
     {
-      "url": "/",
-      "description": "Development server"
+      "url": "https://backend.acuaterra.tech",
+      "description": "Production server"
     }
   ],
   "components": {

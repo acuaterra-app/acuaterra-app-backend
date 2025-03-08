@@ -4,9 +4,32 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/server.js" }
+    {
+      "src": "/api-docs/swagger-ui.css",
+      "dest": "/public/swagger-ui/swagger-ui.css"
+    },
+    {
+      "src": "/api-docs/swagger-ui-bundle.js",
+      "dest": "/public/swagger-ui/swagger-ui-bundle.js"
+    },
+    {
+      "src": "/api-docs/swagger-ui-standalone-preset.js",
+      "dest": "/public/swagger-ui/swagger-ui-standalone-preset.js"
+    },
+    {
+      "src": "/api-docs/(.*)",
+      "dest": "/server.js"
+    },
+    { 
+      "src": "/(.*)", 
+      "dest": "/server.js" 
+    }
   ]
 }

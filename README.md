@@ -15,7 +15,7 @@ Este proyecto es un sistema backend diseñado para gestionar personas, módulos,
 ## 2. Correr ambiente de desarrollo:
 
  ````bash
-  cd scripts
+  cd build_scripts
   chmod 700 start-dev.sh
   ./start-dev.sh
  
