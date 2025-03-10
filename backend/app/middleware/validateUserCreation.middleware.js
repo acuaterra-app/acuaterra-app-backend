@@ -7,7 +7,8 @@ class ValidateUserCreationMiddleware {
 
     async validateUserCreation(req, res, next) {
         try {
-            const { id_rol: idRolNewUSer } = req.body;
+            const { id_rol } = req.body;
+            const idRolNewUSer = parseInt(id_rol);
             const authenticatedUser = req.user;
 
             if (authenticatedUser.id_rol === Role.ADMIN) {
