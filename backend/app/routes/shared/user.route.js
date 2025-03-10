@@ -22,8 +22,8 @@ const validateUserCreation = new ValidateUserCreationMiddleware();
 router.post(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
     validate(validateUserRegistration),
+    validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
     (req, res, next) => validateUserCreation.validateUserCreation(req, res , next),
     (req, res) => userController.register(req, res)
     );
