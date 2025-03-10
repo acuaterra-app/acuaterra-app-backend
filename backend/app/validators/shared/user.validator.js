@@ -23,9 +23,9 @@ const validateUserRegistration = [
 
     body('dni')
         .notEmpty().withMessage('DNI is required')
-        .isString().withMessage('DNI must be a string')
+        .isInt().withMessage('DNI must be a Int')
         .trim()
-        .isLength({ min: 5, max: 20 }).withMessage('DNI must be between 5 and 20 characters')
+        .isLength({ min: 5, max: 100 }).withMessage('DNI must be between 5 and 100 characters')
         .custom(async (value) => {
             const user = await User.findOne({ where: { dni: value } });
             if (user) {
