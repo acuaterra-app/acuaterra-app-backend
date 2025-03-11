@@ -58,6 +58,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: true,
     },
+    contact: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     id_rol: {
       type: DataTypes.INTEGER,
       allowNull: false,

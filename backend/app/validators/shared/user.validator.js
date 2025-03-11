@@ -45,6 +45,13 @@ const validateUserRegistration = [
       .isLength({ max: 100 }).withMessage('Address must be a maximum of 100 characters')
       .matches(/\d+/).withMessage('Address must contain at least one number')
       .matches(/[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+/).withMessage('Address must contain at least one word'),
+
+    body('contact')
+        .notEmpty().withMessage('Contact is required')
+        .isInt().withMessage('Contact must be a Int')
+        .trim()
+        .isLength({ min: 5, max: 100 }).withMessage('Contact must be between 5 and 100 characters')
+
 ];
 
 const validatePagination = [

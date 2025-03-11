@@ -15,7 +15,8 @@ module.exports = {
         password: await bcrypt.hash('password', saltRounds),
         dni: faker.string.numeric(10),
         address: faker.location.streetAddress(),
-        id_rol: 1, // Admin role
+        id_rol: 1,
+        contact: '789654',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -25,7 +26,8 @@ module.exports = {
         password: await bcrypt.hash('password', saltRounds),
         dni: faker.string.numeric(10),
         address: faker.location.streetAddress(),
-        id_rol: 2, // Owner
+        id_rol: 2,
+        contact: '789654',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -35,7 +37,8 @@ module.exports = {
         password: await bcrypt.hash('password', saltRounds),
         dni: faker.string.numeric(10),
         address: faker.location.streetAddress(),
-        id_rol: 2, // Owner
+        id_rol: 2,
+        contact: '789654',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -45,7 +48,8 @@ module.exports = {
         password: await bcrypt.hash('password', saltRounds),
         dni: faker.string.numeric(10),
         address: faker.location.streetAddress(),
-        id_rol: 3, // User Role
+        id_rol: 3,
+        contact: '789654',
         createdAt: new Date(),
         updatedAt: new Date()
       }
