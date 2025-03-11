@@ -21,7 +21,7 @@ class AuthController {
             const user = await User.findOne({where: {email}});
             const result = ApiResponse.createApiResponse('Successful login', [{
                 token,
-                user: {id: user.id, dni: user.dni, name: user.name, email: user.email, id_rol: user.id_rol, rol: getRoleNameById(user.id_rol)}
+                user: {id: user.id, dni: user.dni, name: user.name, email: user.email, id_rol: user.id_rol, rol: getRoleNameById(user.id_rol), contact: user.contact},
             }]);
 
             res.json(result);
