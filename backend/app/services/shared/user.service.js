@@ -24,6 +24,7 @@ class UserService {
                     'dni',
                     'id_rol',
                     'address',
+                    'contact',
                     'createdAt',
                     'updatedAt'
                 ],
@@ -45,7 +46,7 @@ class UserService {
 
     async register(userData) {
         try {
-            const { name, email, dni, id_rol, address } = userData;
+            const { name, email, dni, id_rol, address, contact } = userData;
 
             const tempPassword = Math.random().toString(36).slice(-8);
             const hashedPassword = await bcrypt.hash(tempPassword, 10);
@@ -57,6 +58,7 @@ class UserService {
                 dni,
                 id_rol,
                 address,
+                contact
             });
 
             const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL;
