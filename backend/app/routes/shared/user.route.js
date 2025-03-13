@@ -28,5 +28,13 @@ router.post(
     (req, res) => userController.register(req, res)
     );
 
+router.put(
+    '/:id',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validate(validateUserRegistration),
+    validateRoleMiddleware.validate([Role.ADMIN]),
+    (req, res) => userAdminController.update(req, res)
+);
+
 module.exports = router;
 

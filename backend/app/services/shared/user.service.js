@@ -1,5 +1,4 @@
 const { User, Rol } = require('../../../models');
-const { Sequelize } = require('sequelize');
 const bcrypt = require('bcrypt');
 const ejs = require('ejs');
 const path = require('path');
@@ -81,14 +80,17 @@ class UserService {
         }
     }
 
-    static async findUserById(id) {
+    async findUserById(id) {
         try {
-            const user = await User.findOne({ where: { id } });
+            const user = await User.findByPk(id);
+
             if (!user) {
-                throw new Error('No se encontró el usuario.');
+                throw new Error(`User with id ${id} not found`);
             }
+
             return user;
         } catch (error) {
+            console.error(`Error finding user with id ${id}:`, error);
             throw error;
         }
     }
@@ -119,20 +121,38 @@ class UserService {
         }
     }
 
-    static async editUser(id_user, nuevoUser) {
+    async editUser(id, userData) {
         try {
-            // Hash password if it's being updated
-            if (nuevoUser.password) {
-                nuevoUser.password = await bcrypt.hash(nuevoUser.password, 10);
-            }
-            
-            const user = await User.findByPk(id_user)
+            const user = await User.findByPk(id);
+
             if (!user) {
-                throw new Error('No se encontró el usuario.');
+                throw new Error(`Usuario con id ${id} no encontrado`);
             }
-            await user.update(nuevoUser);
-            return user;
+
+            const {
+                name, email, dni, id_rol, address, contact = [] } = userData;
+
+            await User.update({
+                name,
+                email,
+                dni,
+                id_rol,
+                address,
+                contact
+            }, {
+                where: { id }
+            });
+
+            return await User.findByPk(id, {
+                attributes: ['id', 'name', 'email', 'dni', 'id_rol', 'address', 'contact'],
+                include: [{
+                    model: Rol,
+                    attributes: ['id', 'name']
+                }]
+            });
+
         } catch (error) {
+            console.error(`Error updating user with id ${id}:`, error);
             throw error;
         }
     }

@@ -26,7 +26,6 @@ router.get('/',
     (req, res) => userController.index(req, res)
 );
 router.get('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.find);
-router.put('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.upgrade);
 router.delete('/:id',  validateTokenMiddleware.validate.bind(validateTokenMiddleware), UserController.delete);
 
 module.exports = router;
