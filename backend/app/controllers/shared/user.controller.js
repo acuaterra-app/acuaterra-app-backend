@@ -85,13 +85,31 @@ class UserController {
         }
     }
 
-    static async upgrade(req, res) {
+    async update(req, res) {
         try {
-            const result = await UserService.editUser(req.params.id, req.body);
-            const response = ApiResponse.createApiResponse("User updated successfully", result)
+            const { id } = req.params;
+            const userData = req.body;
+
+            const updatedUser = await this.userService.editUser(id, userData);
+
+            const response = ApiResponse.createApiResponse(
+                "User updated successfully",
+                [ updatedUser ]
+            );
             return res.json(response);
         } catch (error) {
-            res.status(500).json({ error: `User update failed: ${error.message}` });
+            console.error("Error updating user:", error);
+            const response = ApiResponse.createApiResponse(
+                "Error updating user",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("not found")) {
+                return res.status(404).json(response);
+            }
+
+            return res.status(500).json(response);
         }
     }
 

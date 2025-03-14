@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "bfe54c08-3527-4478-84e5-26e6c3b854fa",
+		"_postman_id": "15e37455-3225-4448-bb8e-913946b2a512",
 		"name": "user",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -35,6 +35,50 @@
 										"users"
 									]
 								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjQ0MTg2MDA2MyIsImlhdCI6MTc0MTkxMzg3MSwiZXhwIjoxNzQxOTMxODcxfQ.D6xHYiGE-2SppB73ky258PgyUapEchwnViujQ7Lk8QM",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"UserEdit\",\r\n    \"email\": \"UserEdit1@gmail.com\",\r\n    \"dni\": \"1234560011\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle siempre viva 123\",\r\n    \"contact\": \"11232143\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/shared/users/5",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"users",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"method": "GET",
+								"header": []
 							},
 							"response": []
 						}
