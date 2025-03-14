@@ -33,7 +33,7 @@ router.put(
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validate(validateUserRegistration),
     validateRoleMiddleware.validate([Role.ADMIN]),
-    (req, res) => userAdminController.update(req, res)
+    (req, res) => userController.update(req, res)
 );
 
 module.exports = router;

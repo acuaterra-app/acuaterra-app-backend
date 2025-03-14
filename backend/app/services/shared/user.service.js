@@ -144,11 +144,7 @@ class UserService {
             });
 
             return await User.findByPk(id, {
-                attributes: ['id', 'name', 'email', 'dni', 'id_rol', 'address', 'contact'],
-                include: [{
-                    model: Rol,
-                    attributes: ['id', 'name']
-                }]
+                attributes: ['id', 'name', 'email', 'dni', 'id_rol', 'address', 'contact']
             });
 
         } catch (error) {
