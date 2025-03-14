@@ -11,7 +11,9 @@ const Mailer = require('../../utils/Mailer');
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 const ValidateUserCreationMiddleware = require("../../middleware/validateUserCreation.middleware");
+const ValidateUserUpdateMiddleware = require("../../middleware/validateUserUpdate.middleware");
 
+const validateUserUpdate = new ValidateUserUpdateMiddleware();
 const mailer = new Mailer(process.env.RESEND_API_KEY);
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const userService = new UserService(mailer);
@@ -33,8 +35,8 @@ router.put(
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validate(validateUserRegistration),
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
+    (req, res, next) => validateUserUpdate.validateUserUpdate(req, res, next),
     (req, res) => userController.update(req, res)
 );
 
 module.exports = router;
-
