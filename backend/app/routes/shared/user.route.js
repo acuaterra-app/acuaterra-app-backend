@@ -32,7 +32,7 @@ router.put(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validate(validateUserRegistration),
-    validateRoleMiddleware.validate([Role.ADMIN]),
+    validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER]),
     (req, res) => userController.update(req, res)
 );
 
