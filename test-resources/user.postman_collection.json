@@ -51,7 +51,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"UserEdit\",\r\n    \"email\": \"UserEdit1@gmail.com\",\r\n    \"dni\": \"1234560011\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle siempre viva 123\",\r\n    \"contact\": \"11232143\"\r\n}",
+									"raw": "{\r\n    \"name\": \"UserEdit\",\r\n    \"email\": \"UserEdit2@gmail.com\",\r\n    \"dni\": \"12345600112\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle siempre viva 123\",\r\n    \"contact\": \"11232143\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -81,6 +81,33 @@
 								"header": []
 							},
 							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzcsImRuaSI6IjExMjM0MzIwMTAiLCJpYXQiOjE3NDIwNzIxODEsImV4cCI6MTc0MjA5MDE4MX0.qVLb_P7k2U-NNY8KZ0UID4jMGiQgguuOaTJRB3lO4ZU",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/admin/users/39",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"admin",
+										"users",
+										"39"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -91,10 +118,16 @@
 							"name": "register",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDIwNzIwMzgsImV4cCI6MTc0MjA5MDAzOH0.UhesXPXqNFhwaVowsayeazRd-NHuPeMQgEcGGUGZErs",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"NewPrueba2\",\r\n    \"email\": \"newPrueba2@gmail.com\",\r\n    \"password\": \"Newprueba2\",\r\n    \"dni\": \"197895434\",\r\n    \"id_rol\": 3,\r\n    \"address\": \"calle 1 # 10 - 19\"\r\n}",
+									"raw": "{\r\n    \"name\": \"user\",\r\n    \"email\": \"user2@example.com\",\r\n    \"dni\": \"112340\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle 1 # 10 - 19\",\r\n    \"contact\": \"12345321\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -102,14 +135,42 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/users",
+									"raw": "{{server}}/api/v2/shared/users",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
+										"shared",
 										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Farms User",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZG5pIjoiNzUxMDA5NzA3NSIsImlhdCI6MTc0MjAxNTc5MSwiZXhwIjoxNzQyMDMzNzkxfQ.a5Okm2Yf_BTWAIV9zuQAkOGuELpO3Dceb_B8b0qiXeY",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/shared/farms/3",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"farms",
+										"3"
 									]
 								}
 							},
@@ -138,10 +199,16 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjQ0MTg2MDA2MyIsImlhdCI6MTc0MTkxMzg3MSwiZXhwIjoxNzQxOTMxODcxfQ.D6xHYiGE-2SppB73ky258PgyUapEchwnViujQ7Lk8QM",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    \"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    \"email\": \"user@example.com\",\n    \"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
