@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 
 app.use(cors({
-    origin: ['http://localhost:3001', 'https://backmejorado.onrender.com', 'https://acuaterra-app.netlify.app'], 
+    origin: ['http://localhost:3001', 'https://backmejorado.onrender.com', 'https://acuaterra-app.netlify.app', 'https://acuaterra-app-gzy4ejdp8-acuaterra-apps-projects.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
     credentials: true,
