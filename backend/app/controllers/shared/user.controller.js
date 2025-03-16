@@ -6,6 +6,7 @@ class UserController {
     /**
      * @param {UserService} userService
      */
+
     constructor(userService) {
         this.userService = userService;
     }
@@ -113,13 +114,27 @@ class UserController {
         }
     }
 
-    static async delete(req, res) {
+    async delete(req, res) {
         try {
-            const result = await UserService.deleteUser(req.params.id);
+            const result = await this.userService.deleteUser(req.params.id, req.user);
             const response = ApiResponse.createApiResponse("User deleted successfully", result)
             return res.json(response);
         } catch (error) {
-            res.status(500).json({ error: `User deletion failed: ${error.message}` });
+            console.error("Error deleting user:", error);
+
+            const response = ApiResponse.createApiResponse(
+                "Error deleting user",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("not found")) {
+                return res.status(404).json(response);
+            } else if (error.message.includes("permission") || error.message.includes("Forbidden")) {
+                return res.status(403).json(response);
+            }
+
+            return res.status(500).json(response);
         }
     }
 

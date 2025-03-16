@@ -1,0 +1,220 @@
+{
+  "/api/v2/admin/users/{id}": {
+    "delete": {
+      "summary": "Delete a user",
+      "description": "Deletes an existing user from the system by their unique identifier",
+      "tags": [
+        "Admin/Users"
+      ],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Unique identifier of the user to delete"
+        }
+      ],
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User successfully deleted",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "User deleted successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Unique identifier of the deleted user"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Full name of the deleted user"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email address of the deleted user"
+                      },
+                      "dni": {
+                        "type": "string",
+                        "description": "Document Number ID of the deleted user"
+                      },
+                      "id_rol": {
+                        "type": "integer",
+                        "description": "Role ID of the deleted user"
+                      },
+                      "address": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Physical address of the deleted user"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the deleted user was created"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the deleted user was last updated"
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "description": "Array of error messages, if any",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                },
+                "required": [
+                  "message",
+                  "data",
+                  "errors",
+                  "meta"
+                ]
+              },
+              "example": {
+                "message": "User deleted successfully",
+                "data": {
+                  "id": 12,
+                  "name": "NewPrueba2",
+                  "email": "acuaterra_523@test.test",
+                  "dni": "1978954342222",
+                  "id_rol": 3,
+                  "address": "calle 1 # 10 - 19",
+                  "createdAt": "2025-03-07T04:51:36.000Z",
+                  "updatedAt": "2025-03-07T04:51:36.000Z"
+                },
+                "errors": [],
+                "meta": {}
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - User is not authenticated"
+        },
+        "403": {
+          "description": "Forbidden - User does not have sufficient privileges (only ADMIN and OWNER can delete users)"
+        },
+        "404": {
+          "description": "User not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error deleting user"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "User not found"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              },
+              "example": {
+                "message": "Error deleting user",
+                "data": [],
+                "errors": [
+                  {
+                    "msg": "User not found"
+                  }
+                ],
+                "meta": {}
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error deleting user"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              },
+              "example": {
+                "message": "Error deleting user",
+                "data": [],
+                "errors": [
+                  {
+                    "msg": "Internal server error"
+                  }
+                ],
+                "meta": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

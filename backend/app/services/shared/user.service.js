@@ -153,14 +153,13 @@ class UserService {
         }
     }
 
-    static async deleteUser(id) {
+    async deleteUser(id, currentUser) {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
-                throw new Error('No se encontró el usuario.');
-            }
-            await User.destroy({ where: { id } });
-            return user;
+            const userToDelete = await User.findByPk(id);
+
+            await userToDelete.destroy();
+            
+            return userToDelete;
         } catch (error) {
             throw error;
         }
