@@ -11,7 +11,7 @@ module.exports = {
     const users = [
       {
         name: faker.person.fullName(),
-        email: 'admin1@example.com',
+        email: 'admin@example.com',
         password: await bcrypt.hash('password', saltRounds),
         dni: faker.string.numeric(10),
         address: faker.location.streetAddress(),
