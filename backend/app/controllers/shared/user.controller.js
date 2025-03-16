@@ -3,6 +3,10 @@ const ApiResponse = require('../../utils/apiResponse')
 
 class UserController {
 
+    /**
+     * @param {UserService} userService
+     */
+
     constructor(userService) {
         this.userService = userService;
     }

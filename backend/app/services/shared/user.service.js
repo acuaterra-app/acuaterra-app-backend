@@ -156,13 +156,7 @@ class UserService {
     async deleteUser(id, currentUser) {
         try {
             const userToDelete = await User.findByPk(id);
-            
-            if (!userToDelete) {
-                const error = new Error('User not found');
-                error.status = 404;
-                throw error;
-            }
-            
+
             await userToDelete.destroy();
             
             return userToDelete;
