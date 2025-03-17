@@ -1,16 +1,16 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class Parameter extends Model {
+  class Measurement extends Model {
     static associate(models) {
-      Parameter.belongsTo(models.Sensor, {
+      Measurement.belongsTo(models.Sensor, {
         foreignKey: 'id_sensor',
         as: 'sensor'
       });
     }
   }
 
-  Parameter.init({
+  Measurement.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'sensor',
+        model: 'sensors',
         key: 'id'
       }
     },
@@ -28,17 +28,21 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
-    date_hour: {
-      type: DataTypes.DATE,
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    time: {
+      type: DataTypes.TIME,
       allowNull: false
     }
   }, {
     sequelize,
-    modelName: 'Parameter',
-    tableName: 'parameters',
+    modelName: 'Measurement',
+    tableName: 'measurements',
     timestamps: true
   });
 
-  return Parameter;
+  return Measurement;
 };
 

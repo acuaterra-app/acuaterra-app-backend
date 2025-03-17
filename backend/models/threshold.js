@@ -21,17 +21,17 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'sensor',
+          model: 'sensors',
           key: 'id'
         }
       },
-      min_value: {
+      value: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: true
+        allowNull: false
       },
-      max_value: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true
+      type: {
+        type: DataTypes.ENUM('min', 'max'),
+        allowNull: false
       }
     },
     {
