@@ -1,4 +1,4 @@
-const { Farm } = require('../../models');
+const { Farm, FarmUser } = require('../../models');
 const ApiResponse = require('../utils/ApiResponse');
 
 class ValidateModuleCreateMiddleware {
