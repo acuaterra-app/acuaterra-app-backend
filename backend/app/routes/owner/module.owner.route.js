@@ -21,7 +21,7 @@ router.post(
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
     validate(validateCreateModule),
-    validateModuleCreate.validateModuleCreation,
+    (req, res, next) => validateModuleCreate.validateModuleCreation(req, res , next),
     (req, res) => moduleController.create(req, res)
 );
 

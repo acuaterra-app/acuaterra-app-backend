@@ -35,14 +35,12 @@ class ModuleOwnerService {
                 id_farm,
                 created_by_user_id
             });
-
-           /* const defaultSensors = await this.thresholdService.createDefaultThresholds(newModule.id);
-
-            for(const sensor of defaultSensors){
+            const sensors = await this.sensorService.createDefaultSensorsForModule(newModule.id);
+            
+            for (const sensor of sensors) {
                 await this.thresholdService.createDefaultThresholds(sensor.id);
             }
 
-            */
             return await Module.findByPk(newModule.id, {
                 include: [
                     {

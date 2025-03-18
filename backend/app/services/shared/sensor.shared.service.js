@@ -2,17 +2,16 @@ const { Sensor, Threshold } = require('../../../models');
 
 class SensorService {
 
-    async createDefaultSensorsForModule(id) {
-
-        const defaultSensorTypes = await Threshold.findAll({
-            attributes: ['id', 'type', 'value'],
-            group: ['id', 'type', 'value']
-        });
+    async createDefaultSensorsForModule(id_module) {
+        const defaultSensorTypes = [
+            { name: 'Sensor de Temperatura', type: 'temperature' },
+            { name: 'Sensor de Proximidad', type: 'proximity' }
+        ];
 
         const sensorsToCreate = defaultSensorTypes.map(sensorType => ({
             name: sensorType.name,
             type: sensorType.type,
-            id: id
+            id_module: id_module
         }));
 
         return Sensor.bulkCreate(sensorsToCreate);
