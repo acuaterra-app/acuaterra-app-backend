@@ -1,5 +1,6 @@
 const { body, query } = require('express-validator');
 const { User } = require('../../../models');
+const {ROLES, getAdminAllowedRoles, getOwnerAllowedRoles} = require("../../enums/roles.enum");
 
 const validateUserRegistration = [
   body('name')
@@ -80,6 +81,38 @@ query('sortOrder')
     .isIn(['ASC', 'DESC'])
     .withMessage('Sort order must be ASC or DESC')
     .default('DESC'),
+
+query('roles')
+    .optional()
+    .isString()
+    .withMessage('Roles must be a comma-separated string')
+    .custom(async (rolesString, {req}) => {
+        if (!rolesString) return true;
+
+        const roles = rolesString.split(',').map(role => role.trim());
+
+        if (roles.some(role => isNaN(role) || role === '')) {
+            throw new Error('All roles must be valid numbers');
+        }
+
+        const uniqueRoles = new Set(roles);
+
+        if (uniqueRoles.size !== roles.length) {
+            throw new Error('Duplicate roles are not allowed');
+        }
+
+        const authenticatedUser = req.user;
+        const validRoleValues = authenticatedUser.id_rol === ROLES.ADMIN ? getAdminAllowedRoles() : getOwnerAllowedRoles();
+
+        const invalidRoles = roles
+            .map(role => Number(role))
+            .filter(role => !validRoleValues.includes(role));
+
+        if (invalidRoles.length > 0) {
+            throw new Error(`Invalid roles: ${invalidRoles.join(', ')}. Valid roles are: ${validRoleValues.join(', ')}`);
+        }
+        return true;
+    }),
 ];
 
 module.exports = {

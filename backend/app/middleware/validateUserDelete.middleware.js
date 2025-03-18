@@ -15,7 +15,7 @@ class ValidateUserDeleteMiddleware {
                 );
             }
 
-            if (authenticatedUser.id_rol === Role.USER) {
+            if (authenticatedUser.id_rol === Role.MONITOR) {
                 return res.status(403).json(
                     ApiResponse.createApiResponse('Authorization failed', [], [{
                         'error': 'You do not have permission to delete users'
