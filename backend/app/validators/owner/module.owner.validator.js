@@ -30,12 +30,14 @@ const validateCreateModule = [
 
     body('latitude')
         .notEmpty().withMessage('Latitude is required')
+        .isString().withMessage('Latitude must be text')
         .isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a number between -180 and 180')
         .matches(/^-?\d+(\.\d+)?$/)
         .withMessage('Invalid latitude format'),
 
     body('longitude')
         .notEmpty().withMessage('Longitude is required')
+        .isString().withMessage('Longitude must be text')
         .isFloat({ min: -180, max: 180 }).withMessage('Longitude must be a number between -180 and 180')
         .matches(/^-?\d+(\.\d+)?$/)
         .withMessage('Invalid longitude format'),

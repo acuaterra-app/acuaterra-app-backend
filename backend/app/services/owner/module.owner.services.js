@@ -20,6 +20,7 @@ class ModuleOwnerService {
                 fish_age,
                 dimensions,
                 id_farm,
+                users,
                 created_by_user_id
             } = moduleData;
 
@@ -35,6 +36,19 @@ class ModuleOwnerService {
                 id_farm,
                 created_by_user_id
             });
+
+            if (users && users.length > 0) {
+                const foundUsers = await User.findAll({
+                    where: {
+                        id: users
+                    }
+                });
+                
+                if (foundUsers.length > 0) {
+                    await newModule.setUsers(foundUsers);
+                }
+            }
+
             const sensors = await this.sensorService.createDefaultSensorsForModule(newModule.id);
             
             for (const sensor of sensors) {

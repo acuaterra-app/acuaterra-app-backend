@@ -1,8 +1,10 @@
 const { Threshold, Sensor } = require('../../../models');
+const BasedThreshold = require("../../utils/based.threshold");
 
 class ThresholdService {
     constructor() {
         this.model = new Threshold;
+        this.based = new BasedThreshold();
     }
 
     async create(thresholdData) {
@@ -59,52 +61,28 @@ class ThresholdService {
 
     async createDefaultThresholds(id) {
         try {
-            // Verify sensor exists
             const sensor = await Sensor.findByPk(id);
             if (!sensor) {
                 throw new Error(`Sensor with ID ${id} not found`);
             }
 
-            // Define default thresholds based on sensor type
             const defaultThresholds = [
                 {
                     id_sensor: id,
                     type: 'min',
-                    value: this.getDefaultMinThreshold(sensor.type)
+                    value: this.based.getDefaultMinThreshold(sensor.type)
                 },
                 {
                     id_sensor: id,
                     type: 'max',
-                    value: this.getDefaultMaxThreshold(sensor.type)
+                    value: this.based.getDefaultMaxThreshold(sensor.type)
                 }
             ];
 
-            // Bulk create thresholds
             return await Threshold.bulkCreate(defaultThresholds);
         } catch (error) {
             console.error('Error creating default thresholds:', error);
             throw error;
-        }
-    }
-
-    getDefaultMinThreshold(sensorType) {
-        // Define default minimum thresholds based on sensor type
-        switch(sensorType) {
-            case 'proximity':
-                return 4.50;
-            case 'temperature':
-                return 8.50;
-
-        }
-    }
-
-    getDefaultMaxThreshold(sensorType) {
-        // Define default maximum thresholds based on sensor type
-        switch(sensorType) {
-            case 'proximity':
-                return 12.50;
-            case 'temperature':
-                return 35.0;
         }
     }
 }

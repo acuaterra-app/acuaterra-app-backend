@@ -21,6 +21,7 @@ class ModuleOwnerController {
                 fish_age,
                 dimensions,
                 id_farm,
+                users = []
             } = req.body;
 
             const created_by_user_id = req.user.id;
@@ -35,6 +36,7 @@ class ModuleOwnerController {
                 fish_age,
                 dimensions,
                 id_farm,
+                users,
                 created_by_user_id
             });
 

@@ -6,7 +6,7 @@ const ValidateTokenMiddleware = require("../../middleware/validateToken.middlewa
 const BlackListService = require("../../services/shared/blacklist.service");
 const { validate } = require("../../middleware/validate.middleware");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const { validateCreateModule } = require("../../validators/owner/model.validator");
+const { validateCreateModule } = require("../../validators/owner/module.owner.validator");
 const { ROLES : Role } = require("../../enums/roles.enum");
 const ValidateModuleCreateMiddleware = require("../../middleware/validateModuleCreate.middleware");
 
@@ -21,7 +21,7 @@ router.post(
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
     validate(validateCreateModule),
-    (req, res, next) => validateModuleCreate.validateModuleCreation(req, res , next),
+    (req, res, next) => validateModuleCreate.validate(req, res , next),
     (req, res) => moduleController.create(req, res)
 );
 

@@ -1,60 +1,58 @@
-const { Farm, FarmUser } = require('../../models');
-const ApiResponse = require('../utils/ApiResponse');
+const { FarmUser, User } = require('../../models');
+const { ROLES } = require('../enums/roles.enum');
+const ApiResponse = require('../utils/apiResponse');
 
 class ValidateModuleCreateMiddleware {
-    async validateModuleCreation(req, res, next) {
+    async validate(req, res, next) {
         try {
-            const id_user = req.user.id;
-            const id_farm = req.body.id_farm;
+            const authenticatedUser = req.user;
+            const { id_farm, users } = req.body;
 
-            if (!id_farm) {
-                const response = ApiResponse.createApiResponse('Farm ID is required',
-                    [],
-                    [{
-                        msg: 'Please enter a valid farm',
-                    }])
-                return res.status(400).json(response);
-            }
-
-            const farm = await Farm.findOne({
+            const farmUserAssociation = await FarmUser.findOne({
                 where: {
-                    id: id_farm
-                }
-            });
-
-            if (!farm) {
-                const response = ApiResponse.createApiResponse('Farm not found',
-                    [],
-                    [{
-                        msg: 'The specified farm does not exist',
-                    }])
-                return res.status(404).json(response);
-            }
-
-            const userFarmAssociation = await FarmUser.findOne({
-                where: {
-                    id_user: id_user,
+                    id_user: authenticatedUser.id,
                     id_farm: id_farm
                 }
             });
 
-            if (!userFarmAssociation) {
-                const response = ApiResponse.createApiResponse('The user does not have permissions to create modules on this farm',
-                    [],
-                    [{
-                        msg: 'Unauthorized farm access',
-                    }])
+            if (!farmUserAssociation) {
+                    const response = ApiResponse.createApiResponse('Authorization failed',
+                        [],
+                        [{
+                            msg: 'You do not have permission to create modles in this farm'
+                        }]
+                );
                 return res.status(403).json(response);
+            }
+
+            if (users && users.length > 0) {
+                const monitorUsers = await User.findAll({
+                    where: {
+                        id: users
+                    }
+                });
+
+                for (const user of monitorUsers) {
+                    if (user.id_rol !== ROLES.USER) {
+                            const response = ApiResponse.createApiResponse('Authorization failed', [], [{
+                                msg: 'Only monitor users can be asigned to modules'
+                            }]
+                        );
+                    return res.status(403).json(response);
+                    }
+                }
+
             }
 
             next();
         } catch (error) {
-            console.error('Error in module creation validation:', error);
-            const response = ApiResponse.createApiResponse('Error creating module',
-                [],
-                [{
-                    msg: error.message,
-                }])
+            console.error('Module creation validation error:', error);
+            const response =
+                ApiResponse.createApiResponse('Server error',
+                    [],
+                    [{
+                        msg: 'Error validating module creation permisions'
+                    }])
             return res.status(500).json(response);
         }
     }

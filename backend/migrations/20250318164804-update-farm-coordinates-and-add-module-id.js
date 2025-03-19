@@ -2,7 +2,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Cambiar latitude y longitude a STRING
     await queryInterface.changeColumn('farms', 'latitude', {
       type: Sequelize.STRING(256),
       allowNull: false
@@ -12,7 +11,6 @@ module.exports = {
       allowNull: false
     });
 
-    // Añadir id_module a sensors
     await queryInterface.addColumn('sensors', 'id_module', {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -24,7 +22,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Revertir los cambios
     await queryInterface.changeColumn('farms', 'latitude', {
       type: Sequelize.FLOAT,
       allowNull: false
@@ -38,25 +35,3 @@ module.exports = {
   }
 };
 
-'use strict';
-
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
-  },
-
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
-  }
-};

@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'ModuleUser',
     tableName: 'module_user',
-    timestamps: false
+    timestamps:true
   });
 
   return ModuleUser;
