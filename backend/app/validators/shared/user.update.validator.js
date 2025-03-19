@@ -18,7 +18,7 @@ const validateUserUpdate = [
             
             const currentUser = await User.findByPk(req.params.id);
             if (!currentUser) {
-                throw new Error('Usuario no encontrado');
+                throw new Error('User not found');
             }
 
             if (value.toString().toLowerCase() === currentUser.email.toString().toLowerCase()) {
@@ -47,7 +47,7 @@ const validateUserUpdate = [
 
             const currentUser = await User.findByPk(req.params.id);
             if (!currentUser) {
-                throw new Error('Usuario no encontrado');
+                throw new Error('User not found');
             }
 
             if (value.toString() === currentUser.dni.toString()) {
