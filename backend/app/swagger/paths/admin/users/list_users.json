@@ -2,7 +2,7 @@
   "/api/v2/admin/users": {
     "get": {
       "summary": "List all users",
-      "description": "Retrieves a paginated list of all users with their details",
+      "description": "Retrieves a paginated list of all users with their details. Results can be filtered by roles and sorted by any field. Available roles for filtering depend on the authenticated user's role: Admins can see ADMIN(1), OWNER(2), and MONITOR(3) roles, while Owners can only see OWNER(2) and MONITOR(3) roles.",
       "tags": [
         "Admin/Users"
       ],
@@ -27,6 +27,34 @@
             "default": 10
           },
           "description": "Number of records per page"
+        },
+        {
+          "in": "query",
+          "name": "sortField",
+          "schema": {
+            "type": "string",
+            "default": "createdAt"
+          },
+          "description": "Field to sort the results by"
+        },
+        {
+          "in": "query",
+          "name": "sortOrder",
+          "schema": {
+            "type": "string",
+            "enum": ["ASC", "DESC"],
+            "default": "DESC"
+          },
+          "description": "Sort order direction"
+        },
+        {
+          "in": "query",
+          "name": "roles",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Comma-separated list of role IDs to filter users. Admin can filter by [1 (ADMIN), 2 (OWNER), 3 (MONITOR)]. Owner can filter by [2 (OWNER), 3 (MONITOR)]",
+          "example": "2,3"
         }
       ],
       "responses": {
@@ -165,7 +193,7 @@
                     "createdAt": "2025-03-07T04:51:36.000Z",
                     "updatedAt": "2025-03-07T04:51:36.000Z",
                     "rol": {
-                      "name": "user"
+                      "name": "monitor"
                     }
                   },
                   {
@@ -178,7 +206,7 @@
                     "createdAt": "2025-03-06T03:21:44.000Z",
                     "updatedAt": "2025-03-06T03:21:44.000Z",
                     "rol": {
-                      "name": "user"
+                      "name": "monitor"
                     }
                   },
                   {
