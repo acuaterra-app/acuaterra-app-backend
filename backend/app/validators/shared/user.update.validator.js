@@ -4,19 +4,14 @@ const { ROLES } = require('../../enums/roles.enum');
 
 const validateUserUpdate = [
     body('name')
-        .custom(async (value, { req }) => {
-            if (!value) return true;
-            return true;
-        })
+        .notEmpty().withMessage('Name is required')
         .isString().withMessage('Name must be a string')
         .trim()
         .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters'),
 
     body('email')
-
         .custom(async (value, { req }) => {
-            if (!value) return true;
-            
+
             const currentUser = await User.findByPk(req.params.id);
             if (!currentUser) {
                 throw new Error('User not found');
@@ -36,17 +31,13 @@ const validateUserUpdate = [
 
             return true;
         })
+        .notEmpty().withMessage('Email is required')
         .isEmail().withMessage('Please provide a valid email address')
         .trim()
         .normalizeEmail(),
 
     body('dni')
         .custom(async (value, { req }) => {
-            if (!value) return true;
-
-            if (!/^\d+$/.test(value)) {
-                throw new Error('DNI must contain only numbers');
-            }
 
             const currentUser = await User.findByPk(req.params.id);
             if (!currentUser) {
@@ -67,15 +58,14 @@ const validateUserUpdate = [
 
             return true;
         })
+        .notEmpty().withMessage('DNI is required')
+        .isInt().withMessage('DNI must be a Int')
         .trim()
-        .isLength({ min: 5, max: 20 }).withMessage('DNI must be between 5 and 20 characters'),
+        .isLength({ min: 5, max: 100 }).withMessage('DNI must be between 5 and 100 characters'),
 
     body('id_rol')
-        .custom(async (value, { req }) => {
-            if (!value) return true;
-            return true;
-        })
-        .isIn(Object.values(ROLES)).withMessage('Role ID must be a positive integer'),
+        .notEmpty().withMessage('Role ID is required')
+        .isIn(Object.values(ROLES)).withMessage('Role must be a role from the list'),
 
     body('address')
         .optional()
@@ -86,14 +76,10 @@ const validateUserUpdate = [
         .matches(/[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+/).withMessage('Address must contain at least one word'),
 
     body('contact')
-        .custom(async (value, { req }) => {
-            if (!value) return true;
-            return true;
-        })
-        .isInt().withMessage('Contact must be a string')
-        .matches(/^\d+$/).withMessage('Contact must contain only numbers')
+        .notEmpty().withMessage('Contact is required')
+        .isInt().withMessage('Contact must be a Int')
         .trim()
-        .isLength({ min: 5, max: 20 }).withMessage('Contact must be between 5 and 20 characters')
+        .isLength({ min: 5, max: 100 }).withMessage('Contact must be between 5 and 100 characters')
 ];
 
 module.exports = {
