@@ -1,18 +1,19 @@
 const { body } = require('express-validator');
 const { User } = require('../../../models');
+const { ROLES } = require('../../enums/roles.enum');
 
 const validateUserUpdate = [
     body('name')
-        .optional()
+        .custom(async (value, { req }) => {
+            if (!value) return true;
+            return true;
+        })
         .isString().withMessage('Name must be a string')
         .trim()
         .isLength({ min: 3, max: 100 }).withMessage('Name must be between 3 and 100 characters'),
 
     body('email')
-        .optional()
-        .isEmail().withMessage('Please provide a valid email address')
-        .trim()
-        .normalizeEmail()
+
         .custom(async (value, { req }) => {
             if (!value) return true;
             
@@ -34,10 +35,12 @@ const validateUserUpdate = [
             }
 
             return true;
-        }),
+        })
+        .isEmail().withMessage('Please provide a valid email address')
+        .trim()
+        .normalizeEmail(),
 
     body('dni')
-        .optional()
         .custom(async (value, { req }) => {
             if (!value) return true;
 
@@ -68,8 +71,11 @@ const validateUserUpdate = [
         .isLength({ min: 5, max: 20 }).withMessage('DNI must be between 5 and 20 characters'),
 
     body('id_rol')
-        .optional()
-        .isInt({ min: 1 }).withMessage('Role ID must be a positive integer'),
+        .custom(async (value, { req }) => {
+            if (!value) return true;
+            return true;
+        })
+        .isIn(Object.values(ROLES)).withMessage('Role ID must be a positive integer'),
 
     body('address')
         .optional()
@@ -80,8 +86,11 @@ const validateUserUpdate = [
         .matches(/[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+/).withMessage('Address must contain at least one word'),
 
     body('contact')
-        .optional()
-        .isString().withMessage('Contact must be a string')
+        .custom(async (value, { req }) => {
+            if (!value) return true;
+            return true;
+        })
+        .isInt().withMessage('Contact must be a string')
         .matches(/^\d+$/).withMessage('Contact must contain only numbers')
         .trim()
         .isLength({ min: 5, max: 20 }).withMessage('Contact must be between 5 and 20 characters')
