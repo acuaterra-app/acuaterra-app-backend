@@ -20,7 +20,7 @@ class ValidateUserUpdateMiddleware {
             }
 
             if (authenticatedUser.id_rol === Role.OWNER) {
-                if (idRolToUpdate !== Role.USER) {
+                if (idRolToUpdate !== Role.MONITOR) {
                     return res.status(403).json(
                         ApiResponse.createApiResponse('Authorization failed', [], [{
                             'error': 'Owners can only edit Users roles'

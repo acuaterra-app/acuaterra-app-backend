@@ -2,13 +2,14 @@ const { User, Rol } = require('../../../models');
 const bcrypt = require('bcrypt');
 const ejs = require('ejs');
 const path = require('path');
+const {Op} = require("sequelize");
 
 class UserService {
     constructor(mailer) {
         this.mailer = mailer;
     }
 
-    async getAllUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
+    async getAllUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC', roles = []) {
         try {
             page = parseInt(page);
             limit = parseInt(limit);
@@ -35,6 +36,11 @@ class UserService {
                     }
                 ],
                 order: [[sortField, sortOrder]],
+                where: {
+                    id_rol: {
+                        [Op.or]: roles,
+                    }
+                },
                 limit,
                 offset
             });
