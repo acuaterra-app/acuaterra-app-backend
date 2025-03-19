@@ -13,7 +13,7 @@ const validateRoleMiddleware = new ValidateRoleMiddleware();
 router.get(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([ROLES.USER, ROLES.OWNER]),
+    validateRoleMiddleware.validate([ROLES.MONITOR, ROLES.OWNER]),
     farmController.getFarmDetails
     );
 

@@ -43,7 +43,9 @@ class UserController {
             const sortField = req.query.sortField;
             const sortOrder = req.query.sortOrder;
 
-            const result = await this.userService.getAllUsers(page, limit, sortField, sortOrder);
+            const roles = req.query.roles ? req.query.roles.split(',').map(role => role.trim()): [];
+
+            const result = await this.userService.getAllUsers(page, limit, sortField, sortOrder, roles);
 
             const paginationMeta = {
                 pagination:{

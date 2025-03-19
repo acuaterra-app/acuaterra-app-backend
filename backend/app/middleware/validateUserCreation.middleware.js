@@ -22,7 +22,7 @@ class ValidateUserCreationMiddleware {
             }
 
             if( authenticatedUser.id_rol === Role.OWNER) {
-                if (idRolNewUSer !== Role.USER) {
+                if (idRolNewUSer !== Role.MONITOR) {
                     return res.status(403).json(
                         ApiResponse.createApiResponse('Authorization failed', [], [{
                             'error': 'Owners can only create Users'
