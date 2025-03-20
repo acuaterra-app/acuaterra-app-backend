@@ -11,16 +11,11 @@ module.exports = (sequelize) => {
       Module.belongsTo(models.Farm, {
         foreignKey: 'id_farm',
         as: 'farm'
-      })
-
-      Module.hasMany(models.Hardware, {
-        foreignKey: 'id_module',
-        as: 'hardware'
       });
-      
-      Module.hasMany(models.Binnacle, {
+
+      Module.hasMany(models.Sensor, {
         foreignKey: 'id_module',
-        as: 'binnacles'
+        as: 'sensors'
       });
       
       Module.hasMany(models.Notification, {
@@ -31,6 +26,13 @@ module.exports = (sequelize) => {
       Module.hasMany(models.Report, {
         foreignKey: 'id_module',
         as: 'reports'
+      });
+
+      Module.belongsToMany(models.User, {
+        through: 'module_user',
+        foreignKey: 'id_module',
+        otherKey: 'id_person',
+        as: 'users'
       });
     }
   }
