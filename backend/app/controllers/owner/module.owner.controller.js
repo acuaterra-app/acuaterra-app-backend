@@ -55,6 +55,24 @@ class ModuleOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async update(req, res) {
+        try {
+            const { id } = req.params;
+            const moduleData = req.body;
+            const result = await this.moduleOwnerService.update(id, moduleData);
+            const response = ApiResponse.createApiResponse('Successful update.',
+                [result],
+                [])
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error('Error en update module controller:', error);
+            const response = ApiResponse.createApiResponse('Failed to update module',
+                [],
+                [{ msg: error.message }])
+            return res.status(400).json(response);
+        }
+    }
 }
 
 module.exports = ModuleOwnerController;

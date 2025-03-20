@@ -6,15 +6,17 @@ const ValidateTokenMiddleware = require("../../middleware/validateToken.middlewa
 const BlackListService = require("../../services/shared/blacklist.service");
 const { validate } = require("../../middleware/validate.middleware");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const { validateCreateModule } = require("../../validators/owner/module.owner.validator");
+const { validateCreateModule, validateUpdateModule } = require("../../validators/owner/module.owner.validator");
 const { ROLES : Role } = require("../../enums/roles.enum");
 const ValidateModuleCreateMiddleware = require("../../middleware/validateModuleCreate.middleware");
+const ValidateModuleUpdateMiddleware = require("../../middleware/validateModuleUpdate.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const moduleOwnerService = new ModuleOwnerService();
 const moduleController = new ModuleOwnerController(moduleOwnerService);
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 const validateModuleCreate = new ValidateModuleCreateMiddleware();
+const validateModuleUpdate = new ValidateModuleUpdateMiddleware();
 
 router.post(
     '/',
@@ -23,6 +25,15 @@ router.post(
     validate(validateCreateModule),
     (req, res, next) => validateModuleCreate.validate(req, res , next),
     (req, res) => moduleController.create(req, res)
+);
+
+router.put(
+    '/:id',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    validate(validateUpdateModule),
+    (req, res, next) => validateModuleUpdate.validate(req, res, next),
+    (req, res) => moduleController.update(req, res)
 );
 
 module.exports = router;
