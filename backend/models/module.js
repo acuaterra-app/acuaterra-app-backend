@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
       });
 
       Module.belongsToMany(models.User, {
-        through: 'module_user',
+        through: models.ModuleUser,
         foreignKey: 'id_module',
         otherKey: 'id_person',
         as: 'users'

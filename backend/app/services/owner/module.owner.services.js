@@ -74,6 +74,67 @@ class ModuleOwnerService {
             throw error;
         }
     }
+
+    async update(id, moduleData) {
+        try {
+            const {
+                name,
+                location,
+                latitude,
+                longitude,
+                species_fish,
+                fish_quantity,
+                fish_age,
+                dimensions,
+                id_farm,
+                users
+            } = moduleData;
+
+            await Module.update({
+                name,
+                location,
+                latitude,
+                longitude,
+                species_fish,
+                fish_quantity,
+                fish_age,
+                dimensions,
+                id_farm
+            }, {
+                where: { id }
+            });
+
+            const moduleInstance = await Module.findByPk(id);
+
+            if (users && users.length > 0) {
+                const foundUsers = await User.findAll({
+                    where: {
+                        id: users
+                    }
+                });
+                
+                await moduleInstance.setUsers(foundUsers);
+            }
+
+            return await Module.findByPk(id, {
+                include: [
+                    {
+                        model: Farm,
+                        as: 'farm',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: User,
+                        as: 'creator',
+                        attributes: ['id', 'name', 'email']
+                    }
+                ]
+            });
+        } catch (error) {
+            console.error(`Error actualizando módulo con id ${id}:`, error);
+            throw error;
+        }
+    }
 }
 
 module.exports = ModuleOwnerService;
