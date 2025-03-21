@@ -33,7 +33,7 @@ class ValidateModuleCreateMiddleware {
                 });
 
                 for (const user of monitorUsers) {
-                    if (user.id_rol !== ROLES.USER) {
+                    if (user.id_rol !== ROLES.MONITOR) {
                             const response = ApiResponse.createApiResponse('Authorization failed', [], [{
                                 msg: 'Only monitor users can be asigned to modules'
                             }]

@@ -20,9 +20,9 @@ module.exports = (sequelize) => {
       });
       
       User.belongsToMany(models.Module, {
-        through: 'module_users',
-        foreignKey: 'user_id',
-        otherKey: 'module_id',
+        through: 'module_user',
+        foreignKey: 'id_person',
+        otherKey: 'id_module',
         as: 'assigned_modules'
       });
     }

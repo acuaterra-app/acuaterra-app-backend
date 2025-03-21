@@ -104,6 +104,8 @@ class ModuleOwnerService {
                 where: { id }
             });
 
+            const moduleInstance = await Module.findByPk(id);
+
             if (users && users.length > 0) {
                 const foundUsers = await User.findAll({
                     where: {
@@ -111,7 +113,7 @@ class ModuleOwnerService {
                     }
                 });
                 
-                await module.setUsers(foundUsers);
+                await moduleInstance.setUsers(foundUsers);
             }
 
             return await Module.findByPk(id, {

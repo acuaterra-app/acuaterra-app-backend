@@ -33,7 +33,7 @@ class ValidateModuleUpdateMiddleware {
                     'Authorization failed',
                     [],
                     [{
-                        msg: 'You do not have permission to update modules in this farm'
+                        msg: 'Owner does not have permission to update modules in farm ID ' + module.id_farm
                     }]
                 );
                 return res.status(403).json(response);
@@ -52,7 +52,7 @@ class ValidateModuleUpdateMiddleware {
                         'Authorization failed',
                         [],
                         [{
-                            msg: 'You do not have permission to move the module to the specified farm'
+                            msg: 'Owner does not have permission to move the module to farm ID ' + id_farm
                         }]
                     );
                     return res.status(403).json(response);
@@ -60,37 +60,30 @@ class ValidateModuleUpdateMiddleware {
             }
 
             if (users && users.length > 0) {
-                const monitorUsers = await User.findAll({
+                const assignedUsers = await User.findAll({
                     where: {
                         id: users
-                    },
-                    include: [{
-                        model: FarmUser,
-                        where: {
-                            id_farm: id_farm || module.id_farm
-                        },
-                        required: true
-                    }]
+                    }
                 });
 
-                if (monitorUsers.length !== users.length) {
+                if (assignedUsers.length !== users.length) {
                     const response = ApiResponse.createApiResponse(
-                        'Authorization failed',
+                        'Validation failed',
                         [],
                         [{
-                            msg: 'Some users are not associated with the farm or do not exist'
+                            msg: 'One or more users do not exist in the system'
                         }]
                     );
-                    return res.status(403).json(response);
+                    return res.status(400).json(response);
                 }
 
-                for (const user of monitorUsers) {
+                for (const user of assignedUsers) {
                     if (user.id_rol !== ROLES.MONITOR) {
                         const response = ApiResponse.createApiResponse(
                             'Authorization failed',
                             [],
                             [{
-                                msg: 'Only monitor users can be assigned to modules'
+                                msg: `User with ID ${user.id} has role ${user.id_rol}, but only users with MONITOR role (${ROLES.MONITOR}) can be assigned to modules`
                             }]
                         );
                         return res.status(403).json(response);
@@ -105,7 +98,7 @@ class ValidateModuleUpdateMiddleware {
                 'Server error',
                 [],
                 [{
-                    msg: 'Error validating module update permissions'
+                    msg: 'Error validating module update permissions: ' + error.message
                 }]
             );
             return res.status(500).json(response);
@@ -114,4 +107,3 @@ class ValidateModuleUpdateMiddleware {
 }
 
 module.exports = ValidateModuleUpdateMiddleware;
-
