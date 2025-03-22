@@ -1,4 +1,4 @@
-const { Module, Farm, User} = require('../../../models');
+const { Module, Farm, User, Sensor, Measurement, Threshold, sequelize } = require('../../../models');
 const SensorService = require("../shared/sensor.shared.service");
 const ThresholdService = require("../shared/threshold.shared.service");
 
@@ -133,6 +133,64 @@ class ModuleOwnerService {
         } catch (error) {
             console.error(`Error actualizando módulo con id ${id}:`, error);
             throw error;
+        }
+    }
+
+    async delete(id) {
+        try {
+            const moduleToDelete = await Module.findByPk(id);
+
+            await this.softDeleteModule(id);
+            
+            return moduleToDelete;
+        } catch (error) {
+            console.error(`Error performing soft deletion of module with id ${id}:`, error);
+            throw error;
+        }
+    }
+
+    async softDeleteModule(moduleId) {
+        const transaction = await sequelize.transaction();
+
+        try {
+            const sensors = await Sensor.findAll({
+                where: { id_module: moduleId },
+                include: [
+                    {
+                        model: Measurement,
+                        as: 'measurements'
+                    },
+                    {
+                        model: Threshold,
+                        as: 'thresholds'
+                    }
+                ]
+            });
+
+            for (const sensor of sensors) {
+                for (const measurement of sensor.measurements) {
+                    await measurement.destroy({ transaction });
+                }
+
+                for (const threshold of sensor.thresholds) {
+                    await threshold.destroy({ transaction });
+                }
+
+                await sensor.destroy({ transaction });
+            }
+
+            await Module.destroy({
+                where: { id: moduleId },
+                transaction
+            });
+
+            await transaction.commit();
+            console.log(`Módule ${moduleId} and their relationships successfully eliminated (soft delete)`);
+            return true;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(`Error performing soft delete of module: ${moduleId}:`, error);
+            throw new Error(`Error deleting module: ${error.message}`);
         }
     }
 }

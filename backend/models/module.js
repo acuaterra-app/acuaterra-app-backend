@@ -92,6 +92,7 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Module',
     tableName: 'modules',
     timestamps: true
