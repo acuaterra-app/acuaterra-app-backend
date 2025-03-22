@@ -44,6 +44,7 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Sensor',
     tableName: 'sensors',
     timestamps: true
