@@ -41,7 +41,7 @@ module.exports = {
     ];
 
     const existingUsers = await queryInterface.sequelize.query(
-        `SELECT email FROM Users WHERE email IN (${adminUsers
+        `SELECT email FROM users WHERE email IN (${adminUsers
             .map((user) => `'${user.email}'`)
             .join(', ')})`
     );
@@ -53,13 +53,13 @@ module.exports = {
     );
 
     if (newUsers.length > 0) {
-      await queryInterface.bulkInsert('Users', newUsers, {});
+      await queryInterface.bulkInsert('users', newUsers, {});
     }
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Users', {
-      email: ['admin1@example.com', 'admin2@example.com', 'admin3@example.com'],
+    await queryInterface.bulkDelete('users', {
+      email: ['administrator1@example.com', 'administrator2@example.com', 'administrator3@example.com'],
     });
   },
 };
