@@ -15,10 +15,14 @@ class AuthController {
     async login(req, res) {
 
         try {
-            const {email, password} = req.body;
+            const {email, password, device_id} = req.body;
 
             const token = await this.authService.login(password, email);
             const user = await User.findOne({where: {email}});
+            
+            // Update the user's device_id
+            await User.update({ device_id }, { where: { id: user.id } });
+            
             const result = ApiResponse.createApiResponse('Successful login', [{
                 token,
                 user: {id: user.id, dni: user.dni, name: user.name, email: user.email, id_rol: user.id_rol, rol: getRoleNameById(user.id_rol), contact: user.contact},

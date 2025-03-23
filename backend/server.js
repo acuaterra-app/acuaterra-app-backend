@@ -31,7 +31,7 @@ const sharedModuleRoutes = require('./app/routes/shared/module.route');
 const sharedFarmRoutes = require('./app/routes/shared/farm.routes');
 const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
 const ownerModuleRoutes = require('./app/routes/owner/module.owner.route');
-
+const tempNotificationRoutes = require('./app/routes/temp/notification.route');
 app.use(morgan('tiny')); 
 app.use(express.json()); 
 app.use(bodyParser.json());
@@ -70,12 +70,14 @@ app.use('/api/v2/owner/modules', ownerModuleRoutes);
 app.use('/api/v2/admin/farms', farmRoutes);
 app.use('/api/v2/admin/users', userAdminRoutes);
 
+/*
+ * Temporary Routes
+ */
+app.use('/api/v2/temp/notifications', tempNotificationRoutes);
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-
 setInterval(() => {
     (new BlackListService).cleanBlackList()
     .catch(error => console.error('Error al vaciar la lista negra:', error));

@@ -7,6 +7,11 @@ module.exports = (sequelize) => {
         foreignKey: 'id_module',
         onDelete: 'CASCADE'
       });
+      
+      Notification.belongsTo(models.User, {
+        foreignKey: 'id_user',
+        onDelete: 'CASCADE'
+      });
     }
   }
   
@@ -21,6 +26,14 @@ module.exports = (sequelize) => {
       allowNull: false,
       references: {
         model: 'module',
+        key: 'id'
+      }
+    },
+    id_user: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
         key: 'id'
       }
     },

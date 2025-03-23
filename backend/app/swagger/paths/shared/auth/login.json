@@ -12,7 +12,8 @@
               "type": "object",
               "required": [
                 "email",
-                "password"
+                "password",
+                "device_id"
               ],
               "properties": {
                 "email": {
@@ -26,6 +27,11 @@
                   "format": "password",
                   "description": "User's password. Required. Must match the stored password for the associated email. Case sensitive. Minimum 8 characters recommended for security.",
                   "example": "********"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Device ID of the user's device. Required. Used to identify the device for notifications and security purposes.",
+                  "example": "d12a4f7e-8b59-4c1f-9af2-0324e1142aab"
                 }
               }
             }
