@@ -10,15 +10,6 @@ module.exports = {
       type: Sequelize.STRING(256),
       allowNull: false
     });
-
-    await queryInterface.addColumn('sensors', 'id_module', {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'modules',
-        key: 'id'
-      }
-    });
   },
 
   down: async (queryInterface, Sequelize) => {

@@ -16,14 +16,14 @@ module.exports = {
             {
                 name: `Sensor Temperature ${faker.number.int({ min: 1, max: 100 })}`,
                 type: 'Temperature',
-                id: faker.helpers.arrayElement(moduleRows).id,
+                id_module: faker.helpers.arrayElement(moduleRows).id,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
             {
                 name: `Sensor Proximity ${faker.number.int({ min: 1, max: 100 })}`,
                 type: 'Proximity',
-                id: faker.helpers.arrayElement(moduleRows).id,
+                id_module: faker.helpers.arrayElement(moduleRows).id,
                 createdAt: new Date(),
                 updatedAt: new Date()
             }
