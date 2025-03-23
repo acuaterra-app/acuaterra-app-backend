@@ -1,0 +1,105 @@
+const ApiResponse = require('../../utils/apiResponse');
+
+class ModuleOwnerController {
+    /**
+     *
+     * @param {ModuleOwnerService} moduleOwnerService
+     */
+    constructor(moduleOwnerService) {
+        this.moduleOwnerService = moduleOwnerService;
+    }
+
+    async create(req, res) {
+        try {
+            const {
+                name,
+                location,
+                latitude,
+                longitude,
+                species_fish,
+                fish_quantity,
+                fish_age,
+                dimensions,
+                id_farm,
+                users = []
+            } = req.body;
+
+            const created_by_user_id = req.user.id;
+
+            const newModule = await this.moduleOwnerService.create({
+                name,
+                location,
+                latitude,
+                longitude,
+                species_fish,
+                fish_quantity,
+                fish_age,
+                dimensions,
+                id_farm,
+                users,
+                created_by_user_id
+            });
+
+            const response = ApiResponse.createApiResponse(
+                "Module created successfully",
+                [ newModule ]
+            );
+            return res.status(201).json(response);
+        } catch (error) {
+            console.error("Error creating module:", error);
+            const response = ApiResponse.createApiResponse(
+                "Failed to create module",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
+
+    async update(req, res) {
+        try {
+            const { id } = req.params;
+            const moduleData = req.body;
+            const result = await this.moduleOwnerService.update(id, moduleData);
+            const response = ApiResponse.createApiResponse('Successful update.',
+                [result],
+                [])
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error('Error en update module controller:', error);
+            const response = ApiResponse.createApiResponse('Failed to update module',
+                [],
+                [{ msg: error.message }])
+            return res.status(400).json(response);
+        }
+    }
+
+    async delete(req, res) {
+        try {
+            const result = await this.moduleOwnerService.delete(req.params.id);
+            const response = ApiResponse.createApiResponse(
+                "Module deleted successfully",
+                [result],
+                []
+            );
+            return res.json(response);
+        } catch (error) {
+            console.error("Error deleting module:", error);
+            const response = ApiResponse.createApiResponse(
+                "Error deleting module",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("not found")) {
+                return res.status(404).json(response);
+            } else if (error.message.includes("permission") || error.message.includes("Forbidden")) {
+                return res.status(403).json(response);
+            }
+
+            return res.status(500).json(response);
+        }
+    }
+}
+
+module.exports = ModuleOwnerController;

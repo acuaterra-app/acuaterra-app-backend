@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "67254fb6-3ffb-49c2-9407-f9939fdd2b38",
+		"_postman_id": "164809e4-0565-45dc-9ea3-7ac995cbe0f2",
 		"name": "modules",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -19,7 +19,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "{{token}}",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDIxNDY3MjYsImV4cCI6MTc0MjE2NDcyNn0.eP8Xqxv7JxWWWI26DrBuKqzVTWcV2NPRX2Ar5Cg2ypk",
 										"type": "text"
 									},
 									{
@@ -29,9 +29,12 @@
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
+									"raw": "https://backend.acuaterra.tech/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
+									"protocol": "https",
 									"host": [
-										"{{server}}"
+										"backend",
+										"acuaterra",
+										"tech"
 									],
 									"path": [
 										"api",
@@ -57,6 +60,109 @@
 											"key": "sortOrder",
 											"value": "DESC"
 										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "owner",
+					"item": [
+						{
+							"name": "create modules",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImRuaSI6IjM0OTIxNDQ0NTkiLCJpYXQiOjE3NDI2Njc2NjgsImV4cCI6MTc0MjY4NTY2OH0.IptHe49ACeaexijrZvKDBWGRISudABXHDY-zSvjYMUY",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"NameMOdule11\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 35,\r\n  \"users\": [41, 42]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "edit module",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImRuaSI6IjM0OTIxNDQ0NTkiLCJpYXQiOjE3NDI1Mjg3NTIsImV4cCI6MTc0MjU0Njc1Mn0.4YwYo3cFaVGzUO9LpFjkTqgjT84HiAtwhw14n5CFTLk",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"PruebaUnoEditandoMod\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 36,\r\n  \"users\": [45, 44, 43]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/41",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"41"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete module",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDI2Njc3ODgsImV4cCI6MTc0MjY4NTc4OH0.xIoo8CyQbsxjF527htdm-7uAHRos7SxeWIC4lDPxwcQ",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/40",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"40"
 									]
 								}
 							},
