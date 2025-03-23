@@ -56,6 +56,35 @@ class ModuleOwnerController {
         }
     }
 
+    async show(req, res) {
+        try {
+            const { id } = req.params;
+            const module = await this.moduleOwnerService.getById(id);
+            
+            const response = ApiResponse.createApiResponse(
+                "Module details retrieved successfully",
+                [module],
+                []
+            );
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error("Error retrieving module details:", error);
+            const response = ApiResponse.createApiResponse(
+                "Failed to retrieve module details",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("not found")) {
+                return res.status(404).json(response);
+            } else if (error.message.includes("permission") || error.message.includes("Forbidden")) {
+                return res.status(403).json(response);
+            }
+
+            return res.status(500).json(response);
+        }
+    }
+
     async update(req, res) {
         try {
             const { id } = req.params;
@@ -66,7 +95,7 @@ class ModuleOwnerController {
                 [])
             return res.status(200).json(response);
         } catch (error) {
-            console.error('Error en update module controller:', error);
+            console.error('Error update module controller:', error);
             const response = ApiResponse.createApiResponse('Failed to update module',
                 [],
                 [{ msg: error.message }])
