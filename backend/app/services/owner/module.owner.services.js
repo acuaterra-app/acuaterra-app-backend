@@ -131,7 +131,47 @@ class ModuleOwnerService {
                 ]
             });
         } catch (error) {
-            console.error(`Error actualizando módulo con id ${id}:`, error);
+            console.error(`Error updating module with id ${id}:`, error);
+            throw error;
+        }
+    }
+
+    async getById(id) {
+        try {
+            const module = await Module.findByPk(id, {
+                include: [
+                    {
+                        model: Farm,
+                        as: 'farm',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: User,
+                        as: 'creator',
+                        attributes: ['id', 'name', 'email']
+                    },
+                    {
+                        model: User,
+                        as: 'users',
+                        attributes: ['id', 'name', 'email', 'dni'],
+                        through: { attributes: [] }
+                    },
+                    {
+                        model: Sensor,
+                        as: 'sensors',
+                        include: [
+                            {
+                                model: Threshold,
+                                as: 'thresholds'
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            return module;
+        } catch (error) {
+            console.error(`Error getting details of module with id: ${id}:`, error);
             throw error;
         }
     }

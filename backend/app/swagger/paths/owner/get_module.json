@@ -1,0 +1,411 @@
+{
+  "/api/v2/owner/modules/{id}": {
+    "get": {
+      "summary": "Get module by ID",
+      "tags": ["Owner/Modules"],
+      "description": "Retrieves detailed information about a specific module including its associated farm, creator, users, and sensors.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to retrieve\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to\n  - Middleware validates module existence and ownership access",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the module",
+          "schema": {
+            "type": "integer",
+            "example": 6
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Module retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module retrieved successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 6
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Module stunning"
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "5914 Southwest Wing"
+                      },
+                      "latitude": {
+                        "type": "string",
+                        "example": "-87.8914"
+                      },
+                      "longitude": {
+                        "type": "string",
+                        "example": "29.9271"
+                      },
+                      "species_fish": {
+                        "type": "string",
+                        "example": "Trout"
+                      },
+                      "fish_quantity": {
+                        "type": "string",
+                        "example": "300"
+                      },
+                      "fish_age": {
+                        "type": "string",
+                        "example": "9"
+                      },
+                      "dimensions": {
+                        "type": "string",
+                        "example": "4x2x1"
+                      },
+                      "id_farm": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "created_by_user_id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-04T21:55:42.000Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-04T21:55:42.000Z"
+                      },
+                      "farm": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "West Hartford"
+                          },
+                          "address": {
+                            "type": "string",
+                            "example": "969 Schneider Pike"
+                          },
+                          "latitude": {
+                            "type": "string",
+                            "example": "52.1592"
+                          },
+                          "longitude": {
+                            "type": "string",
+                            "example": "146.6592"
+                          }
+                        }
+                      },
+                      "creator": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Jerry Lind"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "owner@example.com"
+                          },
+                          "dni": {
+                            "type": "string",
+                            "example": "6167217327"
+                          },
+                          "id_rol": {
+                            "type": "integer",
+                            "example": 2
+                          }
+                        }
+                      },
+                      "users": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 5
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Sophia Rodriguez"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "example": "monitor_1@example.com"
+                            },
+                            "dni": {
+                              "type": "string",
+                              "example": "8756412398"
+                            },
+                            "id_rol": {
+                              "type": "integer",
+                              "example": 3
+                            }
+                          }
+                        }
+                      },
+                      "sensors": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 12
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Oxygen Sensor"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "oxygen"
+                            },
+                            "thresholds": {
+                              "type": "object",
+                              "properties": {
+                                "min": {
+                                  "type": "number",
+                                  "example": 4.5
+                                },
+                                "max": {
+                                  "type": "number",
+                                  "example": 9.0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid module ID format",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Request error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "field",
+                        "msg": "id must be a number",
+                        "path": "id",
+                        "location": "params"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have access to the module",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "authorization",
+                        "msg": "You don't have permission to access this module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Module with specified ID does not exist",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "type": "resource",
+                        "msg": "Module with ID 6 not found",
+                        "path": "id",
+                        "location": "params"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

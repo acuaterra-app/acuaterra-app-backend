@@ -167,6 +167,33 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "show",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiMzg0MDgxMTQxMiIsImlhdCI6MTc0MjcwMzg1OSwiZXhwIjoxNzQyNzIxODU5fQ.1DjfxBrKRiMo3J2nzkp3wFIwAVH2INdNg7RLCOGzp5M",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
