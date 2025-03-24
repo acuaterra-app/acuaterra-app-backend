@@ -15,8 +15,8 @@ async getFarmDetails(req, res) {
         return res.status(200).json(
             ApiResponse.createApiResponse(
             'Farm details obtained successfully',
-            farmDetails,
-            200
+            [farmDetails],
+            []
             )
         );
     } catch (error) {
