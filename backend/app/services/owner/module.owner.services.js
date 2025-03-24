@@ -8,6 +8,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const { ROLES } = require('../../enums/roles.enum');
 const { Op } = require('sequelize');
+const { v1 } = require('uuid');
 
 const TRANSACTION_TIMEOUT = 30000; // 30 seconds
 
@@ -83,14 +84,6 @@ class ModuleOwnerService {
                 created_by_user_id
             } = moduleData;
 
-            const owner = await User.findByPk(created_by_user_id, {
-                attributes: ['email']
-            });
-
-            if (!owner) {
-                throw new Error(`Usuario creador con ID ${created_by_user_id} no encontrado`);
-            }
-
             let newModule, sensorUser, sensorEmail, tempPassword;
             const moduleTransaction = await sequelize.transaction({
                 timeout: TRANSACTION_TIMEOUT
@@ -114,8 +107,10 @@ class ModuleOwnerService {
                     Promise.resolve(this.generateSensorCredentials(name))
                 ]);
 
+                const uuid = v1();
+                const dom = '@acuaterra.tech';
                 newModule = moduleCreated;
-                sensorEmail = credentials.email;
+                sensorEmail = uuid+dom;
                 tempPassword = credentials.tempPassword;
 
                 const hashedPassword = await bcrypt.hash(tempPassword, 10);
@@ -149,11 +144,7 @@ class ModuleOwnerService {
             } catch (error) {
                 await moduleTransaction.rollback();
 
-                if (error.name === 'SequelizeUniqueConstraintError') {
-                    throw new Error(`Ya existe un módulo con el nombre ${name}`);
-                }
-
-                throw new Error(`Error en la creación del módulo: ${error.message}`);
+                throw new Error(`Error creating module: ${error.message}`);
             }
 
             try {
@@ -176,65 +167,22 @@ class ModuleOwnerService {
                     await sensorTransaction.commit();
                 } catch (error) {
                     await sensorTransaction.rollback();
+                    console.error(`Error creating sensors for the module ${newModule.id}:`, error);
 
-                    console.error(`Error creando sensores para el módulo ${newModule.id}:`, error);
-
-                    if (error.name === 'SequelizeDatabaseError' &&
-                        error.parent &&
-                        error.parent.code === 'ER_LOCK_WAIT_TIMEOUT') {
-
-                        setTimeout(async () => {
-                            try {
-                                const laterTransaction = await sequelize.transaction();
-                                const sensors = await this.sensorService.createDefaultSensorsForModule(
-                                    newModule.id,
-                                    laterTransaction
-                                );
-
-                                const promises = [];
-                                for (const sensor of sensors) {
-                                    promises.push(
-                                        this.thresholdService.createDefaultThresholds(sensor.id, laterTransaction)
-                                    );
-                                }
-
-                                await Promise.all(promises);
-                                await laterTransaction.commit();
-                            } catch (retryError) {
-                                console.error(`Error en creación diferida de sensores:`, retryError);
-                            }
-                        }, 5000);
-                    }
                 }
             } catch (sensorError) {
-                console.error(`Error general en transacción de sensores:`, sensorError);
+                console.error(`General error in sensor transaction:`, sensorError);
             }
 
-            if (!owner || !owner.email) {
-                console.error('No se puede enviar email: falta email del propietario');
-            } else if (!sensorEmail || !tempPassword) {
-                console.error('No se puede enviar email: faltan credenciales del sensor', {
-                    hasSensorEmail: !!sensorEmail,
-                    hasPassword: !!tempPassword
-                });
-            } else {
-                try {
-                    const emailResult = await this.sendSensorCredentialsEmail(
-                        owner.email,
-                        sensorEmail,
-                        tempPassword,
-                        name
-                    );
-
-                    if (emailResult.success) {
-                        console.log(`Email de credenciales enviado exitosamente para el módulo ${name}`);
-                    } else {
-                        console.error(`Fallo en el envío de email para el módulo ${name}:`, emailResult.error);
-                    }
-                } catch (emailError) {
-                    console.error(`Error inesperado en el envío de email para el módulo ${name}:`, emailError);
-                }
-            }
+            const owner = await User.findByPk(created_by_user_id, {
+                attributes: ['email']
+            });
+            await this.sendSensorCredentialsEmail(
+                owner.email,
+                sensorEmail,
+                tempPassword,
+                name
+            );
 
             const result = await Module.findByPk(newModule.id, {
                 include: [
@@ -264,8 +212,8 @@ class ModuleOwnerService {
             };
 
         } catch (error) {
-            console.error('Error general creating module:', error);
-            throw new Error(`Error en la creación del módulo y sus componentes: ${error.message}`);
+            console.error('General error in creating module:', error);
+            throw new Error(`Error creating module and its components: ${error.message}`);
         }
     }
 
