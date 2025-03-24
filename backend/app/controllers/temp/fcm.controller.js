@@ -7,6 +7,7 @@
 const ApiResponse = require('../../utils/apiResponse');
 const FirebaseService = require('../../services/notifications/firebase.service');
 const NotificationFactory = require('../../services/notifications/notification.factory');
+const NotificationService = require('../../services/notifications/notification.service');
 const { User, Notification } = require('../../../models');
 const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
 
@@ -27,22 +28,56 @@ class FcmController {
         );
       }
 
-      let user = {device_id: to};
-
+      // If user_id is provided, use NotificationService to save and send the notification
       if (user_id) {
-        // Try to fetch user and get device_id
-        const dbUser = await User.findByPk(user_id);
+        try {
+          // Call notification service to save and send notification
+          const result = await NotificationService.saveAndSendNotification({
+            user_id,
+            title,
+            message,
+            type,
+            data
+          });
 
-        if (!dbUser) {
-          return res.status(404).json(
-            ApiResponse.createApiResponse('User not found', [], ['User not found with the provided id'])
+          return res.status(200).json(
+            ApiResponse.createApiResponse('Notification sent successfully', result)
           );
-        }else{
-          user = dbUser;
+        } catch (error) {
+          console.error('Error using NotificationService:', error);
+
+          // Handle specific error cases
+          if (error.message.includes('user_id is required') || 
+              error.message.includes('title and message are required')) {
+            return res.status(400).json(
+              ApiResponse.createApiResponse('Invalid request parameters', [], [error.message])
+            );
+          }
+
+          if (error.message.includes('not found')) {
+            return res.status(404).json(
+              ApiResponse.createApiResponse('User not found', [], [error.message])
+            );
+          }
+
+          if (error.message.includes('no device_id') || error.message.includes('has no device_id')) {
+            return res.status(422).json(
+              ApiResponse.createApiResponse('User has no registered device', [], [error.message])
+            );
+          }
+
+          // Generic error response
+          return res.status(500).json(
+            ApiResponse.createApiResponse('Failed to send notification', [], [error.message])
+          );
         }
       }
-
+      
+      // If only 'to' is provided, use the direct Firebase approach
+      // This part preserves the existing direct notification capability
+      let user = {device_id: to};
       let notification;
+      
       // Log the data payload for debugging
       console.log('Original data payload being sent to notification:', JSON.stringify(data, null, 2));
       
@@ -75,7 +110,7 @@ class FcmController {
       // Save notification to database after successful sending
       try {
         const savedNotification = await Notification.create({
-          id_user: user ? user.id : null,
+          id_user: null, // No user ID for direct notifications
           type: notification.getType(),
           title: notification.getTitle(),
           message: notification.getBody(),

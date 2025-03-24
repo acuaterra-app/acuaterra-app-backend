@@ -122,6 +122,54 @@ class FirebaseService {
       };
     }
   }
+
+  /**
+   * Send FCM message with the new structure
+   * @param {Object} message - The message object with token, notification, and data properties
+   * @param {string} message.token - The FCM token of the device
+   * @param {Object} message.notification - The notification payload
+   * @param {string} message.notification.title - The notification title
+   * @param {string} message.notification.body - The notification body
+   * @param {Object} message.data - The data payload (all values must be strings)
+   * @param {string} message.data.id - The notification ID
+   * @param {string} message.data.state - The notification state
+   * @param {string} message.data.metaData - JSON stringified metadata object
+   * @param {string} message.data.dateHour - The notification timestamp
+   * @returns {Promise<Object>} The FCM response
+   */
+  async sendMessage(message) {
+    try {
+      if (!this.initialized) {
+        await this.initialize();
+      }
+
+      if (!message || !message.token || !message.notification) {
+        throw new Error('Invalid message object. Must have token and notification properties.');
+      }
+
+      // Verify data properties are all strings as required by FCM
+      if (message.data) {
+        Object.keys(message.data).forEach(key => {
+          if (typeof message.data[key] !== 'string') {
+            message.data[key] = String(message.data[key]);
+          }
+        });
+      }
+
+      // Send the message to FCM
+      const response = await admin.messaging().send(message);
+
+      logger.info('FCM message sent successfully', { messageId: response });
+      return { success: true, messageId: response };
+    } catch (error) {
+      logger.error('Failed to send FCM message', error);
+      return {
+        success: false,
+        error: error.message,
+        code: error.code || 'unknown_error',
+      };
+    }
+  }
 }
 
 // Singleton instance
