@@ -1,12 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
-
 module.exports = (sequelize) => {
   class Notification extends Model {
     static associate(models) {
-      Notification.belongsTo(models.Module, {
-        foreignKey: 'id_module',
-        onDelete: 'CASCADE'
-      });
+      // Removed association with Module
       
       Notification.belongsTo(models.User, {
         foreignKey: 'id_user',
@@ -21,29 +17,32 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    id_module: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'module',
-        key: 'id'
-      }
-    },
+    // Foreign key to associate notifications with users
     id_user: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Allow null for notifications not tied to specific users
       references: {
         model: 'users',
         key: 'id'
-      }
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     type: {
       type: DataTypes.STRING(50),
       allowNull: false
     },
+    title: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     message: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    data: {
+      type: DataTypes.JSON,
+      allowNull: true
     },
     date_hour: {
       type: DataTypes.DATE,
@@ -58,4 +57,3 @@ module.exports = (sequelize) => {
   
   return Notification;
 };
-

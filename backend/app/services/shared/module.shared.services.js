@@ -1,4 +1,4 @@
-const { Module, User, Farm } = require('../../../models');
+const {Module, User, Farm, Rol} = require('../../../models');
 
 class ModuleService {
     async findAll(farmId, page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
@@ -7,8 +7,8 @@ class ModuleService {
             limit = parseInt(limit);
 
             const offset = (page - 1) * limit;
-            
-            const { count, rows } = await Module.findAndCountAll({
+
+            const {count, rows} = await Module.findAndCountAll({
                 limit: limit,
                 offset: offset,
                 order: [[sortField, sortOrder]],
@@ -16,7 +16,14 @@ class ModuleService {
                     {
                         model: User,
                         as: 'creator',
-                        attributes: ['id', 'name', 'email', 'dni', 'id_rol']
+                        attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
+                        include: [
+                            {
+                                model: Rol,
+                                as: 'rol',
+                                attributes: ['id', 'name']
+                            }
+                        ],
                     },
                     {
                         model: Farm,
@@ -29,7 +36,7 @@ class ModuleService {
                 },
                 distinct: true
             });
-            
+
             return {
                 count: count,
                 rows: rows,

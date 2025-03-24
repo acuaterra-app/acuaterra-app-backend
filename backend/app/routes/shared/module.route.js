@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ModuleService = require("../../services/admin/module.admin.services");
+const ModuleService = require("../../services/shared/module.shared.services");
 const ModuleController = require("../../controllers/shared/module.controller");
 const ValidateTokenMiddleware = require("../../middleware/validateToken.middleware");
 const BlackListService = require("../../services/shared/blacklist.service");

@@ -135,6 +135,11 @@ class FirebaseService {
       // Get the FCM formatted payload from the notification object
       const fcmPayload = notification.serialize();
       
+      // Log the original payload for debugging
+      console.log('==== ORIGINAL FCM PAYLOAD ====');
+      console.log(JSON.stringify(fcmPayload, null, 2));
+      console.log('============================');
+      
       // Validate the payload
       if (!fcmPayload.to) {
         throw new Error('Recipient (to) is required for FCM notification');
@@ -159,31 +164,47 @@ class FirebaseService {
       // Extract the needed properties for FCM
       const { to, notification: notificationContent, data } = fcmPayload;
 
-      // Determine if we're sending to a topic or a device
-      const isToken = to.includes(':') || to.length > 64;
+      // Create a clean copy of the data and remove problematic fields
+      const cleanData = { ...data };
+      
+      // If message_type exists, remove it to prevent FCM errors
+      if (cleanData && cleanData.message_type) {
+        console.log('WARNING: Removing message_type from data payload to prevent FCM errors');
+        delete cleanData.message_type;
+      }
+      
+      // Create the FCM message
       const message = {
         notification: notificationContent,
-        data: this.sanitizeData(data),
+        data: cleanData
       };
+      
+      // Debug logging for cleaned FCM message payload
+      console.log('==== CLEANED FCM MESSAGE ====');
+      console.log('Message payload:', JSON.stringify(message, null, 2));
+      console.log('Data payload keys:', Object.keys(message.data || {}).join(', '));
+      console.log('============================');
 
+      // Determine if we're sending to a topic or a device token
       let response;
-      if (isToken) {
-        // Send to specific device
-        message.token = to;
-        response = await admin.messaging().send(message);
-      } else if (to.startsWith('/topics/')) {
+      if (to.startsWith('/topics/')) {
         // Send to a topic
         message.topic = to.replace('/topics/', '');
-        response = await admin.messaging().send(message);
+        console.log('Sending notification to topic:', message.topic);
       } else {
-        // Assume it's a regular token
+        // Send to a device token
         message.token = to;
-        response = await admin.messaging().send(message);
+        console.log('Sending notification to token:', to);
       }
-
+      
+      // Send the notification to FCM (once)
+      response = await admin.messaging().send(message);
+      
       logger.info('FCM notification sent successfully', { messageId: response });
       return { success: true, messageId: response };
     } catch (error) {
+      console.log('FCM ERROR DETAILS:', error.code, error.message);
+      console.log('ERROR FULL DETAILS:', JSON.stringify(error, null, 2));
       logger.error('Failed to send FCM notification', error);
       return {
         success: false,
@@ -243,7 +264,9 @@ class FirebaseService {
         return {
           token: fcmPayload.to,
           notification: fcmPayload.notification,
-          data: this.sanitizeData(fcmPayload.data),
+          data: fcmPayload.data && fcmPayload.data.message_type ? 
+                { ...fcmPayload.data, message_type: undefined } : 
+                fcmPayload.data,
         };
       });
 

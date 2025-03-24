@@ -193,6 +193,8 @@ class ModuleOwnerService {
         const transaction = await sequelize.transaction();
 
         try {
+            // Fetch all sensors for this module
+            // Note: id_module is still valid for sensor-module relationships
             const sensors = await Sensor.findAll({
                 where: { id_module: moduleId },
                 include: [
