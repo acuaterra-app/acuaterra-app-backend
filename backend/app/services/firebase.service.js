@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-// Use a more explicit import with error handling
+const dotenv = require('dotenv');
+
+dotenv.config();
 let admin;
 try {
   admin = require('firebase-admin');
@@ -58,7 +60,25 @@ class FirebaseService {
         // First load the service account file which contains non-sensitive configuration
         serviceAccount = require(SERVICE_ACCOUNT_PATH);
         
-        // Using the private key directly from the service account file
+        // Check if environment variables are set for private key and private key ID
+        const envPrivateKeyId = process.env.FIREBASE_PRIVATE_KEY_ID;
+        const envPrivateKey = process.env.FIREBASE_PRIVATE_KEY;
+        
+        // Override with environment variable values if they exist
+        if (envPrivateKeyId) {
+          serviceAccount.private_key_id = envPrivateKeyId;
+          logger.info('Using private key ID from environment variable');
+        } else {
+          logger.info('Using private key ID from service account file');
+        }
+        
+        if (envPrivateKey) {
+          // Environment variables often escape newlines as string "\n" so we need to replace them
+          serviceAccount.private_key = envPrivateKey.replace(/\\n/g, '\n');
+          logger.info('Using private key from environment variable');
+        } else {
+          logger.info('Using private key from service account file');
+        }
         
         // Add debug information about the private key
         console.log('Private key loaded. First few characters:', serviceAccount.private_key.substring(0, 15) + '...');
@@ -66,8 +86,6 @@ class FirebaseService {
         console.log('Private key contains proper BEGIN/END tags:', 
           serviceAccount.private_key.includes('-----BEGIN PRIVATE KEY-----') && 
           serviceAccount.private_key.includes('-----END PRIVATE KEY-----'));
-        
-        logger.info('Using private key from service account file');
       } catch (e) {
         this.activateMockMode(`Firebase service account configuration error: ${e.message}`);
         return;
