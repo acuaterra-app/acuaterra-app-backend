@@ -5,8 +5,8 @@
  * through Postman or other API clients. 
  */
 const ApiResponse = require('../../utils/apiResponse');
-const FirebaseService = require('../../services/firebase.service');
-const NotificationFactory = require('../../services/notifications/notification-factory');
+const FirebaseService = require('../../services/notifications/firebase.service');
+const NotificationFactory = require('../../services/notifications/notification.factory');
 const { User, Notification } = require('../../../models');
 
 class FcmController {
@@ -18,8 +18,6 @@ class FcmController {
   async sendDirectNotification(req, res) {
     try {
       const { to, user_id, title, message, type = 'farm', data = {} } = req.body;
-      
-      console.log('FCM Controller - Original Request Data:', JSON.stringify(req.body, null, 2));
 
       // Validate required parameters
       if ((!to && !user_id) || !title || !message) {
@@ -28,47 +26,29 @@ class FcmController {
         );
       }
 
-      // Get the recipient token - either from user's device_id or direct 'to' value
-      let recipient = to;
-      let user = null;
+      let user = {device_id: to};
 
       if (user_id) {
         // Try to fetch user and get device_id
-        user = await User.findByPk(user_id);
-        if (!user) {
+        const dbUser = await User.findByPk(user_id);
+
+        if (!dbUser) {
           return res.status(404).json(
             ApiResponse.createApiResponse('User not found', [], ['User not found with the provided id'])
           );
+        }else{
+          user = dbUser;
         }
-
-        if (!user.device_id && !to) {
-          return res.status(400).json(
-            ApiResponse.createApiResponse('User does not have a registered device token', [], ['No device token available'])
-          );
-        }
-
-        // If user has a device_id, use it as recipient
-        if (user.device_id) {
-          recipient = user.device_id;
-        }
-      }
-
-      // If no recipient found, return error
-      if (!recipient) {
-        return res.status(400).json(
-          ApiResponse.createApiResponse('No recipient specified', [], ['Either provide a direct FCM token in "to" or a valid user_id with a registered device'])
-        );
       }
 
       let notification;
-      
       // Log the data payload for debugging
       console.log('Original data payload being sent to notification:', JSON.stringify(data, null, 2));
       
       try {
         // Prepare payload for the factory
         const payload = {
-          user: user || { device_id: recipient },
+          user: user,
           title,
           message,
           data
@@ -84,6 +64,7 @@ class FcmController {
 
       // Send notification using FCM
       // Log the notification data before sending
+      console.log('notification', JSON.stringify(notification, null, 2));
       console.log('Before sending to FCM - notification data:', JSON.stringify(notification.getData(), null, 2));
       
       const result = await FirebaseService.sendNotification(notification);

@@ -21,7 +21,7 @@ class FarmNotification extends BaseNotification {
    */
   constructor(user, title, message, data = {}) {
     // Call parent constructor with recipient from user.device_id
-    super(user.device_id, user, title, message, data);
+    super(user, title, message, data);
   }
 
   /**
@@ -33,18 +33,9 @@ class FarmNotification extends BaseNotification {
     return 'farm';
   }
 
-  /**
-   * Factory method to create a FarmNotification from a payload object
-   * @param {Object} payload - The notification payload
-   * @param {import('../../models/user')} payload.user - The User model instance
-   * @param {string} payload.title - The notification title
-   * @param {string} payload.message - The notification message
-   * @param {Object} payload.data - Any data for the notification
-   * @returns {FarmNotification} A new FarmNotification instance
-   */
   static createFromPayload(payload) {
     const { user, title, message, data = {} } = payload;
-    
+
     return new FarmNotification(
       user,
       title,
