@@ -199,14 +199,16 @@ class ModuleOwnerService {
 
             return {
                 statusCode: 201,
-                data: {
-                    module: result,
-                    sensorUser: {
-                        id: sensorUser.id,
-                        email: sensorUser.email,
-                        role: sensorUser.role
+                data: [
+                    {
+                        module: result,
+                        sensorUser: {
+                            id: sensorUser.id,
+                            email: sensorUser.email,
+                            role: sensorUser.role
+                        }
                     }
-                }
+                ]
             };
 
         } catch (error) {
