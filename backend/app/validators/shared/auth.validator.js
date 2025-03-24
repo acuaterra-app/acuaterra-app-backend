@@ -10,7 +10,7 @@ const validateUserLogin = [
         .notEmpty().withMessage('Password is required'),
         
     body('device_id')
-        .notEmpty().withMessage('Device ID is required')
+        .optional()
         .isString().withMessage('Device ID must be a string'),
 ];
 

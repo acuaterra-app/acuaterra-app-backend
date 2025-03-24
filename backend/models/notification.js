@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const {NOTIFICATION_STATE} = require("../app/enums/notification-state.enum");
 module.exports = (sequelize) => {
   class Notification extends Model {
     static associate(models) {
@@ -47,6 +48,10 @@ module.exports = (sequelize) => {
     date_hour: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    state: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
     }
   }, {
     sequelize,

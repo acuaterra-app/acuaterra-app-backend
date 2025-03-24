@@ -1,24 +1,20 @@
 const { Notification, User, Rol } = require('../../../models');
 const { ROLES } = require('../../enums/roles.enum');
 const { Op } = require('sequelize');
+const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
 
 /**
  * Service for retrieving notifications for users with owner or monitor roles
  */
 class ListNotificationsService {
-  /**
-   * Retrieve notifications for a user with owner or monitor role with pagination
-   * @param {number} userId - The ID of the user requesting notifications
-   * @param {number} page - The page number (starting from 1)
-   * @param {number} limit - The number of items per page
-   * @returns {Promise<Object>} - A promise that resolves to an object with notifications and pagination info
-   */
-  async getNotificationsForUserPaginated(userId, page = 1, limit = 10) {
+
+  async getNotificationsForUserPaginated(userId, page = 1, limit = 10, status = null) {
     try {
       // First, check if the user has the required roles
       const user = await User.findByPk(userId, {
         include: [{
           model: Rol,
+          as: 'rol',
           attributes: ['id', 'name']
         }]
       });
@@ -27,42 +23,55 @@ class ListNotificationsService {
         throw new Error('User not found');
       }
 
-      // Check if user has owner or monitor role
-      const isOwnerOrMonitor = user.Rols.some(rol => 
-        rol.id === ROLES.OWNER || rol.id === ROLES.MONITOR
-      );
-
-      if (!isOwnerOrMonitor) {
-        throw new Error('Unauthorized: User does not have permission to view notifications');
-      }
-
-      // Calculate offset for pagination
       const offset = (page - 1) * limit;
+
+      // Build where clause based on status parameter
+      const whereClause = {
+        id_user: userId
+      };
+
+      // If status is provided and valid, add state filter
+      if (status === 'read') {
+        whereClause.state = NOTIFICATION_STATE.READ;
+      } else if (status === 'unread') {
+        whereClause.state = NOTIFICATION_STATE.UNREAD;
+      }
 
       // Get total count of notifications for pagination info
       const totalCount = await Notification.count({
-        where: {
-          id_user: userId,
-          state: true // Assuming 'state' indicates active notifications
-        }
+        where: whereClause
       });
 
-      // Get notifications for the user with pagination
       const notifications = await Notification.findAll({
-        where: {
-          id_user: userId,
-          state: true // Assuming 'state' indicates active notifications
-        },
+        where: whereClause,
+        attributes: ['id', 'type', 'title', 'message', 'data', 'date_hour', 'state'],
         order: [['createdAt', 'DESC']], // Most recent notifications first
         limit: parseInt(limit),
         offset: parseInt(offset)
+      });
+
+      // Transform notification data structure
+      const transformedNotifications = notifications.map(notification => {
+        const notificationObj = notification.toJSON();
+        const { title, message, data: existingData = {}, date_hour, type, ...rest } = notificationObj;
+        
+        // Prepare the transformed notification with the new structure
+        return {
+          title,
+          message,
+          data: {
+            ...rest, // Include all other properties (id, type, state, etc.)
+            metaData: {type, ...existingData}, // Include existing data properties (farmId, messageType, etc.)
+            dateHour: date_hour // Rename date_hour to dateHour
+          }
+        };
       });
 
       // Calculate total pages
       const totalPages = Math.ceil(totalCount / limit);
 
       return {
-        notifications,
+        notifications: transformedNotifications,
         pagination: {
           totalItems: totalCount,
           totalPages,

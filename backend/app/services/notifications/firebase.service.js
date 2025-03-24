@@ -88,7 +88,7 @@ class FirebaseService {
       notification.validate();
 
       const fcmPayload = notification.serialize();
-
+      console.log('user', notification.user);
       if (!notification.user || !notification.user.device_id) {
         throw new Error('User must have an fcmToken property for FCM notification');
       }

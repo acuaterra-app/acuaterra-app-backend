@@ -8,6 +8,7 @@ const ApiResponse = require('../../utils/apiResponse');
 const FirebaseService = require('../../services/notifications/firebase.service');
 const NotificationFactory = require('../../services/notifications/notification.factory');
 const { User, Notification } = require('../../../models');
+const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
 
 class FcmController {
   /**
@@ -62,11 +63,6 @@ class FcmController {
         );
       }
 
-      // Send notification using FCM
-      // Log the notification data before sending
-      console.log('notification', JSON.stringify(notification, null, 2));
-      console.log('Before sending to FCM - notification data:', JSON.stringify(notification.getData(), null, 2));
-      
       const result = await FirebaseService.sendNotification(notification);
 
       if (!result.success) {
@@ -84,7 +80,8 @@ class FcmController {
           title: notification.getTitle(),
           message: notification.getBody(),
           data: notification.getData(),
-          date_hour: new Date()
+          date_hour: new Date(),
+          state: NOTIFICATION_STATE.UNREAD,
         });
 
         return res.status(200).json(

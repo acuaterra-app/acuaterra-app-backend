@@ -1,12 +1,6 @@
 const ApiResponse = require('../../utils/apiResponse');
 const ListNotificationsService = require('../../services/notifications/list-notifications.service');
 const { ROLES } = require('../../enums/roles.enum');
-
-/**
- * Controller for handling notification list requests
- * This controller provides endpoints for users with owner or monitor roles
- * to view their notifications
- */
 class NotificationController {
   /**
   /**
@@ -20,6 +14,7 @@ class NotificationController {
       const userId = req.user.id;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
+      const status = req.query.status; // Extract status parameter from query
       
       // Validate pagination parameters
       if (page < 1 || limit < 1 || limit > 100) {
@@ -33,8 +28,7 @@ class NotificationController {
       }
 
       // Get paginated notifications for the user
-      const result = await ListNotificationsService.getNotificationsForUserPaginated(userId, page, limit);
-
+      const result = await ListNotificationsService.getNotificationsForUserPaginated(userId, page, limit, status);
       return res.status(200).json(
         ApiResponse.createApiResponse(
           'Notifications retrieved successfully',
