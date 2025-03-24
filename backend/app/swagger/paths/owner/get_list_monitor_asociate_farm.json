@@ -51,19 +51,31 @@
                           "type": "string",
                           "example": "1234567890"
                         },
-                        "farm": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "name": {
-                              "type": "string",
-                              "example": "Granja Principal"
+                        "Farms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Granja Principal"
+                              }
                             }
                           },
-                          "description": "Farm information associated with the monitor user"
+                          "description": "List of farms associated with the monitor user"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "user"
+                            }
+                          }
                         },
                         "createdAt": {
                           "type": "string",
@@ -138,7 +150,7 @@
                     "type": "array",
                     "example": [
                       {
-                        "msg": "No tienes usuarios monitores en las granjas asociadas"
+                        "msg": "There are no monitors available at partner farms."
                       }
                     ]
                   }
