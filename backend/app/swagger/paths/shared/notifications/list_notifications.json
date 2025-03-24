@@ -28,13 +28,13 @@
         },
         {
           "in": "query",
-          "name": "status",
+          "name": "state",
           "schema": {
             "type": "string",
             "enum": ["read", "unread"],
-            "description": "Filter notifications by status"
+            "description": "Filter notifications by state"
           },
-          "description": "Optional filter for notification status (read, unread, or omit for all)"
+          "description": "Optional filter for notification state (read, unread, or omit for all)"
         }
       ],
       "security": [

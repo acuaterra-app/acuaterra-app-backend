@@ -3,6 +3,8 @@ const router = express.Router();
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
 const BlackListService = require('../../services/shared/blacklist.service');
 const ValidateRoleMiddleware = require('../../middleware/validateRole.middleware');
+const { validate } = require('../../middleware/validate.middleware');
+const { validateNotificationQuery } = require('../../validators/shared/notification.validator');
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 const NotificationController = require('../../controllers/shared/notification.controller');
 const { ROLES } = require('../../enums/roles.enum');
@@ -15,7 +17,8 @@ router.get(
   '/',
   [
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([ROLES.OWNER, ROLES.MONITOR])
+    validateRoleMiddleware.validate([ROLES.OWNER, ROLES.MONITOR]),
+    validate(validateNotificationQuery)
   ],
   NotificationController.index
 );

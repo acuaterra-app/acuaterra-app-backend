@@ -8,7 +8,7 @@ const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
  */
 class ListNotificationsService {
 
-  async getNotificationsForUserPaginated(userId, page = 1, limit = 10, status = null) {
+  async getNotificationsForUserPaginated(userId, page = 1, limit = 10, state = null) {
     try {
       // First, check if the user has the required roles
       const user = await User.findByPk(userId, {
@@ -25,27 +25,41 @@ class ListNotificationsService {
 
       const offset = (page - 1) * limit;
 
-      // Build where clause based on status parameter
+      // Build where clause based on state parameter
       const whereClause = {
         id_user: userId
       };
 
-      // If status is provided and valid, add state filter
-      if (status === 'read') {
+      // If state is provided and valid, add state filter
+      if (state === 'read') {
         whereClause.state = NOTIFICATION_STATE.READ;
-      } else if (status === 'unread') {
+      } else if (state === 'unread') {
         whereClause.state = NOTIFICATION_STATE.UNREAD;
       }
+      // When no state is provided, we'll return all notifications but with custom ordering
 
       // Get total count of notifications for pagination info
       const totalCount = await Notification.count({
         where: whereClause
       });
 
+      // Define the ordering based on the state parameter
+      let orderCriteria;
+      if (state === null) {
+        // When no state is provided, order by state (unread first) and then by createdAt (newest first)
+        orderCriteria = [
+          ['state', 'DESC'], // DESC ordering puts 'unread' before 'read' alphabetically
+          ['createdAt', 'DESC']
+        ];
+      } else {
+        // When a state filter is applied, just order by createdAt
+        orderCriteria = [['createdAt', 'DESC']];
+      }
+
       const notifications = await Notification.findAll({
         where: whereClause,
         attributes: ['id', 'type', 'title', 'message', 'data', 'date_hour', 'state'],
-        order: [['createdAt', 'DESC']], // Most recent notifications first
+        order: orderCriteria,
         limit: parseInt(limit),
         offset: parseInt(offset)
       });

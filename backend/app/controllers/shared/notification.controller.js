@@ -12,23 +12,10 @@ class NotificationController {
   async index(req, res) {
     try {
       const userId = req.user.id;
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const status = req.query.status; // Extract status parameter from query
+      const { page, limit, state } = req.query;
       
-      // Validate pagination parameters
-      if (page < 1 || limit < 1 || limit > 100) {
-        return res.status(400).json(
-          ApiResponse.createApiResponse(
-            'Validation failed',
-            [],
-            [{ error: 'Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100' }]
-          )
-        );
-      }
-
       // Get paginated notifications for the user
-      const result = await ListNotificationsService.getNotificationsForUserPaginated(userId, page, limit, status);
+      const result = await ListNotificationsService.getNotificationsForUserPaginated(userId, page, limit, state);
       return res.status(200).json(
         ApiResponse.createApiResponse(
           'Notifications retrieved successfully',
