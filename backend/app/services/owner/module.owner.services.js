@@ -20,8 +20,8 @@ class ModuleOwnerService {
     }
 
     generateSensorCredentials(moduleName) {
-        const timestamp = Date.now();
-        const email = `sensor.${moduleName.toLowerCase().replace(/\s+/g, '_')}_${timestamp}@acuaterra.tech`;
+        const uuid = v1();
+        const email = uuid + `-module@acuaterra.tech`;
         const tempPassword = crypto.randomBytes(6).toString('hex');
         return { email, tempPassword };
     }
@@ -107,10 +107,8 @@ class ModuleOwnerService {
                     Promise.resolve(this.generateSensorCredentials(name))
                 ]);
 
-                const uuid = v1();
-                const dom = '@acuaterra.tech';
                 newModule = moduleCreated;
-                sensorEmail = uuid+dom;
+                sensorEmail = credentials.email;
                 tempPassword = credentials.tempPassword;
 
                 const hashedPassword = await bcrypt.hash(tempPassword, 10);
