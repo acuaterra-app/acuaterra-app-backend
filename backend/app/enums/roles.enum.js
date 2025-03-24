@@ -6,7 +6,8 @@
 const ROLES = {
     ADMIN: 1,
     OWNER: 2,
-    MONITOR: 3
+    MONITOR: 3,
+    MODULE: 4
 };
 
 /**
@@ -25,14 +26,14 @@ const getRoleNameById = (id) => {
  * @returns {number[]} - Array of role IDs allowed for admins
  */
 const getAdminAllowedRoles = () => {
-    return [ROLES.ADMIN, ROLES.OWNER, ROLES.MONITOR];
+    return [ROLES.ADMIN, ROLES.OWNER, ROLES.MONITOR, ROLES.MODULE];
 };
 
 /**
  * @returns {number[]} - Array of role IDs allowed for owners
  */
 const getOwnerAllowedRoles = () => {
-    return [ROLES.OWNER, ROLES.MONITOR];
+    return [ROLES.OWNER, ROLES.MONITOR, ROLES.MODULE];
 };
 
 module.exports = {
