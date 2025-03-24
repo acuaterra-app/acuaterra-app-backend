@@ -1,22 +1,38 @@
-const UserService = require('../../services/shared/user.service');
 const ApiResponse = require('../../utils/apiResponse');
-const { ROLES } = require('../../enums/roles.enum');
 
 class userOwnerController {
-    constructor(userService) {
-        this.userService = userService;
+    constructor(userOwnerService) {
+        this.userOwnerService = userOwnerService;
     }
 
     async index(req, res) {
         try {
-            const page = req.query.page;
-            const limit = req.query.limit;
-            const sortField = req.query.sortField;
-            const sortOrder = req.query.sortOrder;
+            const page = req.query.page || 1;
+            const limit = req.query.limit || 10;
+            const sortField = req.query.sortField || 'createdAt';
+            const sortOrder = req.query.sortOrder || 'DESC';
 
-            const roles = [ROLES.MONITOR];
+            const result = await this.userOwnerService.getMonitorUsers(page, limit, sortField, sortOrder);
 
-            const result = await this.userService.getAllUsers(page, limit, sortField, sortOrder, roles);
+            if (result.rows.length === 0) {
+                const paginationMeta = {
+                    pagination: {
+                        total: 0,
+                        totalPages: 0,
+                        currentPage: parseInt(page) || 1,
+                        perPage: parseInt(limit) || 10,
+                        hasNext: false,
+                        hasPrev: false
+                    }
+                };
+                const response = ApiResponse.createApiResponse(
+                    "There are no monitors available at partner farms.",
+                    [],
+                    [],
+                    paginationMeta
+                );
+                return res.json(response);
+            }
 
             const paginationMeta = {
                 pagination:{
@@ -31,13 +47,14 @@ class userOwnerController {
 
             const response = ApiResponse.createApiResponse(
                 "Monitor users successfully recovered",
-                result.rows,
+                [result.rows],
                 [],
                 paginationMeta
             );
 
             return res.json(response);
         } catch (error) {
+            console.error("Error getting monitor users:", error);
             const response = ApiResponse.createApiResponse(
                 "Error retrieving monitor users",
                 [],

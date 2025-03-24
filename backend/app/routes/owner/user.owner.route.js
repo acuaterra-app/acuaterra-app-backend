@@ -6,16 +6,16 @@ const {validate} = require("../../middleware/validate.middleware");
 const UserOwnerController = require('../../controllers/owner/user.owner.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
 const BlackListService = require('../../services/shared/blacklist.service');
-const UserService = require("../../services/shared/user.service");
+const UserOwnerService = require("../../services/owner/user.owner.service");
 const ValidateModuleAccessMiddleware = require("../../middleware/validateModuleAccess.middleware");
 
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
-const userService = new UserService();
+const userOwnerService = new UserOwnerService();
 const validateRoleMiddleware = new ValidateRoleMiddleware();
-const userOwnerController = new UserOwnerController(userService);
+const userOwnerController = new UserOwnerController(userOwnerService);
 const validateAccess = new ValidateModuleAccessMiddleware();
 
 router.get('/',
