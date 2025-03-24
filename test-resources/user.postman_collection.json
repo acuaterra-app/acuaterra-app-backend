@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "15e37455-3225-4448-bb8e-913946b2a512",
+		"_postman_id": "7c822152-8375-483b-a88e-63bccc8a7bab",
 		"name": "user",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37390175"
@@ -78,7 +78,10 @@
 							"name": "Create User",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": ""
+								}
 							},
 							"response": []
 						},
@@ -171,6 +174,39 @@
 										"shared",
 										"farms",
 										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "owner",
+					"item": [
+						{
+							"name": "lsit monitores Mobile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiNTk5NTQ4MDYzMSIsImlhdCI6MTc0Mjg0OTkyMiwiZXhwIjoxNzQyODY3OTIyfQ.LllPe0eDHpGLF-JL_UbPLffSR2vhIwdkBob0SJbGVc0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users"
 									]
 								}
 							},
