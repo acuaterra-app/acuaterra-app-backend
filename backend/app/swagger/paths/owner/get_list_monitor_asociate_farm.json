@@ -1,0 +1,153 @@
+{
+  "/api/v2/owner/users": {
+    "get": {
+      "summary": "Get monitor users associated with farms",
+      "tags": ["Owner/Users"],
+      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with the authenticated user's farms.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows only users associated with the authenticated user's farms\n- Includes pagination and sorting capabilities\n\n## Query Parameters\n\n- **page**\n  - **Type**: Integer\n  - **Description**: Page number for pagination\n  - **Required**: No\n  - **Default**: 1\n\n- **limit**\n  - **Type**: Integer\n  - **Description**: Number of records per page\n  - **Required**: No\n  - **Default**: 10\n\n- **sortField**\n  - **Type**: String\n  - **Description**: Field to sort by\n  - **Required**: No\n  - **Default**: 'createdAt'\n\n- **sortOrder**\n  - **Type**: String\n  - **Description**: Sort direction (ASC or DESC)\n  - **Required**: No\n  - **Default**: 'DESC'\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Middleware**: validateOwnerFarmAccess\n  - Validates that the user has access to the farms\n  - Filters users to show only MONITOR role\n  - Ensures farm association validation",
+      "responses": {
+        "200": {
+          "description": "Monitor users retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Usuarios monitores recuperados exitosamente"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "monitor@example.com"
+                        },
+                        "dni": {
+                          "type": "string",
+                          "example": "12345678"
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "example": 3,
+                          "description": "MONITOR role ID"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "contact": {
+                          "type": "string",
+                          "example": "1234567890"
+                        },
+                        "farm": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Granja Principal"
+                            }
+                          },
+                          "description": "Farm information associated with the monitor user"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "example": 50
+                          },
+                          "totalPages": {
+                            "type": "integer",
+                            "example": 5
+                          },
+                          "currentPage": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "perPage": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "hasNext": {
+                            "type": "boolean",
+                            "example": true
+                          },
+                          "hasPrev": {
+                            "type": "boolean",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - No monitor users found or no access to farms",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "No tienes usuarios monitores en las granjas asociadas"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
