@@ -56,6 +56,10 @@
     {
       "name": "Admin/Farms",
       "description": "API Admin endpoints for farm management"
+    },
+    {
+      "name": "Temporary Notifications",
+      "description": "API endpoints for testing FCM notifications"
     }
   ]
 }

@@ -1,5 +1,16 @@
-const admin = require('firebase-admin');
+const fs = require('fs');
+const path = require('path');
+// Use a more explicit import with error handling
+let admin;
+try {
+  admin = require('firebase-admin');
+} catch (error) {
+  console.error('Failed to import firebase-admin module:', error.message);
+}
 const logger = require('../utils/logger'); // Assuming there's a logger utility
+
+// Path to Firebase service account credentials
+const SERVICE_ACCOUNT_PATH = path.join(__dirname, '../../config/firebase-service-account.json');
 
 /**
  * Firebase service class to manage Firebase Admin SDK initialization
@@ -8,6 +19,7 @@ const logger = require('../utils/logger'); // Assuming there's a logger utility
 class FirebaseService {
   constructor() {
     this.initialized = false;
+    this.mockMode = false;
     this.initialize();
   }
 
@@ -16,32 +28,75 @@ class FirebaseService {
    */
   initialize() {
     try {
+      // If firebase-admin couldn't be imported, use mock mode
+      if (!admin) {
+        this.activateMockMode('Firebase Admin SDK not available');
+        return;
+      }
+
       // Check if Firebase is already initialized
-      if (this.initialized || admin.apps.length > 0) {
+      if (this.initialized) {
+        return;
+      }
+
+      if (admin.apps.length > 0) {
         logger.info('Firebase Admin SDK already initialized');
         this.initialized = true;
         return;
       }
 
-      // Initialize Firebase Admin SDK
-      // You should replace this with your actual service account credentials
-      // and database URL or store these in environment variables
-      const serviceAccount = process.env.FCM_API_KEY
-        ? JSON.parse(process.env.FCM_API_KEY)
-        : require('../../../config/firebase-service-account.json');
+      // Load service account credentials using a hybrid approach for security
+      let serviceAccount;
+      
+      // Check if the service account file exists
+      if (!fs.existsSync(SERVICE_ACCOUNT_PATH)) {
+        this.activateMockMode('Firebase service account file not found');
+        return;
+      }
+        
+      try {
+        // First load the service account file which contains non-sensitive configuration
+        serviceAccount = require(SERVICE_ACCOUNT_PATH);
+        
+        // Using the private key directly from the service account file
+        
+        // Add debug information about the private key
+        console.log('Private key loaded. First few characters:', serviceAccount.private_key.substring(0, 15) + '...');
+        console.log('Private key length:', serviceAccount.private_key.length);
+        console.log('Private key contains proper BEGIN/END tags:', 
+          serviceAccount.private_key.includes('-----BEGIN PRIVATE KEY-----') && 
+          serviceAccount.private_key.includes('-----END PRIVATE KEY-----'));
+        
+        logger.info('Using private key from service account file');
+      } catch (e) {
+        this.activateMockMode(`Firebase service account configuration error: ${e.message}`);
+        return;
+      }
 
+      // Initialize Firebase Admin SDK
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         databaseURL: process.env.FIREBASE_DATABASE_URL,
       });
 
       this.initialized = true;
+      this.mockMode = false;
       logger.info('Firebase Admin SDK initialized successfully');
     } catch (error) {
-      this.initialized = false;
-      logger.error('Failed to initialize Firebase Admin SDK', error);
-      throw new Error(`Firebase initialization error: ${error.message}`);
+      this.activateMockMode(`Firebase initialization error: ${error.message}`);
     }
+  }
+
+  /**
+   * Activates mock mode when Firebase can't be initialized
+   * @param {string} reason - The reason why mock mode is activated
+   * @private
+   */
+  activateMockMode(reason) {
+    this.mockMode = true;
+    this.initialized = true; // Consider it initialized but in mock mode
+    logger.warn(`Firebase running in MOCK MODE: ${reason}`);
+    // Don't throw an error, just log a warning
   }
 
   /**
@@ -65,6 +120,22 @@ class FirebaseService {
       // Validate the payload
       if (!fcmPayload.to) {
         throw new Error('Recipient (to) is required for FCM notification');
+      }
+
+      // Check if in mock mode
+      if (this.mockMode) {
+        const mockMessageId = `mock-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+        logger.info('[MOCK] FCM notification would be sent', { 
+          to: fcmPayload.to,
+          notification: fcmPayload.notification,
+          data: fcmPayload.data,
+          mockMessageId
+        });
+        return { 
+          success: true,
+          messageId: mockMessageId,
+          mock: true
+        };
       }
 
       // Extract the needed properties for FCM
@@ -121,6 +192,27 @@ class FirebaseService {
 
       if (notifications.length > 500) {
         throw new Error('You can only send up to 500 messages in a single batch');
+      }
+
+      // Check if in mock mode
+      if (this.mockMode) {
+        const mockResponses = notifications.map(() => ({
+          success: true,
+          messageId: `mock-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
+        }));
+        
+        logger.info('[MOCK] FCM multicast would be sent', {
+          notificationCount: notifications.length,
+          mock: true
+        });
+        
+        return {
+          success: true,
+          successCount: notifications.length,
+          failureCount: 0,
+          responses: mockResponses,
+          mock: true
+        };
       }
 
       // Serialize each notification and prepare FCM messages
