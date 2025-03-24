@@ -10,34 +10,14 @@ const { ROLES } = require('../enums/roles.enum');
 const blackListService = new BlackListService();
 const validateTokenMiddleware = new ValidateTokenMiddleware(blackListService);
 
-// Get all notifications for authenticated user (owner or monitor)
-router.get(
-  '/list',
-  [
-    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([ROLES.OWNER, ROLES.MONITOR])
-  ],
-  NotificationController.listNotifications
-);
-
 // Get paginated notifications for authenticated user (owner or monitor)
 router.get(
-  '/paginated',
+  '/',
   [
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([ROLES.OWNER, ROLES.MONITOR])
   ],
-  NotificationController.listNotificationsPaginated
-);
-
-// Mark notification as read
-router.put(
-  '/mark-read/:id',
-  [
-    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([ROLES.OWNER, ROLES.MONITOR])
-  ],
-  NotificationController.markNotificationAsRead
+  NotificationController.index
 );
 
 module.exports = router;
