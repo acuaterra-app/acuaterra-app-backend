@@ -34,7 +34,7 @@ class UserOwnerService {
                 include: [
                     {
                         model: Rol,
-                        attributes: ['name'],
+                        attributes: ['id', 'name'],
                         as: 'rol'
                     },
                     {
