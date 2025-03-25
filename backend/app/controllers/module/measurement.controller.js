@@ -2,6 +2,7 @@ const ApiResponse = require('../../utils/apiResponse');
 const { Module, User } = require('../../../models');
 
 class MeasurementController {
+
     constructor(measurementService) {
         this.measurementService = measurementService;
     }
