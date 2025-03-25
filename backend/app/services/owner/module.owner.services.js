@@ -301,6 +301,7 @@ class ModuleOwnerService {
                     {
                         model: Sensor,
                         as: 'sensors',
+                        attributes: ['id', 'name'],
                         include: [
                             {
                                 model: Threshold,
