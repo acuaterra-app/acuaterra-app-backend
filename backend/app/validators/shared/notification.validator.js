@@ -1,4 +1,4 @@
-const { query } = require("express-validator");
+const { query, param } = require("express-validator");
 const { NOTIFICATION_STATE, isValidState } = require("../../enums/notification-state.enum");
 
 /**
@@ -28,5 +28,20 @@ const validateNotificationQuery = [
         .withMessage(`State must be one of: ${Object.values(NOTIFICATION_STATE).join(', ')}`)
 ];
 
-module.exports = { validateNotificationQuery };
+/**
+ * Validates notification ID parameter for markAsRead endpoint
+ */
+const validateNotificationId = [
+    param('id')
+        .notEmpty()
+        .withMessage('Notification ID is required')
+        .isInt({ min: 1 })
+        .withMessage('Notification ID must be a positive integer')
+        .toInt()
+];
+
+module.exports = { 
+    validateNotificationQuery,
+    validateNotificationId
+};
 

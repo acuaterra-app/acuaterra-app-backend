@@ -178,6 +178,52 @@ class NotificationService {
       throw error;
     }
   }
+
+  /**
+   * Mark a notification as read
+   * 
+   * @param {number} notificationId - ID of the notification to mark as read
+   * @param {number} userId - ID of the user who owns the notification
+   * @returns {Promise<Object>} The updated notification
+   * @throws {Error} If notification not found or doesn't belong to the user
+   */
+  async markAsRead(notificationId, userId) {
+    try {
+      // Find the notification
+      const notification = await Notification.findByPk(notificationId);
+      
+      if (!notification) {
+        throw new Error(`Notification with ID ${notificationId} not found`);
+      }
+      
+      // Verify the notification belongs to the user
+      if (notification.id_user !== userId) {
+        throw new Error('Notification does not belong to this user');
+      }
+      
+      // Update the notification state to read
+      notification.state = NOTIFICATION_STATE.READ;
+      
+      // Save the updated notification
+      await notification.save();
+      
+      logger.info('Notification marked as read', {
+        notificationId,
+        userId
+      });
+      
+      return notification;
+    } catch (error) {
+      logger.error('Failed to mark notification as read', {
+        error: error.message,
+        stack: error.stack,
+        notificationId,
+        userId
+      });
+      
+      throw error;
+    }
+  }
 }
 
 module.exports = new NotificationService();
