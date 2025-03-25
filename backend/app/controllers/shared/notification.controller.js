@@ -1,5 +1,6 @@
 const ApiResponse = require('../../utils/apiResponse');
 const ListNotificationsService = require('../../services/notifications/list-notifications.service');
+const NotificationService = require('../../services/notifications/notification.service');
 const { ROLES } = require('../../enums/roles.enum');
 class NotificationController {
   /**
@@ -52,6 +53,60 @@ class NotificationController {
           'Server error',
           [],
           [{ error: 'Error retrieving notifications' }]
+        )
+      );
+    }
+  }
+
+  /**
+   * Mark a notification as read
+   * @param {object} req - Express request object
+   * @param {object} res - Express response object
+   * @returns {object} JSON response with the updated notification
+   */
+  async markAsRead(req, res) {
+    try {
+      const notificationId = parseInt(req.params.id);
+      const userId = req.user.id;
+      
+      // Call the service to mark the notification as read
+      const updatedNotification = await NotificationService.markAsRead(notificationId, userId);
+      
+      return res.status(200).json(
+        ApiResponse.createApiResponse(
+          'Notification marked as read successfully',
+          updatedNotification,
+          []
+        )
+      );
+    } catch (error) {
+      console.error('Error in markAsRead controller:', error);
+      
+      if (error.message.includes('Notification with ID') && error.message.includes('not found')) {
+        return res.status(404).json(
+          ApiResponse.createApiResponse(
+            'Notification not found',
+            [],
+            [{ error: 'The requested notification does not exist' }]
+          )
+        );
+      }
+      
+      if (error.message === 'Notification does not belong to this user') {
+        return res.status(403).json(
+          ApiResponse.createApiResponse(
+            'Authorization failed',
+            [],
+            [{ error: 'You do not have permission to update this notification' }]
+          )
+        );
+      }
+      
+      return res.status(500).json(
+        ApiResponse.createApiResponse(
+          'Server error',
+          [],
+          [{ error: 'Error updating notification' }]
         )
       );
     }
