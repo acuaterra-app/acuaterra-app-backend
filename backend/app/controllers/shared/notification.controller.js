@@ -72,10 +72,25 @@ class NotificationController {
       // Call the service to mark the notification as read
       const updatedNotification = await NotificationService.markAsRead(notificationId, userId);
       
+      // Transform the notification to match ListNotificationsService structure
+      // Transform the notification to match ListNotificationsService structure
+      const notificationObj = updatedNotification.toJSON ? updatedNotification.toJSON() : updatedNotification;
+      const { title, message, data: existingData = {}, date_hour, type, createdAt, updatedAt, id_user, ...rest } = notificationObj;
+      // Create the transformed notification with the new structure
+      const transformedNotification = {
+        title,
+        message,
+        data: {
+          ...rest, // Include all other properties (id, state, etc.)
+          metaData: { type, ...existingData }, // Include existing data properties
+          dateHour: date_hour // Rename date_hour to dateHour
+        }
+      };
+      
       return res.status(200).json(
         ApiResponse.createApiResponse(
           'Notification marked as read successfully',
-          updatedNotification,
+          [transformedNotification],
           []
         )
       );
