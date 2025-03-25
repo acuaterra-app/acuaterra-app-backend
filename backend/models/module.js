@@ -31,7 +31,7 @@ module.exports = (sequelize) => {
       Module.belongsToMany(models.User, {
         through: models.ModuleUser,
         foreignKey: 'id_module',
-        otherKey: 'id_person',
+        otherKey: 'id_user',
         as: 'users'
       });
     }

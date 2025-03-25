@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       },
       onDelete: 'CASCADE'
     },
-    id_person: {
+    id_user: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
