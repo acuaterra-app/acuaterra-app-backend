@@ -90,7 +90,7 @@ class NotificationController {
       return res.status(200).json(
         ApiResponse.createApiResponse(
           'Notification marked as read successfully',
-          transformedNotification,
+          [transformedNotification],
           []
         )
       );
