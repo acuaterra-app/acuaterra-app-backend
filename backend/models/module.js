@@ -18,11 +18,6 @@ module.exports = (sequelize) => {
         as: 'sensors'
       });
       
-      Module.hasMany(models.Notification, {
-        foreignKey: 'id_module',
-        as: 'notifications'
-      });
-      
       Module.hasMany(models.Report, {
         foreignKey: 'id_module',
         as: 'reports'

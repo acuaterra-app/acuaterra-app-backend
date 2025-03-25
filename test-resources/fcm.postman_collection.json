@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "e9d11360-97ec-4757-a65d-90973b12df21",
+		"name": "fcm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13906554"
+	},
+	"item": [
+		{
+			"name": "v2",
+			"item": [
+				{
+					"name": "shared",
+					"item": [
+						{
+							"name": "notifications",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/shared/notifications?state=read",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"notifications"
+									],
+									"query": [
+										{
+											"key": "state",
+											"value": "read"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "send test notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "KEY=AIzaSyAV6o3EhA-I-l2e7n9fKdsj76w_cVFNw5A",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"eI7cEsV1TJKbeI0yZfjzx9:APA91bErHxdiAGqAaX5PQKCeGx08JJKYUEmt2fz4SSCn2lvOMsOS_KVmhuK6bJz_R_ddcyQNjRvpNzRPB6roIghzr2Vp2QUdPC9-AmiPPzKKzt4uhfjkNl0\",\n  \"title\": \"Granja creada\",\n  \"user_id\": 2,\n  \"message\": \"Warning\",\n  \"type\": \"farm\",\n  \"data\": {\n    \"farmId\": \"1\",\n    \"messageType\": \"warning\" // info, error, warning, sucess\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v2/temp/notifications/send",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"temp",
+								"notifications",
+								"send"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"// Verifica si la respuesta contiene el token",
+							"if (response.data && response.data[0].token) {",
+							"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    //\"email\": \"admin@example.com\",\n    //\"device_id\": \"dsadsadsa\",\n    \"password\": \"password\"\n   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/api/v2/auth/login",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

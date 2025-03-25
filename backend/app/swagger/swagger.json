@@ -56,6 +56,14 @@
     {
       "name": "Admin/Farms",
       "description": "API Admin endpoints for farm management"
+    },
+    {
+      "name": "Shared/Notifications",
+      "description": "API endpoints for user notification operations accessible to appropriate roles"
+    },
+    {
+      "name": "Temporary Notifications",
+      "description": "API endpoints for testing FCM notifications"
     }
   ]
 }

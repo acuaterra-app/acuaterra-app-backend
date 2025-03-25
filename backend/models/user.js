@@ -50,6 +50,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(255),
       allowNull: false
     },
+    device_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     dni: {
       type: DataTypes.STRING(255),
       allowNull: false,

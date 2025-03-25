@@ -1,0 +1,128 @@
+{
+  "/api/v2/temp/notifications/send": {
+    "post": {
+      "tags": ["Temporary Notifications"],
+      "summary": "Send a direct notification to a specific device",
+      "description": "Sends a notification to a single device using its FCM token",
+      "operationId": "sendDirectNotification",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["to", "title", "message"],
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "description": "The FCM token of the target device",
+                  "example": "eEwI0djLS8qJSrKHhaMWDI:APA91bHGsvbeLZv..."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "The notification title",
+                  "example": "Test Notification"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "The notification message body",
+                  "example": "This is a test notification"
+                },
+                "data": {
+                  "type": "object",
+                  "description": "Additional data to include in the notification",
+                  "example": {
+                    "type": "farm",
+                    "farmId": "1",
+                    "title": "Actualización de Granja",
+                    "body": "Hay una actualización para tu granja"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Notification sent successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Notification sent successfully"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "messageId": {
+                        "type": "string",
+                        "example": "projects/acuaterra-app/messages/123456789"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Missing required parameters: to, title, and message are required"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to send notification"
+                  },
+                  "error": {
+                    "type": "string",
+                    "example": "Error message details"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

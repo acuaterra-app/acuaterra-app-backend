@@ -31,6 +31,8 @@ const sharedModuleRoutes = require('./app/routes/shared/module.route');
 const sharedFarmRoutes = require('./app/routes/shared/farm.routes');
 const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
 const ownerModuleRoutes = require('./app/routes/owner/module.owner.route');
+const tempNotificationRoutes = require('./app/routes/temp/notification.route');
+const notificationRoutes = require('./app/routes/shared/notification.route');
 const ownerUserRoutes = require('./app/routes/owner/user.owner.route');
 
 app.use(morgan('tiny')); 
@@ -58,6 +60,7 @@ app.use('/api/v2/auth', authRoutes);
 app.use('/api/v2/shared/modules', sharedModuleRoutes);
 app.use('/api/v2/shared/farms', sharedFarmRoutes);
 app.use('/api/v2/shared/users', userSharedRoutes);
+app.use('/api/v2/shared/notifications', notificationRoutes);
 
 /*
  * Owner Routes
@@ -72,12 +75,16 @@ app.use('/api/v2/owner/users', ownerUserRoutes);
 app.use('/api/v2/admin/farms', farmRoutes);
 app.use('/api/v2/admin/users', userAdminRoutes);
 
-const PORT = process.env.PORT || 3000;
+/*
+ * Temporary Routes
+ */
+app.use('/api/v2/temp/notifications', tempNotificationRoutes);
 
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-
 setInterval(() => {
     (new BlackListService).cleanBlackList()
     .catch(error => console.error('Error al vaciar la lista negra:', error));

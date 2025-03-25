@@ -8,6 +8,10 @@ const validateUserLogin = [
 
     body('password')
         .notEmpty().withMessage('Password is required'),
+        
+    body('device_id')
+        .optional()
+        .isString().withMessage('Device ID must be a string'),
 ];
 
 module.exports = { validateUserLogin };
