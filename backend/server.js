@@ -33,6 +33,8 @@ const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
 const ownerModuleRoutes = require('./app/routes/owner/module.owner.route');
 const tempNotificationRoutes = require('./app/routes/temp/notification.route');
 const notificationRoutes = require('./app/routes/shared/notification.route');
+const ownerUserRoutes = require('./app/routes/owner/user.owner.route');
+
 app.use(morgan('tiny')); 
 app.use(express.json()); 
 app.use(bodyParser.json());
@@ -65,6 +67,7 @@ app.use('/api/v2/shared/notifications', notificationRoutes);
  */
 app.use('/api/v2/owner/farms', ownerFarmRoutes);
 app.use('/api/v2/owner/modules', ownerModuleRoutes);
+app.use('/api/v2/owner/users', ownerUserRoutes);
 
 /*
  * Admin Routes

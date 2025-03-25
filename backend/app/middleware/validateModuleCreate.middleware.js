@@ -8,6 +8,15 @@ class ValidateModuleCreateMiddleware {
             const authenticatedUser = req.user;
             const { id_farm, users } = req.body;
 
+            if (!authenticatedUser) {
+                const response = ApiResponse.createApiResponse(
+                    'Authorization failed',
+                    [],
+                    [{ msg: 'User authentication required' }]
+                );
+                return res.status(401).json(response);
+            }
+
             const farmUserAssociation = await FarmUser.findOne({
                 where: {
                     id_user: authenticatedUser.id,
