@@ -10,10 +10,67 @@
 			"name": "module",
 			"item": [
 				{
-					"name": "post sensors",
+					"name": "post sensors data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImRuaSI6IlNFTlNPUi0xNzQyOTQwNjAyMTE0IiwiaWF0IjoxNzQyOTUxNTg5LCJleHAiOjE3NDI5Njk1ODl9.q81Aok4jYUFHeN0RhpKH07t_E8im5HJIUnPLXIsXxso",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"temperature\",\r\n    \"value\": 7.5,\r\n    \"date\": \"2025-03-25\",\r\n    \"time\": \"16:53\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v2/module/measurement",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"module",
+								"measurement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sensor data list",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImRuaSI6IlNFTlNPUi0xNzQyOTQwNjAyMTE0IiwiaWF0IjoxNzQyOTcxNTE3LCJleHAiOjE3NDI5ODk1MTd9.6_t5dKFHUES906gJROjrzUWTTztpfpcCNGftSlXwHBU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v2/module/measurement",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"module",
+								"measurement"
+							]
+						}
 					},
 					"response": []
 				}

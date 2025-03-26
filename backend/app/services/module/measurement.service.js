@@ -1,6 +1,5 @@
 const db = require('../../../models');
 const { Measurement, Sensor } = db;
-const logger = require('../../utils/logger');
 
 class MeasurementService {
     async createMeasurement(payload, id_module) {
@@ -32,7 +31,33 @@ class MeasurementService {
 
             return measurement;
         } catch (error) {
-            throw new Error('Error al crear medición');
+            throw new Error('Error creating measurement');
+        }
+    }
+
+    async getMeasurements(moduleId = null) {
+        try {
+            let query = {
+                include: [{
+                    model: Sensor,
+                    as: 'sensor',
+                    attributes: ['name', 'type', 'id_module']
+                }],
+                order: [
+                    ['date', 'DESC'],
+                    ['time', 'DESC']
+                ]
+            };
+            
+            if (moduleId) {
+                query.include[0].where = { id_module: moduleId };
+            }
+            
+            const measurements = await Measurement.findAll(query);
+            return measurements;
+        } catch (error) {
+            console.error('Error getting measurements:', error);
+            throw new Error('Error obtaining measurements');
         }
     }
 }
