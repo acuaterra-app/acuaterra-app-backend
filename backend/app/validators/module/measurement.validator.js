@@ -1,9 +1,11 @@
 const { body, query } = require('express-validator');
-
+const SENSOR_TYPES = require('../../enums/sensor_types.enum');
 const createMeasurementValidation = [
+
     body('type')
         .notEmpty().withMessage('Sensor type is required')
-        .isString().withMessage('Sensor type must be a string'),
+        .isString().withMessage('Sensor type must be a string')
+        .isIn(Object.values(SENSOR_TYPES)).withMessage('Sensor type must be either temperature or humidity'),
 
     body('value')
         .notEmpty().withMessage('Measurement value is required')
