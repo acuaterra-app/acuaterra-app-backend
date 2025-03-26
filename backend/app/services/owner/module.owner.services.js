@@ -116,7 +116,7 @@ class ModuleOwnerService {
                 sensorUser = await User.create({
                     email: sensorEmail,
                     password: hashedPassword,
-                    id_rol: ROLES.SENSOR,
+                    id_rol: ROLES.MODULE,
                     name: `Sensor ${name}`,
                     status: 'active',
                     dni: 'SENSOR-' + Date.now(),

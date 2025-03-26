@@ -34,6 +34,7 @@ const ownerModuleRoutes = require('./app/routes/owner/module.owner.route');
 const tempNotificationRoutes = require('./app/routes/temp/notification.route');
 const notificationRoutes = require('./app/routes/shared/notification.route');
 const ownerUserRoutes = require('./app/routes/owner/user.owner.route');
+const measurementRoutes = require('./app/routes/module/measurement.route');
 
 app.use(morgan('tiny')); 
 app.use(express.json()); 
@@ -79,6 +80,11 @@ app.use('/api/v2/admin/users', userAdminRoutes);
  * Temporary Routes
  */
 app.use('/api/v2/temp/notifications', tempNotificationRoutes);
+
+/*
+* Module Routes
+*/
+app.use('/api/v2/module/measurement', measurementRoutes);
 
 
 const PORT = process.env.PORT || 3000;
