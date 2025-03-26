@@ -58,33 +58,11 @@ class MeasurementController {
     async getMeasurements(req, res) {
         try {
             const userId = req.user.id;
-            const user = await User.findByPk(userId);
-            if (!user) {
-                throw new Error('User not found');
-            }
-
-            let contact;
-            try {
-                contact = JSON.parse(user.contact);
-            } catch (e) {
-                throw new Error('Invalid contact information');
-            }
-
-            if (!contact || contact.type !== 'sensor' || !contact.moduleId) {
-                throw new Error('Invalid sensor configuration');
-            }
-
-            const moduleId = contact.moduleId;
-            const module = await Module.findByPk(moduleId);
-            if (!module) {
-                throw new Error('Module not found');
-            }
-
-            const measurements = await this.measurementService.getMeasurements(moduleId);
+            const measurements = await this.measurementService.getMeasurements(userId);
 
             const response = ApiResponse.createApiResponse(
                 'Measurements retrieved successfully',
-                measurements,
+                [measurements],
                 []
             );
             res.status(200).json(response);

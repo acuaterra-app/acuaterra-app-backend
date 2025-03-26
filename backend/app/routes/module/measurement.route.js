@@ -25,7 +25,7 @@ router.post(
 router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([Role.MODULE]),
+    validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
     (req, res) => measurementController.getMeasurements(req, res)
 );
 

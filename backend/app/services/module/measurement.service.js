@@ -1,5 +1,5 @@
-const db = require('../../../models');
-const { Measurement, Sensor } = db;
+
+const { Measurement, Sensor, Module, User } = require('../../../models');
 
 class MeasurementService {
     async createMeasurement(payload, id_module) {
@@ -35,29 +35,53 @@ class MeasurementService {
         }
     }
 
-    async getMeasurements(moduleId = null) {
+    async getMeasurements(loggedUserId) {
         try {
-            let query = {
+            if (!loggedUserId) {
+                throw new Error('User ID is required');
+            }
+
+            const user = await User.findByPk(loggedUserId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const userSensors = await Sensor.findAll({
                 include: [{
-                    model: Sensor,
-                    as: 'sensor',
-                    attributes: ['name', 'type', 'id_module']
-                }],
+                    model: Module,
+                    as: 'module',
+                    where: {
+                        created_by_user_id: loggedUserId
+                    },
+                    required: true
+                }]
+            });
+
+            if (userSensors.length === 0) {
+                return [];
+            }
+
+            const sensorIds = userSensors.map(sensor => sensor.id);
+
+            const measurements = await Measurement.findAll({
+                where: {
+                    id_sensor: sensorIds
+                },
+                attributes: [
+                    'id', 'id_sensor','value',
+                    'date', 'time', 'createdAt',
+                    'updatedAt'
+                ],
                 order: [
                     ['date', 'DESC'],
                     ['time', 'DESC']
                 ]
-            };
-            
-            if (moduleId) {
-                query.include[0].where = { id_module: moduleId };
-            }
-            
-            const measurements = await Measurement.findAll(query);
+            });
+
             return measurements;
         } catch (error) {
-            console.error('Error getting measurements:', error);
-            throw new Error('Error obtaining measurements');
+            console.error('Detailed error in getMeasurements:', error);
+            throw new Error(error.message || 'Error obtaining measurements');
         }
     }
 }
