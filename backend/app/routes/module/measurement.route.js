@@ -22,4 +22,11 @@ router.post(
     (req, res) => measurementController.createMeasurement(req, res)
 );
 
+router.get(
+    '/',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
+    (req, res) => measurementController.getMeasurementsByModule(req, res)
+);
+
 module.exports = router;

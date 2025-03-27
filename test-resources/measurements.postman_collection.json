@@ -10,14 +10,125 @@
 			"name": "module",
 			"item": [
 				{
-					"name": "post sensors",
+					"name": "post sensors data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImRuaSI6IlNFTlNPUi0xNzQyOTQwMDI4NjY4IiwiaWF0IjoxNzQzMDQ4NjIxLCJleHAiOjE3NDMwNjY2MjF9.hkF3E6xflOadlnfQcdHa47NI1lFjL0LRWBoG9ubOlWo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"temperature\",\r\n    \"value\": 10.5,\r\n    \"date\": \"2025-03-25\",\r\n    \"time\": \"16:53\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v2/module/measurement",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"module",
+								"measurement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sensor data list",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0MzA0NzgzMywiZXhwIjoxNzQzMDY1ODMzfQ.ZNlDi4WU2yskQYEgpWcbwSlUy_MC9TQrFYJ22EA69u4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v2/module/measurement",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"module",
+								"measurement"
+							]
+						}
 					},
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "login Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"// Verifica si la respuesta contiene el token",
+							"if (response.data && response.data[0].token) {",
+							"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjQ0MTg2MDA2MyIsImlhdCI6MTc0MTkxMzg3MSwiZXhwIjoxNzQxOTMxODcxfQ.D6xHYiGE-2SppB73ky258PgyUapEchwnViujQ7Lk8QM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n   // \"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\",\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n   \"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    \"password\": \"55f52b145337\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v2/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v2",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

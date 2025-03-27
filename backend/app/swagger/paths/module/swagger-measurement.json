@@ -3,7 +3,7 @@
     "post": {
       "tags": ["Module/Measurements"],
       "summary": "Create a new measurement",
-      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- **type**: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- **value**: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- **date**: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- **time**: Measurement time\n  - Type: String\n  - Format: HH:mm:ss\n  - Purpose: Time when the measurement was taken\n",
+      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm:ss\n  - Purpose: Time when the measurement was taken",
       "operationId": "createMeasurement",
       "security": [
         {
@@ -269,7 +269,237 @@
           }
         }
       }
+    },
+    "get": {
+      "tags": [
+        "Module/Measurements"
+      ],
+      "summary": "Get measurements list",
+      "description": "Retrieves measurements for the authenticated user's module sensors.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from modules created by or assigned to the user\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific sensor",
+      "operationId": "getMeasurements",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "sensorId",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the specific sensor to retrieve measurements for"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Measurements retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Measurements retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "id_sensor": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "value": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 7.5
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2025-03-25"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "time",
+                          "example": "16:53"
+                        },
+                        "sensor": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Temperature Sensor"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "temperature"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "204": {
+          "description": "No measurements found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "No measurements found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Invalid token"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Forbidden"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "User does not have required role"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error getting measurements"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Internal server error"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
-
