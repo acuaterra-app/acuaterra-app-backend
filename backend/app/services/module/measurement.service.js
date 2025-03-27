@@ -1,5 +1,6 @@
 
 const { Measurement, Sensor, Module, User } = require('../../../models');
+const { Op } = require('sequelize');
 
 class MeasurementService {
     async createMeasurement(payload, id_module) {
@@ -35,46 +36,47 @@ class MeasurementService {
         }
     }
 
-    async getMeasurementsByOwnerModule(userId) {
+    async getMeasurementsByOwnerModule(userId, sensorId = null) {
         try {
-            const module = await Module.findOne({
+            const userModules = await Module.findAll({
                 where: {
-                    created_by_user_id: userId
-                }
+                    [Op.or]: [
+                        { created_by_user_id: userId },
+                        { '$users.id$': userId }
+                    ]
+                },
+                include: [
+                    {
+                        model: User,
+                        as: 'users',
+                        through: { attributes: [] }
+                    },
+                    {
+                        model: Sensor,
+                        as: 'sensors',
+                        required: sensorId ? true : false,
+                        where: sensorId ? { id: sensorId } : {}
+                    }
+                ]
             });
 
-            if (!module) {
+            if (userModules.length === 0) {
                 return {
                     success: false,
-                    message: 'No module found',
+                    message: 'No module found for user',
                     data: []
                 };
             }
 
-            const sensors = await Sensor.findAll({
-                where: {
-                    id_module: module.id
-                }
-            });
 
-            if (sensors.length === 0) {
-                return {
-                    success: true,
-                    message: 'No sensors found',
-                    data: []
-                };
-            }
-
-            const sensorIds = sensors.map(sensor => sensor.id);
+            const sensorIds = userModules.flatMap(module =>
+                module.sensors.map(sensor => sensor.id)
+            );
 
             const measurements = await Measurement.findAll({
                 where: {
                     id_sensor: sensorIds
                 },
-                order: [
-                    ['date', 'DESC'],
-                    ['time', 'DESC']
-                ],
             });
 
             return {

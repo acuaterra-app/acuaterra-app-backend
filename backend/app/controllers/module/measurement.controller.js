@@ -54,17 +54,17 @@ class MeasurementController {
             res.status(statusCode).json(response);
         }
     }
-
     async getMeasurementsByModule(req, res) {
         try {
             const userId = req.user.id;
+            const sensorId = req.query.sensorId;
 
-            const result = await this.measurementService.getMeasurementsByOwnerModule(userId);
+            const result = await this.measurementService.getMeasurementsByOwnerModule(userId, sensorId);
 
             if (result.success) {
                 const response = ApiResponse.createApiResponse(
                     result.message,
-                    [result.data],
+                    result.data,
                     []
                 );
                 res.status(result.data.length > 0 ? 200 : 204).json(response);
