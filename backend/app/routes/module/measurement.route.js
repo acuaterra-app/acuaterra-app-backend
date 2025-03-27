@@ -26,7 +26,7 @@ router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
-    (req, res) => measurementController.getMeasurements(req, res)
+    (req, res) => measurementController.getMeasurementsByModule(req, res)
 );
 
 module.exports = router;

@@ -35,53 +35,60 @@ class MeasurementService {
         }
     }
 
-    async getMeasurements(loggedUserId) {
+    async getMeasurementsByOwnerModule(userId) {
         try {
-            if (!loggedUserId) {
-                throw new Error('User ID is required');
-            }
-
-            const user = await User.findByPk(loggedUserId);
-            if (!user) {
-                throw new Error('User not found');
-            }
-
-            const userSensors = await Sensor.findAll({
-                include: [{
-                    model: Module,
-                    as: 'module',
-                    where: {
-                        created_by_user_id: loggedUserId
-                    },
-                    required: true
-                }]
+            const module = await Module.findOne({
+                where: {
+                    created_by_user_id: userId
+                }
             });
 
-            if (userSensors.length === 0) {
-                return [];
+            if (!module) {
+                return {
+                    success: false,
+                    message: 'No module found',
+                    data: []
+                };
             }
 
-            const sensorIds = userSensors.map(sensor => sensor.id);
+            const sensors = await Sensor.findAll({
+                where: {
+                    id_module: module.id
+                }
+            });
+
+            if (sensors.length === 0) {
+                return {
+                    success: true,
+                    message: 'No sensors found',
+                    data: []
+                };
+            }
+
+            const sensorIds = sensors.map(sensor => sensor.id);
 
             const measurements = await Measurement.findAll({
                 where: {
                     id_sensor: sensorIds
                 },
-                attributes: [
-                    'id', 'id_sensor','value',
-                    'date', 'time', 'createdAt',
-                    'updatedAt'
-                ],
                 order: [
                     ['date', 'DESC'],
                     ['time', 'DESC']
-                ]
+                ],
             });
 
-            return measurements;
+            return {
+                success: true,
+                message: 'Measurements retrieved successfully',
+                data: measurements
+            };
         } catch (error) {
-            console.error('Detailed error in getMeasurements:', error);
-            throw new Error(error.message || 'Error obtaining measurements');
+            console.error('Error in getMeasurementsByOwnerModule:', error);
+            return {
+                success: false,
+                message: 'Error obtaining measurements',
+                error: error.message
+            };
         }
     }
 }

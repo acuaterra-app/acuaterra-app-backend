@@ -3,7 +3,7 @@
     "post": {
       "tags": ["Module/Measurements"],
       "summary": "Create a new measurement",
-      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- **type**: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- **value**: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- **date**: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- **time**: Measurement time\n  - Type: String\n  - Format: HH:mm:ss\n  - Purpose: Time when the measurement was taken\n",
+      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm:ss\n  - Purpose: Time when the measurement was taken",
       "operationId": "createMeasurement",
       "security": [
         {
@@ -271,9 +271,11 @@
       }
     },
     "get": {
-      "tags": ["Module/Measurements"],
+      "tags": [
+        "Module/Measurements"
+      ],
       "summary": "Get measurements list",
-      "description": "Retrieves measurements for the authenticated module's sensors.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module",
+      "description": "Retrieves measurements for the authenticated owner's module sensors.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Only retrieves measurements from modules created by the owner",
       "operationId": "getMeasurements",
       "security": [
         {
@@ -303,22 +305,22 @@
                         },
                         "id_sensor": {
                           "type": "integer",
-                          "example": 1
+                          "example": 3
                         },
                         "value": {
                           "type": "number",
                           "format": "decimal",
-                          "example": 25.5
+                          "example": 7.5
                         },
                         "date": {
                           "type": "string",
                           "format": "date",
-                          "example": "2024-03-25"
+                          "example": "2025-03-25"
                         },
                         "time": {
                           "type": "string",
                           "format": "time",
-                          "example": "14:30:00"
+                          "example": "16:53"
                         },
                         "sensor": {
                           "type": "object",
@@ -332,26 +334,69 @@
                               "example": "temperature"
                             }
                           }
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-03-25T19:30:00.000Z"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-03-25T19:30:00.000Z"
                         }
                       }
                     }
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "204": {
+          "description": "No measurements found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "No measurements found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "No module found for owner",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "No module found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "No module found for this owner"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -479,4 +524,3 @@
     }
   }
 }
-

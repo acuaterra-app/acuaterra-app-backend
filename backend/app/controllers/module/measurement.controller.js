@@ -55,26 +55,35 @@ class MeasurementController {
         }
     }
 
-    async getMeasurements(req, res) {
+    async getMeasurementsByModule(req, res) {
         try {
             const userId = req.user.id;
-            const measurements = await this.measurementService.getMeasurements(userId);
 
-            const response = ApiResponse.createApiResponse(
-                'Measurements retrieved successfully',
-                [measurements],
-                []
-            );
-            res.status(200).json(response);
+            const result = await this.measurementService.getMeasurementsByOwnerModule(userId);
+
+            if (result.success) {
+                const response = ApiResponse.createApiResponse(
+                    result.message,
+                    [result.data],
+                    []
+                );
+                res.status(result.data.length > 0 ? 200 : 204).json(response);
+            } else {
+                const response = ApiResponse.createApiResponse(
+                    result.message,
+                    [],
+                    [{ msg: result.error || result.message }]
+                );
+                res.status(result.data ? 404 : 500).json(response);
+            }
         } catch (error) {
-            console.error("Error getting measurements:", error);
-            const statusCode = error.statusCode || 500;
+            console.error("Unexpected error in getMeasurementsByModule:", error);
             const response = ApiResponse.createApiResponse(
-                'Error getting measurements',
+                'Unexpected error',
                 [],
-                [{ msg: error.message }]
+                [{ msg: 'Internal server error' }]
             );
-            res.status(statusCode).json(response);
+            res.status(500).json(response);
         }
     }
 }
