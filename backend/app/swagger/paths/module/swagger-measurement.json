@@ -1,9 +1,9 @@
 {
-  "/api/module/measurements": {
+  "/api/v2/module/measurement": {
     "post": {
       "tags": ["Module/Measurements"],
       "summary": "Create a new measurement",
-      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm:ss\n  - Purpose: Time when the measurement was taken",
+      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm\n  - Purpose: Time when the measurement was taken",
       "operationId": "createMeasurement",
       "security": [
         {
@@ -40,7 +40,7 @@
                   "type": "string",
                   "format": "time",
                   "description": "Time of measurement",
-                  "example": "14:30:00"
+                  "example": "14:30"
                 }
               }
             }
@@ -85,7 +85,7 @@
                         "time": {
                           "type": "string",
                           "format": "time",
-                          "example": "14:30:00"
+                          "example": "14:30"
                         },
                         "createdAt": {
                           "type": "string",
@@ -96,6 +96,88 @@
                           "type": "string",
                           "format": "date-time",
                           "example": "2024-03-25T19:30:00.000Z"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "202": {
+          "description": "Measurement created successfully with alert generated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Measurement created successfully with alert"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "id_sensor": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "value": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 25.5
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-03-25"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "time",
+                          "example": "14:30"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "thresholdInfo": {
+                          "type": "object",
+                          "properties": {
+                            "threshold": {
+                              "type": "number",
+                              "format": "decimal",
+                              "example": 30.0
+                            },
+                            "condition": {
+                              "type": "string",
+                              "example": "greater_than"
+                            },
+                            "message": {
+                              "type": "string",
+                              "example": "Temperature exceeds threshold"
+                            }
+                          }
                         }
                       }
                     }
@@ -271,11 +353,9 @@
       }
     },
     "get": {
-      "tags": [
-        "Module/Measurements"
-      ],
+      "tags": ["Module/Measurements"],
       "summary": "Get measurements list",
-      "description": "Retrieves measurements for the authenticated user's module sensors.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from modules created by or assigned to the user\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific sensor",
+      "description": "Retrieves measurements for the authenticated user's module sensors, ordered by date and time in descending order (newest first).\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from modules created by or assigned to the user\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific sensor by ID",
       "operationId": "getMeasurements",
       "security": [
         {
@@ -290,7 +370,7 @@
           "schema": {
             "type": "integer"
           },
-          "description": "ID of the specific sensor to retrieve measurements for"
+          "description": "ID of the specific sensor to retrieve measurements for. If not provided, returns measurements from all sensors associated with the module."
         }
       ],
       "responses": {
@@ -336,6 +416,10 @@
                         "sensor": {
                           "type": "object",
                           "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
                             "name": {
                               "type": "string",
                               "example": "Temperature Sensor"
@@ -343,6 +427,10 @@
                             "type": {
                               "type": "string",
                               "example": "temperature"
+                            },
+                            "moduleId": {
+                              "type": "integer",
+                              "example": 1
                             }
                           }
                         }
