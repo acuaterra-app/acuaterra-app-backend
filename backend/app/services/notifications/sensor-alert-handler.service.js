@@ -1,4 +1,5 @@
 const NotificationService = require('./notification.service');
+const NotificationFactory = require('./notification.factory');
 const logger = require('../../utils/logger');
 const { Module, User, UserModule } = require('../../../models');
 
@@ -31,22 +32,32 @@ class SensorAlertHandlerService {
       const message = this.generateAlertMessage(measurement, thresholdInfo);
 
       const notificationPromises = users.map(user => {
-        return NotificationService.saveAndSendNotification({
-          user_id: user.id,
+        const notificationData = {
+          moduleId: measurement.moduleId,
+          moduleName: module.name,
+          sensorType: measurement.sensorType,
+          value: measurement.value,
+          timestamp: measurement.timestamp,
+          threshold: {
+            min: thresholdInfo.min,
+            max: thresholdInfo.max
+          }
+        };
+
+        const notification = NotificationFactory.createNotification('sensor_alert', {
+          user,
           title,
           message,
-          type: 'sensor_alert',
-          data: {
-            moduleId: measurement.moduleId,
-            moduleName: module.name,
-            sensorType: measurement.sensorType,
-            value: measurement.value,
-            timestamp: measurement.timestamp,
-            threshold: {
-              min: thresholdInfo.min,
-              max: thresholdInfo.max
-            }
-          }
+          data: notificationData
+        });
+
+        // Use the notification service with the created notification
+        return NotificationService.saveAndSendNotification({
+          user_id: user.id,
+          title: notification.getTitle(),
+          message: notification.getBody(),
+          type: notification.getType(),
+          data: notificationData
         });
       });
 
