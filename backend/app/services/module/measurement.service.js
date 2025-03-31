@@ -1,8 +1,10 @@
 
 const { Measurement, Sensor, Module, User } = require('../../../models');
 const { Op } = require('sequelize');
+const SensorAlertHandlerService = require('../notifications/sensor-alert-handler.service');
 
 class MeasurementService {
+
     async createMeasurement(payload, id_module) {
         try {
             const {
@@ -29,6 +31,15 @@ class MeasurementService {
                 date,
                 time
             });
+
+            if (payload.thresholdInfo && !payload.thresholdInfo.isWithinThreshold) {
+                await SensorAlertHandlerService.handleSensorAlert({
+                    sensorType: type,
+                    value,
+                    moduleId: id_module,
+                    timestamp: new Date(`${date} ${time}`)
+                }, payload.thresholdInfo);
+            }
 
             return measurement;
         } catch (error) {
@@ -68,7 +79,6 @@ class MeasurementService {
                 };
             }
 
-
             const sensorIds = userModules.flatMap(module =>
                 module.sensors.map(sensor => sensor.id)
             );
@@ -77,6 +87,7 @@ class MeasurementService {
                 where: {
                     id_sensor: sensorIds
                 },
+                order: [['date', 'DESC'], ['time', 'DESC']]
             });
 
             return {
@@ -85,7 +96,6 @@ class MeasurementService {
                 data: measurements
             };
         } catch (error) {
-            console.error('Error in getMeasurementsByOwnerModule:', error);
             return {
                 success: false,
                 message: 'Error obtaining measurements',

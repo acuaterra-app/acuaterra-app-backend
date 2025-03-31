@@ -25,7 +25,7 @@ class ValidateUserCreationMiddleware {
                 if (idRolNewUSer !== Role.MONITOR) {
                     return res.status(403).json(
                         ApiResponse.createApiResponse('Authorization failed', [], [{
-                            'error': 'Owners can only create Users'
+                            'error': 'Owners can only create Monitor'
                         }])
                     );
                 }
