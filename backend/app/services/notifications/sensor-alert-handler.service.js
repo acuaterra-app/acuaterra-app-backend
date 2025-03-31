@@ -1,7 +1,7 @@
 const NotificationService = require('./notification.service');
 const NotificationFactory = require('./notification.factory');
 const logger = require('../../utils/logger');
-const { Module, User, UserModule } = require('../../../models');
+const { Module, User, ModuleUser } = require('../../../models');
 
 class SensorAlertHandlerService {
 
@@ -14,14 +14,21 @@ class SensorAlertHandlerService {
         };
       }
 
-      const module = await Module.findByPk(measurement.moduleId);
+      const module = await Module.findByPk(measurement.moduleId, {
+        include: [{
+          model: User,
+          as: 'users',
+          attributes: ['id', 'name', 'email', 'device_id']
+        }]
+      });
+
       if (!module) {
-        throw new Error(`The cons module was not found ID ${measurement.moduleId}`);
+        throw new Error(`Module not found with ID ${measurement.moduleId}`);
       }
 
-      const users = await this.getUsersForModule(measurement.moduleId);
+      const users = module.users.filter(user => user.device_id);
       if (!users || users.length === 0) {
-        logger.warn(`No users associated with the module were found ${measurement.moduleId}`);
+        logger.warn(`No users with device_id found for module ${measurement.moduleId}`);
         return {
           success: false,
           message: 'There are no users to notify'
@@ -88,15 +95,19 @@ class SensorAlertHandlerService {
 
   async getUsersForModule(moduleId) {
     try {
-      const userModules = await UserModule.findAll({
-        where: { moduleId },
+      const module = await Module.findByPk(moduleId, {
         include: [{
           model: User,
+          as: 'users',
           attributes: ['id', 'name', 'email', 'device_id']
         }]
       });
 
-      return userModules.map(um => um.User).filter(user => user.device_id);
+      if (!module) {
+        return [];
+      }
+
+      return module.users.filter(user => user.device_id);
     } catch (error) {
       logger.error('Error getting users for module', {
         moduleId,
