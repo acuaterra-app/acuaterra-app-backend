@@ -57,7 +57,7 @@ class ValidateSensorThresholdMiddleware {
       const isWithinThreshold = value >= minThreshold && value <= maxThreshold;
 
       req.thresholdInfo = {
-        isWithinThreshold,
+        isOutOfThreshold: !isWithinThreshold,
         thresholds: {
           min: minThreshold,
           max: maxThreshold

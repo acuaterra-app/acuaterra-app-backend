@@ -32,13 +32,18 @@ class MeasurementService {
                 time
             });
 
-            if (payload.thresholdInfo && !payload.thresholdInfo.isWithinThreshold) {
+            if (payload.thresholdInfo && payload.thresholdInfo.isOutOfThreshold) {
                 await SensorAlertHandlerService.handleSensorAlert({
                     sensorType: type,
                     value,
                     moduleId: id_module,
                     timestamp: new Date(`${date} ${time}`)
-                }, payload.thresholdInfo);
+                },   {
+                        isOutOfThreshold: payload.thresholdInfo.isOutOfThreshold,
+                        min: payload.thresholdInfo.thresholds.min,
+                        max: payload.thresholdInfo.thresholds.max
+                    }
+                );
             }
 
             return measurement;
