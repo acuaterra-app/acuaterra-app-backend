@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const {validatePagination} =require('../../validators/shared/user.validator');
+const {validateMonitorRegistration} =require('../../validators/owner/monitor.owner.validator');
 const {validate} = require("../../middleware/validate.middleware");
 const UserOwnerController = require('../../controllers/owner/user.owner.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
@@ -11,12 +12,14 @@ const ValidateModuleAccessMiddleware = require("../../middleware/validateModuleA
 
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
+const ValidateUserMonitorCreationMiddleware = require("../../middleware/validateUserMonitorCreation.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const userOwnerService = new UserOwnerService();
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 const userOwnerController = new UserOwnerController(userOwnerService);
 const validateAccess = new ValidateModuleAccessMiddleware();
+const validateUserMonitorCreation = new ValidateUserMonitorCreationMiddleware();
 
 router.get('/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -24,6 +27,14 @@ router.get('/',
     validate(validatePagination),
     (req, res, next) => validateAccess.validateOwnerFarmAccess(req, res, next),
     (req, res) => userOwnerController.index(req, res)
+);
+
+router.post('/',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    validate(validateMonitorRegistration),
+    (req, res, next) => validateUserMonitorCreation.validate(req, res, next),
+    (req, res) => userOwnerController.createMonitor(req, res)
 );
 
 module.exports = router;

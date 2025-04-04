@@ -196,6 +196,61 @@
 									}
 								],
 								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users??page=1&%26limit=10&%26sortField=createdAt&%26sortOrder=DESC",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users"
+									],
+									"query": [
+										{
+											"key": "?page",
+											"value": "1"
+										},
+										{
+											"key": "&limit",
+											"value": "10"
+										},
+										{
+											"key": "&sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "&sortOrder",
+											"value": "DESC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create user monitor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0Mzc5NjI2OSwiZXhwIjoxNzQzODE0MjY5fQ.du6I5x10m69KnCMvM02hi57cY7PaB-loY47EluPL-CM",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"New1\",\r\n    \"email\": \"leo@acuaterra.tech\",\r\n    \"dni\": \"143221378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\",\r\n    \"id_module\": 8\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
 									"raw": "http://localhost:3000/api/v2/owner/users",
 									"protocol": "http",
 									"host": [
@@ -244,7 +299,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    \"email\": \"user@example.com\",\n    \"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\"\n}",
+							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n   // \"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\",\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n   \"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    \"password\": \"55f52b145337\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -252,10 +307,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{server}}/api/v2/auth/login",
+							"raw": "http://localhost:3000/api/v2/auth/login",
+							"protocol": "http",
 							"host": [
-								"{{server}}"
+								"localhost"
 							],
+							"port": "3000",
 							"path": [
 								"api",
 								"v2",

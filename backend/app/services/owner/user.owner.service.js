@@ -1,11 +1,16 @@
-const { User, Rol, Farm } = require('../../../models');
+const { User, Rol, Farm, Module, ModuleUser, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
 const { ROLES } = require('../../enums/roles.enum');
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
+const ejs = require('ejs');
+const path = require('path');
+const Mailer = require('../../utils/Mailer');
 
-/**
- * Specialized service for user-related operations for owners
- */
 class UserOwnerService {
+    constructor(mailer) {
+        this.mailer = mailer || new Mailer(process.env.RESEND_API_KEY);
+    }
 
     async getMonitorUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
         try {
@@ -63,7 +68,109 @@ class UserOwnerService {
         }
     }
 
+    async createMonitorUser(data) {
+        let transaction = null;
+        
+        try {
+            transaction = await sequelize.transaction();
+            
+            const temporaryPassword = uuidv4().substring(0, 8);
+            const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
+            
+            const newUser = await User.create({
+                name: data.name,
+                email: data.email,
+                dni: data.dni,
+                address: data.address || null,
+                contact: data.contact,
+                password: hashedPassword,
+                id_rol: ROLES.MONITOR,
+                createdBy: data.createdBy || null,
+                updatedBy: data.updatedBy || null
+            }, { transaction });
+
+            const module = await Module.findByPk(data.id_module, {
+                transaction
+            });
+            
+            if (!module) {
+                await transaction.rollback();
+                throw new Error('Module not found');
+            }
+
+            await ModuleUser.create({
+                id_module: module.id,
+                id_user: newUser.id
+            }, { transaction });
+            
+            const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL || 'https://acuaterra.tech/reset-password';
+            const subject = 'Bienvenido a Acuaterra Usuario Monitor - Credenciales de acceso';
+            
+            try {
+                const htmlContent = await ejs.renderFile(
+                    path.join(__dirname, '../../views/emails/new_user.ejs'),
+                    { 
+                        name: newUser.name, 
+                        email: newUser.email, 
+                        tempPassword: temporaryPassword, 
+                        resetPasswordUrl 
+                    }
+                );
+                
+                const emailResult = await this.mailer.sendEmail(
+                    newUser.email, 
+                    subject, 
+                    htmlContent, 
+                    process.env.RESEND_FROM_EMAIL
+                );
+                
+                if (!emailResult || !emailResult.success) {
+                    await transaction.rollback();
+                    throw new Error('Error sending email to the new monitor user. Please try again.\n');
+                }
+
+            } catch (emailError) {
+                await transaction.rollback();
+                throw new Error(`Error sending email to the new monitor user: ${emailError.message}`);
+            }
+            
+            await transaction.commit();
+            
+            const userWithAssociations = await User.findByPk(newUser.id, {
+                attributes: [
+                    'id',
+                    'name',
+                    'email',
+                    'dni',
+                    'address',
+                    'contact',
+                    'id_rol',
+                    'createdAt',
+                    'updatedAt'
+                ],
+                include: [
+                    { 
+                        model: Rol, 
+                        as: 'rol', 
+                        attributes: ['id', 'name'] 
+                    },
+                    { 
+                        model: Module, 
+                        as: 'assigned_modules', 
+                        attributes: ['id', 'name', 'location', 'species_fish'], 
+                        through: { attributes: [] } 
+                    }
+                ]
+            });
+
+            return userWithAssociations;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            throw new Error(`Error creation User Monitor: ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserOwnerService;
-
