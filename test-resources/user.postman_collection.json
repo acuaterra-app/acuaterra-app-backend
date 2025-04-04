@@ -237,13 +237,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0Mzc5NjI2OSwiZXhwIjoxNzQzODE0MjY5fQ.du6I5x10m69KnCMvM02hi57cY7PaB-loY47EluPL-CM",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Nombre Monitor\",\r\n    \"email\": \"monitor@example.com\",\r\n    \"dni\": \"12345678\",\r\n    \"address\": \"Dirección del monitor\",\r\n    \"contact\": \"123456789\",\r\n    \"id_module\": 1\r\n}",
+									"raw": "{\r\n    \"name\": \"New1\",\r\n    \"email\": \"leo@acuaterra.tech\",\r\n    \"dni\": \"143221378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\",\r\n    \"id_module\": 8\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

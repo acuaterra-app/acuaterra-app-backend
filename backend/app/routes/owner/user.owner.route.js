@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const {validatePagination} =require('../../validators/shared/user.validator');
-const {validateMonitorCreation} =require('../../validators/owner/monitor.validator');
+const {validateMonitorRegistration} =require('../../validators/owner/monitor.owner.validator');
 const {validate} = require("../../middleware/validate.middleware");
 const UserOwnerController = require('../../controllers/owner/user.owner.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
@@ -29,10 +29,10 @@ router.get('/',
     (req, res) => userOwnerController.index(req, res)
 );
 
-router.post('/monitor/create',
+router.post('/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
-    validate(validateMonitorCreation),
+    validate(validateMonitorRegistration),
     (req, res, next) => validateUserMonitorCreation.validate(req, res, next),
     (req, res) => userOwnerController.createMonitor(req, res)
 );

@@ -70,16 +70,15 @@ class userOwnerController {
             const result = await this.userOwnerService.createMonitorUser(monitorData);
 
             const response = ApiResponse.createApiResponse(
-                "Usuario monitor creado exitosamente",
+                "Monitor user created successfully",
                 [result],
                 []
             );
 
             return res.status(201).json(response);
         } catch (error) {
-            console.error("Error al crear usuario monitor:", error);
             const response = ApiResponse.createApiResponse(
-                "Error interno al crear usuario monitor",
+                "Internal error creating monitor user",
                 [],
                 [{ msg: error.message }]
             );

@@ -3,9 +3,14 @@ const { Op } = require('sequelize');
 const { ROLES } = require('../../enums/roles.enum');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
-const sendEmail = require('../../utils/Mailer');
+const ejs = require('ejs');
+const path = require('path');
+const Mailer = require('../../utils/Mailer');
 
 class UserOwnerService {
+    constructor(mailer) {
+        this.mailer = mailer || new Mailer(process.env.RESEND_API_KEY);
+    }
 
     async getMonitorUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
         try {
@@ -64,9 +69,11 @@ class UserOwnerService {
     }
 
     async createMonitorUser(data) {
-        const transaction = await sequelize.transaction();
+        let transaction = null;
         
         try {
+            transaction = await sequelize.transaction();
+            
             const temporaryPassword = uuidv4().substring(0, 8);
             const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
             
@@ -88,7 +95,7 @@ class UserOwnerService {
             
             if (!module) {
                 await transaction.rollback();
-                throw new Error('Módulo no encontrado');
+                throw new Error('Module not found');
             }
 
             await ModuleUser.create({
@@ -96,20 +103,51 @@ class UserOwnerService {
                 id_user: newUser.id
             }, { transaction });
             
-            await transaction.commit();
-
+            const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL || 'https://acuaterra.tech/reset-password';
+            const subject = 'Bienvenido a Acuaterra Usuario Monitor - Credenciales de acceso';
+            
             try {
-                await sendEmail({
-                    to: newUser.email,
-                    subject: 'Bienvenido a Acuaterra - Credenciales de acceso',
-                    text: `Hola ${newUser.name},\n\nSe ha creado tu cuenta como Monitor en Acuaterra.\n\nTus credenciales de acceso son:\nEmail: ${newUser.email}\nContraseña temporal: ${temporaryPassword}\n\nPor favor, cambia tu contraseña después de iniciar sesión.\n\nSaludos,\nEquipo de Acuaterra`,
-                    html: `<p>Hola ${newUser.name},</p><p>Se ha creado tu cuenta como Monitor en Acuaterra.</p><p>Tus credenciales de acceso son:</p><ul><li>Email: ${newUser.email}</li><li>Contraseña temporal: ${temporaryPassword}</li></ul><p>Por favor, cambia tu contraseña después de iniciar sesión.</p><p>Saludos,<br>Equipo de Acuaterra</p>`
-                });
-            } catch (emailError) {
-                console.error('Error al enviar email al nuevo monitor:', emailError);
-            }
+                const htmlContent = await ejs.renderFile(
+                    path.join(__dirname, '../../views/emails/new_user.ejs'),
+                    { 
+                        name: newUser.name, 
+                        email: newUser.email, 
+                        tempPassword: temporaryPassword, 
+                        resetPasswordUrl 
+                    }
+                );
+                
+                const emailResult = await this.mailer.sendEmail(
+                    newUser.email, 
+                    subject, 
+                    htmlContent, 
+                    process.env.RESEND_FROM_EMAIL
+                );
+                
+                if (!emailResult || !emailResult.success) {
+                    await transaction.rollback();
+                    throw new Error('Error sending email to the new monitor user. Please try again.\n');
+                }
 
+            } catch (emailError) {
+                await transaction.rollback();
+                throw new Error(`Error sending email to the new monitor user: ${emailError.message}`);
+            }
+            
+            await transaction.commit();
+            
             const userWithAssociations = await User.findByPk(newUser.id, {
+                attributes: [
+                    'id',
+                    'name',
+                    'email',
+                    'dni',
+                    'address',
+                    'contact',
+                    'id_rol',
+                    'createdAt',
+                    'updatedAt'
+                ],
                 include: [
                     { 
                         model: Rol, 
@@ -127,8 +165,10 @@ class UserOwnerService {
 
             return userWithAssociations;
         } catch (error) {
-            if (transaction) await transaction.rollback();
-            throw new Error(`Error al crear usuario monitor: ${error.message}`);
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            throw new Error(`Error creation User Monitor: ${error.message}`);
         }
     }
 }
