@@ -63,6 +63,29 @@ class userOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async createMonitor(req, res) {
+        try {
+            const monitorData = req.body;
+            const result = await this.userOwnerService.createMonitorUser(monitorData);
+
+            const response = ApiResponse.createApiResponse(
+                "Usuario monitor creado exitosamente",
+                [result],
+                []
+            );
+
+            return res.status(201).json(response);
+        } catch (error) {
+            console.error("Error al crear usuario monitor:", error);
+            const response = ApiResponse.createApiResponse(
+                "Error interno al crear usuario monitor",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
 }
 
 module.exports = userOwnerController;
