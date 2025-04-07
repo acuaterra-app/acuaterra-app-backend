@@ -85,6 +85,30 @@ class userOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async updateMonitor(req, res) {
+        try {
+            const { id } = req.params;
+            const monitorData = req.body;
+
+            const result = await this.userOwnerService.updateMonitorUser(id, monitorData);
+
+            const response = ApiResponse.createApiResponse(
+                "Monitor user updated successfully",
+                [result],
+                []
+            );
+
+            return res.json(response);
+        } catch (error) {
+            const response = ApiResponse.createApiResponse(
+                "Error updating monitor user",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
 }
 
 module.exports = userOwnerController;
