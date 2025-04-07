@@ -266,6 +266,14 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "update user monitor",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				},

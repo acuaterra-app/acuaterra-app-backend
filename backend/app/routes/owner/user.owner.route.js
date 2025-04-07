@@ -3,12 +3,14 @@ const router = express.Router();
 
 const {validatePagination} =require('../../validators/shared/user.validator');
 const {validateMonitorRegistration} =require('../../validators/owner/monitor.owner.validator');
+const {validateMonitorUpdate} =require('../../validators/owner/monitor.owner.validator');
 const {validate} = require("../../middleware/validate.middleware");
 const UserOwnerController = require('../../controllers/owner/user.owner.controller');
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
 const BlackListService = require('../../services/shared/blacklist.service');
 const UserOwnerService = require("../../services/owner/user.owner.service");
 const ValidateModuleAccessMiddleware = require("../../middleware/validateModuleAccess.middleware");
+const ValidateUsrMonitorUpdateMiddleware = require("../../middleware/validateUserMonitorUpdate.middleware");
 
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
@@ -20,6 +22,7 @@ const validateRoleMiddleware = new ValidateRoleMiddleware();
 const userOwnerController = new UserOwnerController(userOwnerService);
 const validateAccess = new ValidateModuleAccessMiddleware();
 const validateUserMonitorCreation = new ValidateUserMonitorCreationMiddleware();
+const validateUserUpdate = new ValidateUsrMonitorUpdateMiddleware();
 
 router.get('/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -35,6 +38,14 @@ router.post('/',
     validate(validateMonitorRegistration),
     (req, res, next) => validateUserMonitorCreation.validate(req, res, next),
     (req, res) => userOwnerController.createMonitor(req, res)
+);
+
+router.put('/:id',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    validate(validateMonitorUpdate),
+    (req, res, next) => validateUserUpdate.validate(req, res, next),
+    (req, res) => userOwnerController.updateMonitor(req, res)
 );
 
 module.exports = router;

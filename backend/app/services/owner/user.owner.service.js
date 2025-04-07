@@ -171,6 +171,82 @@ class UserOwnerService {
             throw new Error(`Error creation User Monitor: ${error.message}`);
         }
     }
+
+    async updateMonitorUser(userId, data) {
+        let transaction = null;
+
+        try {
+            transaction = await sequelize.transaction();
+
+            const existingUser = await User.findByPk(userId, { transaction });
+
+            await existingUser.update({
+                name: data.name || existingUser.name,
+                email: data.email || existingUser.email,
+                dni: data.dni || existingUser.dni,
+                address: data.address || existingUser.address,
+                contact: data.contact || existingUser.contact,
+                updatedBy: data.updatedBy || null
+            }, { transaction });
+
+            if (data.id_module) {
+                const module = await Module.findByPk(data.id_module, {
+                    transaction
+                });
+
+                if (!module) {
+                    await transaction.rollback();
+                    throw new Error('Module not found');
+                }
+
+                await ModuleUser.destroy({
+                    where: { id_user: existingUser.id },
+                    transaction
+                });
+
+                await ModuleUser.create({
+                    id_module: module.id,
+                    id_user: existingUser.id
+                }, { transaction });
+            }
+
+            await transaction.commit();
+
+            const updatedUser = await User.findByPk(existingUser.id, {
+                attributes: [
+                    'id',
+                    'name',
+                    'email',
+                    'dni',
+                    'address',
+                    'contact',
+                    'id_rol',
+                    'createdAt',
+                    'updatedAt'
+                ],
+                include: [
+                    {
+                        model: Rol,
+                        as: 'rol',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Module,
+                        as: 'assigned_modules',
+                        attributes: ['id', 'name', 'location', 'species_fish'],
+                        through: { attributes: [] }
+                    }
+                ]
+            });
+
+            return updatedUser;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            throw new Error(`Error updating monitor user: ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserOwnerService;
