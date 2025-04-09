@@ -32,11 +32,15 @@ module.exports = (sequelize) => {
       type: {
         type: DataTypes.ENUM('min', 'max'),
         allowNull: false
-      }
+      },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+            allowNull: false
+        }
     },
     {
       sequelize,
-      paranoid: true,
       modelName: 'Threshold',
       tableName: 'thresholds',
       timestamps: true

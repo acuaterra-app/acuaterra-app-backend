@@ -13,15 +13,19 @@ class FarmOwnerService {
                 limit: limit,
                 offset: offset,
                 order: [[sortField, sortOrder]],
+                where: {
+                    isActive: true
+                },
                 include: [{
                     model: User,
                     as: 'users',
-                    attributes: [],  // No necesitamos traer datos de usuarios
+                    attributes: [],
                     through: {
-                        attributes: []  // No necesitamos datos de la tabla pivote
+                        attributes: []
                     },
                     where: {
-                        id: userId  // Filtrar por el ID del usuario
+                        id: userId,
+                        isActive: true
                     }
                 }],
                 distinct: true

@@ -31,10 +31,12 @@ class UserOwnerService {
                     'address',
                     'contact',
                     'createdAt',
-                    'updatedAt'
+                    'updatedAt',
+                    'isActive'
                 ],
                 where: {
-                    id_rol: ROLES.MONITOR
+                    id_rol: ROLES.MONITOR,
+                    isActive: true
                 },
                 include: [
                     {
@@ -46,6 +48,7 @@ class UserOwnerService {
                         model: Farm,
                         attributes: ['id', 'name'],
                         as: 'Farms',
+                        where: { isActive: true },
                         through: { attributes: [] }
                     }
                 ],
@@ -178,7 +181,18 @@ class UserOwnerService {
         try {
             transaction = await sequelize.transaction();
 
-            const existingUser = await User.findByPk(userId, { transaction });
+            const existingUser = await User.findOne({
+                where: {
+                    id: userId,
+                    isActive: true
+                },
+                transaction
+            });
+
+            if (!existingUser) {
+                await transaction.rollback();
+                throw new Error('Active user not found');
+            }
 
             await existingUser.update({
                 name: data.name || existingUser.name,

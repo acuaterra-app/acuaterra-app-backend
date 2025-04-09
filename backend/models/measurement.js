@@ -35,10 +35,14 @@ module.exports = (sequelize) => {
     time: {
       type: DataTypes.TIME,
       allowNull: false
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
-    paranoid: true,
     modelName: 'Measurement',
     tableName: 'measurements',
     timestamps: true

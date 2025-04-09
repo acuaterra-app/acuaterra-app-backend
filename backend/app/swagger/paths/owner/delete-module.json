@@ -1,0 +1,275 @@
+{
+  "/api/v2/owner/modules/{id}": {
+    "delete": {
+      "tags": ["Owner/Modules"],
+      "summary": "Delete a module",
+      "description": "Soft deletes an existing module by setting isActive status to false. This operation deactivates the module in the system without permanently removing data, allowing for potential reactivation in the future. Deactivated modules will no longer appear in regular queries.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to deactivate\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to\n  - Middleware validates module existence and ownership access",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the module to delete",
+          "schema": {
+            "type": "integer",
+            "example": 6
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Module successfully deactivated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module deactivated successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 6
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Module stunning"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Indicates the module has been deactivated"
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "5914 Southwest Wing"
+                      },
+                      "id_farm": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-08T08:24:11.000Z"
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid module ID format",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Request error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "field",
+                        "msg": "id must be a number",
+                        "path": "id",
+                        "location": "params"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have access to deactivate the module",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "authorization",
+                        "msg": "You don't have permission to deactivate this module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Module with specified ID does not exist or is already inactive",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "type": "resource",
+                        "msg": "Active module with ID 6 not found or already inactive",
+                        "path": "id",
+                        "location": "params"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error deactivating module"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "type": "server",
+                        "msg": "Internal server error while deactivating module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
     "get": {
       "summary": "Get module by ID",
       "tags": ["Owner/Modules"],
-      "description": "Retrieves detailed information about a specific module including its associated farm, creator, users, and sensors.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to retrieve\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to\n  - Middleware validates module existence and ownership access",
+      "description": "Retrieves detailed information about a specific active module including its associated farm, creator, users, and sensors. Only modules with isActive=true will be returned. Inactive modules will result in a 404 Not Found response.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to retrieve\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to\n  - Middleware validates module existence and ownership access",
       "security": [
         {
           "apiKey": []
@@ -79,6 +79,11 @@
                       "created_by_user_id": {
                         "type": "integer",
                         "example": 1
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates whether the module is active in the system"
                       },
                       "createdAt": {
                         "type": "string",
@@ -361,8 +366,7 @@
                     "example": [
                       {
                         "type": "resource",
-                        "msg": "Module with ID 6 not found",
-                        "path": "id",
+                        "msg": "Active module with ID 6 not found",
                         "location": "params"
                       }
                     ]

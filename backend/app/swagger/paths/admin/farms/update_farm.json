@@ -3,7 +3,7 @@
     "put": {
       "summary": "Update farm by ID",
       "tags": ["Admin/Farms"],
-      "description": "Updates a farm's information including name, address, coordinates, and associated users.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the farm to update\n  - **Required**: Yes\n\n## Form Fields and Validation Rules\n\n### Field Specifications\n\n- **name**\n  - **Type**: String\n  - **Length**: 3-100 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Updated name for the farm\n\n- **address**\n  - **Type**: String\n  - **Length**: 5-200 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Updated physical location of the farm\n\n- **latitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -90 and 90\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"-1.345678\")\n\n- **longitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -180 and 180\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"2.345678\")\n\n- **users**\n  - **Type**: Array of integers\n  - **Validation**:\n    - Must contain at least one user ID\n    - Each ID must represent an existing user in the system\n    - Each user must have the OWNER role\n  - **Behavior**: This will replace all existing user associations\n  - **Purpose**: Associates farm owners with the farm",
+      "description": "Updates a farm's information including name, address, coordinates, and associated users. Only active farms (isActive=true) can be updated. Attempts to update inactive farms will result in a 404 Not Found response.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the farm to update\n  - **Required**: Yes\n\n## Form Fields and Validation Rules\n\n### Field Specifications\n",
       "security": [
         {
           "apiKey": []
@@ -99,6 +99,11 @@
                           "type": "string",
                           "example": "2.345678"
                         },
+                        "isActive": {
+                          "type": "boolean", 
+                          "example": true,
+                          "description": "Indicates whether the farm is active in the system"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time",
@@ -147,6 +152,7 @@
                         "address": "Nueva Dirección",
                         "latitude": "-1.345678",
                         "longitude": "2.345678",
+                        "isActive": true,
                         "createdAt": "2025-03-04T21:55:40.000Z",
                         "updatedAt": "2025-03-08T05:55:38.000Z",
                         "users": [
@@ -274,7 +280,7 @@
                     "example": [
                       {
                         "type": "resource",
-                        "msg": "Farm with ID 1 not found",
+                        "msg": "Active farm with ID 1 not found",
                         "path": "id",
                         "location": "params"
                       }

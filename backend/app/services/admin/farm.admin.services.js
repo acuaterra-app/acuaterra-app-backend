@@ -1,4 +1,4 @@
-const { Farm, User } = require('../../../models');
+const { Farm, User, FarmUser, sequelize } = require('../../../models');
 
 class FarmAdminService {
     async create(farmData) {
@@ -9,13 +9,15 @@ class FarmAdminService {
                 name,
                 address,
                 latitude,
-                longitude
+                longitude,
+                isActive: true
             });
 
             if (users && users.length > 0) {
                 const foundUsers = await User.findAll({
                     where: {
-                        id: users
+                        id: users,
+                        isActive: true
                     }
                 });
 
@@ -47,12 +49,18 @@ class FarmAdminService {
                 limit: limit,
                 offset: offset,
                 order: [[sortField, sortOrder]],
+                where: {
+                    isActive: true
+                },
                 include: [
                     {
                         as: 'users',
                         model: User,
                         attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
-                        through: {attributes: []}
+                        through: {attributes: []},
+                        where: {
+                            isActive: true
+                        }
                     }
                 ],
                 distinct: true
@@ -75,11 +83,17 @@ class FarmAdminService {
 
         try {
             const farm = await Farm.findByPk(id, {
+                where: {
+                    isActive: true
+                },
                 include: [{
                     model: User,
                     as: 'users',
                     attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
-                    through: {attributes: []}
+                    through: {attributes: []},
+                    where: {
+                        isActive: true
+                    }
                 }]
             });
 
@@ -104,7 +118,8 @@ class FarmAdminService {
                 name,
                 address,
                 latitude,
-                longitude
+                longitude,
+                isActive: true
             }, {
                 where: { id }
             });
@@ -112,7 +127,8 @@ class FarmAdminService {
             if (users.length > 0) {
                 const foundUsers = await User.findAll({
                     where: {
-                        id: users
+                        id: users,
+                        isActive: true
                     }
                 });
                 
@@ -124,7 +140,10 @@ class FarmAdminService {
                     model: User,
                     as: 'users',
                     attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
-                    through: { attributes: [] }
+                    through: { attributes: [] },
+                    where: {
+                        isActive: true
+                    }
                 }]
             });
         } catch (error) {
@@ -133,19 +152,42 @@ class FarmAdminService {
         }
     }
 
-    async delete(id) {
+    async delete(farmId) {
+        const transaction = await sequelize.transaction();
         try {
-            // Check if farm exists - this will throw an error if not found
-            await this.findById(id);
-            
-            // Delete the farm
-            await Farm.destroy({
-                where: { id }
+            const farm = await Farm.findByPk(farmId, {
+                where: {
+                    isActive: true
+                },
+                transaction
             });
             
-            return { id };
+            if (!farm) {
+                throw new Error('Farm not found');
+            }
+
+            await Farm.update(
+                { isActive: false },
+                {
+                    where: { id: farmId },
+                    transaction
+                }
+            );
+
+            await FarmUser.update(
+                { isActive: false },
+                {
+                    where: { id_farm: farmId },
+                    transaction
+                }
+            );
+
+            await transaction.commit();
+            
+            return { message: 'Farm deleted successfully' };
         } catch (error) {
-            console.error(`Error deleting farm with id ${id}:`, error);
+            await transaction.rollback();
+            console.error(`Error deleting farm with id ${farmId}:`, error);
             throw error;
         }
     }

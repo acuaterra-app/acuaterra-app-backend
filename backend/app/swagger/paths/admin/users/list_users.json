@@ -2,7 +2,7 @@
   "/api/v2/admin/users": {
     "get": {
       "summary": "List all users",
-      "description": "Retrieves a paginated list of all users with their details. Results can be filtered by roles and sorted by any field. Available roles for filtering depend on the authenticated user's role: Admins can see ADMIN(1), OWNER(2), and MONITOR(3) roles, while Owners can only see OWNER(2) and MONITOR(3) roles.",
+      "description": "Retrieves a paginated list of all active users (isActive=true) with their details. Inactive users are not included in the results. Results can be filtered by roles and sorted by any field. Available roles for filtering depend on the authenticated user's role: Admins can see ADMIN(1), OWNER(2), and MONITOR(3) roles, while Owners can only see OWNER(2) and MONITOR(3) roles.",
       "tags": [
         "Admin/Users"
       ],
@@ -100,6 +100,11 @@
                           "nullable": true,
                           "description": "Physical address of the user"
                         },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the user is active in the system"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time",
@@ -129,6 +134,7 @@
                         "email",
                         "dni",
                         "id_rol",
+                        "isActive",
                         "createdAt",
                         "updatedAt",
                         "rol"
@@ -190,8 +196,8 @@
                     "dni": "1978954342222",
                     "id_rol": 3,
                     "address": "calle 1 # 10 - 19",
+                    "isActive": true,
                     "createdAt": "2025-03-07T04:51:36.000Z",
-                    "updatedAt": "2025-03-07T04:51:36.000Z",
                     "rol": {
                       "name": "monitor"
                     }
@@ -203,6 +209,7 @@
                     "dni": "197895434222",
                     "id_rol": 3,
                     "address": "calle 1 # 10 - 19",
+                    "isActive": true,
                     "createdAt": "2025-03-06T03:21:44.000Z",
                     "updatedAt": "2025-03-06T03:21:44.000Z",
                     "rol": {
@@ -216,6 +223,7 @@
                     "dni": "8032383949",
                     "id_rol": 1,
                     "address": null,
+                    "isActive": true,
                     "createdAt": "2025-03-03T15:48:11.000Z",
                     "updatedAt": "2025-03-03T15:48:11.000Z",
                     "rol": {

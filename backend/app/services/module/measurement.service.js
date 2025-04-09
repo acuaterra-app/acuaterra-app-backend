@@ -56,6 +56,7 @@ class MeasurementService {
         try {
             const userModules = await Module.findAll({
                 where: {
+                    isActive: true,
                     [Op.or]: [
                         { created_by_user_id: userId },
                         { '$users.id$': userId }
@@ -65,13 +66,17 @@ class MeasurementService {
                     {
                         model: User,
                         as: 'users',
+                        where: { isActive: true },
                         through: { attributes: [] }
                     },
                     {
                         model: Sensor,
                         as: 'sensors',
                         required: sensorId ? true : false,
-                        where: sensorId ? { id: sensorId } : {}
+                        where: {
+                            isActive: true,
+                            ...(sensorId ? { id: sensorId } : {})
+                        }
                     }
                 ]
             });

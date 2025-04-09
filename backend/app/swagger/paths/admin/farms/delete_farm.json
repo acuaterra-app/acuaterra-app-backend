@@ -3,7 +3,7 @@
     "delete": {
       "summary": "Delete farm by ID",
       "tags": ["Admin/Farms"],
-      "description": "Removes a farm from the database using its unique identifier. This is a permanent action and cannot be undone.",
+      "description": "Soft deletes a farm by setting its isActive status to false. This operation deactivates the farm in the system without permanently removing data, allowing for potential reactivation in the future. When a farm is deactivated, it will no longer appear in regular queries, and all related farm-user relationships will also be marked as inactive.",
       "security": [
         {
           "apiKey": []
@@ -30,16 +30,21 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "Farm deleted successfully"
+                    "example": "Farm deactivated successfully"
                   },
                   "data": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "deleted_id": {
+                        "deactivated_id": {
                           "type": "string",
                           "example": "6"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Status showing the farm is now inactive"
                         }
                       }
                     }
@@ -151,7 +156,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": ["Farm with the specified ID does not exist"]
+                    "example": ["Farm with the specified ID does not exist or is already inactive"]
                   },
                   "meta": {
                     "type": "object",

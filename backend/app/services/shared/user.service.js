@@ -1,4 +1,4 @@
-const { User, Rol } = require('../../../models');
+const { User, Rol, sequelize, FarmUser, ModuleUser } = require('../../../models');
 const bcrypt = require('bcrypt');
 const ejs = require('ejs');
 const path = require('path');
@@ -37,6 +37,7 @@ class UserService {
                 ],
                 order: [[sortField, sortOrder]],
                 where: {
+                    isActive: true,
                     id_rol: {
                         [Op.or]: roles,
                     }
@@ -63,7 +64,8 @@ class UserService {
                 dni,
                 id_rol,
                 address,
-                contact
+                contact,
+                isActive: true
             });
 
             const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL;
@@ -88,7 +90,12 @@ class UserService {
 
     async findUserById(id) {
         try {
-            const user = await User.findByPk(id);
+            const user = await User.findOne({
+                where: {
+                    id,
+                    isActive: true
+                }
+            });
 
             if (!user) {
                 throw new Error(`User with id ${id} not found`);
@@ -103,7 +110,11 @@ class UserService {
 
     static async findAllUsers() {
         try {
-            const users = await User.findAll();
+            const users = await User.findAll({
+                where: {
+                    isActive: true
+                }
+            });
             return users;
         } catch (error) {
             throw error;
@@ -113,7 +124,10 @@ class UserService {
     static async findUsersByRole(roleId) {
         try {
             const users = await User.findAll({
-                where: { id_rol: roleId },
+                where: { 
+                    id_rol: roleId,
+                    isActive: true
+                },
                 include: [
                     {
                         model: Rol,
@@ -129,7 +143,12 @@ class UserService {
 
     async editUser(id, userData) {
         try {
-            const user = await User.findByPk(id);
+            const user = await User.findOne({
+                where: {
+                    id,
+                    isActive: true
+                }
+            });
 
             if (!user) {
                 throw new Error(`Usuario con id ${id} no encontrado`);
@@ -144,7 +163,8 @@ class UserService {
                 dni,
                 id_rol,
                 address,
-                contact
+                contact,
+                isActive: true
             }, {
                 where: { id }
             });
@@ -159,11 +179,58 @@ class UserService {
         }
     }
 
+    async softDeleteUser(userId) {
+        const transaction = await sequelize.transaction();
+
+        try {
+            await User.update(
+                { isActive: false },
+                {
+                    where: { id: userId },
+                    transaction
+                }
+            );
+
+            await FarmUser.update(
+                { isActive: false },
+                {
+                    where: { id_user: userId },
+                    transaction
+                }
+            );
+
+            await ModuleUser.update(
+                { isActive: false },
+                {
+                    where: { id_user: userId },
+                    transaction
+                }
+            );
+
+            await transaction.commit();
+            console.log(`User ${userId} and their relationships successfully deactivated (soft delete)`);
+            return true;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(`Error performing soft delete of user ${userId}:`, error);
+            throw new Error(`Error deactivating user: ${error.message}`);
+        }
+    }
+
     async deleteUser(id, currentUser) {
         try {
-            const userToDelete = await User.findByPk(id);
+            const userToDelete = await User.findOne({
+                where: {
+                    id,
+                    isActive: true
+                }
+            });
+            
+            if (!userToDelete) {
+                throw new Error(`User with id ${id} not found`);
+            }
 
-            await userToDelete.destroy();
+            await this.softDeleteUser(id);
             
             return userToDelete;
         } catch (error) {

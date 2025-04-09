@@ -3,7 +3,7 @@
     "put": {
       "tags": ["Owner/Modules"],
       "summary": "Update an existing module",
-      "description": "Updates an existing module with the provided information.",
+      "description": "Updates an existing active module with the provided information. Only modules with isActive=true can be updated. Attempts to update inactive modules will result in a 404 Not Found response.",
       "parameters": [
         {
           "in": "path",
@@ -131,6 +131,11 @@
                         "created_by_user_id": {
                           "type": "integer",
                           "example": 1
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the module is active in the system"
                         },
                         "createdAt": {
                           "type": "string",
@@ -335,8 +340,7 @@
           }
         },
         "404": {
-          "description": "Not found",
-          "content": {
+          "description": "Not found - Module with specified ID does not exist or is inactive",
             "application/json": {
               "schema": {
                 "type": "object",
@@ -411,5 +415,4 @@
       }
     }
   }
-}
 

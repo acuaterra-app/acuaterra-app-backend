@@ -3,7 +3,7 @@
     "get": {
       "tags": ["Admin/Farms"],
       "summary": "Get list of farms",
-      "description": "Retrieves a paginated list of all farms with their associated users",
+      "description": "Retrieves a paginated list of all active farms (isActive=true) with their associated users. Inactive farms are not included in the results.",
       "parameters": [
         {
           "name": "page",
@@ -64,6 +64,11 @@
                         "longitude": {
                           "type": "string",
                           "example": "-12.345678"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the farm is active in the system"
                         },
                         "createdAt": {
                           "type": "string",

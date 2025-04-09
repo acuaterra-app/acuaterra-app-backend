@@ -3,7 +3,7 @@
     "post": {
       "summary": "Create a new farm",
       "tags": ["Admin/Farms"],
-      "description": "Creates a new farm with the provided details and associates specified users with it.\n\n## Form Fields and Validation Rules\n\n### Required Fields\nAll fields listed below are required for successful farm creation.\n\n### Field Specifications\n\n- **name**\n  - **Type**: String\n  - **Length**: 3-100 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Unique identifier for the farm\n\n- **address**\n  - **Type**: String\n  - **Length**: 5-200 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Physical location of the farm\n\n- **latitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -90 and 90\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"12.345678\")\n\n- **longitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -180 and 180\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"-12.345678\")\n\n- **users**\n  - **Type**: Array of integers\n  - **Validation**:\n    - Must contain at least one user ID\n    - Each ID must represent an existing user in the system\n    - Each user must have the OWNER role\n  - **Behavior**: Duplicate IDs in the request will be processed only once\n  - **Purpose**: Associates farm owners with the farm",
+      "description": "Creates a new farm with the provided details and associates specified users with it.\n\n## Form Fields and Validation Rules\n\n### Required Fields\nAll fields listed below are required for successful farm creation.\n\n### Field Specifications\n\n- **name**\n  - **Type**: String\n  - **Length**: 3-100 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Unique identifier for the farm\n\n- **address**\n  - **Type**: String\n  - **Length**: 5-200 characters\n  - **Validation**: Must not be empty\n  - **Purpose**: Physical location of the farm\n\n- **latitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -90 and 90\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"12.345678\")\n\n- **longitude**\n  - **Type**: String (numeric value)\n  - **Range**: Must be between -180 and 180\n  - **Validation**: Must be a valid geographic coordinate\n  - **Format**: Decimal degrees (e.g., \"-12.345678\")\n\n- **users**\n  - **Type**: Array of integers\n  - **Validation**:\n    - Must contain at least one user ID\n    - Each ID must represent an existing user in the system\n    - Each user must have the OWNER role\n  - **Behavior**: Duplicate IDs in the request will be processed only once\n  - **Purpose**: Associates farm owners with the farm\n\n### System-Managed Fields\n\n- **isActive**\n  - **Type**: Boolean\n  - **Default**: true\n  - **Purpose**: Indicates whether the farm is active in the system\n  - **Behavior**: Set to true on creation, changed to false on soft deletion",
       "security": [
         {
           "apiKey": []
@@ -87,6 +87,11 @@
                           "type": "string",
                           "example": "-12.345678"
                         },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the farm is active in the system"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time",
@@ -135,6 +140,7 @@
                         "address": "Dirección de la granja",
                         "latitude": "12.345678",
                         "longitude": "-12.345678",
+                        "isActive": true,
                         "createdAt": "2025-03-08T05:29:07.000Z",
                         "updatedAt": "2025-03-08T05:29:07.000Z",
                         "users": [

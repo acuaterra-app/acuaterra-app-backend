@@ -3,7 +3,7 @@
     "post": {
       "tags": ["Shared/Users"],
       "summary": "Create a new user",
-      "description": "Creates a new user in the system.\n\n## Form Fields and Validation Rules\n\n### Required Fields\n- **name**: User's full name\n  - Type: String\n  - Length: 3-100 characters\n  - Validation: Must contain only letters, spaces, and common name characters\n  - Purpose: Used for identification and display throughout the system\n\n- **email**: User's email address\n  - Type: String\n  - Format: Valid email format (example@domain.com)\n  - Validation: Must be unique in the system\n  - Purpose: Used for login and system communications\n\n- **dni**: User's identification number\n  - Type: String\n  - Length: 8-15 characters\n  - Validation: Must be unique in the system\n  - Purpose: Official identification for the user\n\n- **id_rol**: User's role identifier\n  - Type: Integer\n  - Values: Valid role ID from the roles table\n  - Purpose: Determines the user's permissions and access level in the system\n\n### Optional Fields\n- **address**: User's physical address\n  - Type: String\n  - Length: 0-255 characters\n  - Purpose: Contact information for the user",
+      "description": "Creates a new user in the system.\n\n## Form Fields and Validation Rules\n\n### Required Fields\n- **name**: User's full name\n  - Type: String\n  - Length: 3-100 characters\n  - Validation: Must contain only letters, spaces, and common name characters\n  - Purpose: Used for identification and display throughout the system\n\n- **email**: User's email address\n  - Type: String\n  - Format: Valid email format (example@domain.com)\n  - Validation: Must be unique in the system\n  - Purpose: Used for login and system communications\n\n- **dni**: User's identification number\n  - Type: String\n  - Length: 8-15 characters\n  - Validation: Must be unique in the system\n  - Purpose: Official identification for the user\n\n- **id_rol**: User's role identifier\n  - Type: Integer\n  - Values: Valid role ID from the roles table\n  - Purpose: Determines the user's permissions and access level in the system\n\n### Optional Fields\n- **address**: User's physical address\n  - Type: String\n  - Length: 0-255 characters\n  - Purpose: Contact information for the user\n\n### System-Managed Fields\n- **isActive**: User's active status\n  - Type: Boolean\n  - Default: true\n  - Purpose: Indicates whether the user is active in the system\n  - Behavior: Set to true on creation, changed to false on soft deletion",
       "operationId": "createUser",
       "requestBody": {
         "description": "User object that needs to be created",
@@ -83,6 +83,11 @@
                       "address": {
                         "type": "string",
                         "example": "calle 1 # 10 - 19"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates whether the user is active in the system"
                       },
                       "updatedAt": {
                         "type": "string",

@@ -61,9 +61,15 @@ class ThresholdService {
 
     async createDefaultThresholds(id) {
         try {
-            const sensor = await Sensor.findByPk(id);
+            const sensor = await Sensor.findOne({
+                where: {
+                    id: id,
+                    isActive: true
+                }
+            });
+            
             if (!sensor) {
-                throw new Error(`Sensor with ID ${id} not found`);
+                throw new Error(`Active sensor with ID ${id} not found`);
             }
 
             const defaultThresholds = [

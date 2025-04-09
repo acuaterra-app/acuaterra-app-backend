@@ -3,7 +3,7 @@
     "get": {
       "summary": "Get farm by ID",
       "tags": ["Admin/Farms"],
-      "description": "Retrieves detailed information about a specific farm including its associated users.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the farm to retrieve\n  - **Required**: Yes",
+      "description": "Retrieves detailed information about a specific active farm including its associated active users. Only farms and users with isActive=true will be returned. Inactive farms or users will be filtered out.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the farm to retrieve\n  - **Required**: Yes",
       "security": [
         {
           "apiKey": []
@@ -58,6 +58,11 @@
                           "type": "string",
                           "example": "-12.345678"
                         },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the farm is active in the system"
+                        },
                         "createdAt": {
                           "type": "string",
                           "format": "date-time",
@@ -66,8 +71,7 @@
                         "updatedAt": {
                           "type": "string",
                           "format": "date-time",
-                          "example": "2025-03-08T05:29:07.000Z"
-                        },
+                          "example": "2025-03-08T05:29:07.000Z",
                         "users": {
                           "type": "array",
                           "items": {
@@ -93,41 +97,67 @@
                               "id_rol": {
                                 "type": "integer",
                                 "example": 2
+                              },
+                              "isActive": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "Indicates whether the user is active"
+                              },
+                              "rol": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer",
+                                    "example": 2
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "OWNER"
+                                  }
+                                }
+                              }
                               }
                             }
                           }
                         }
                       }
                     },
-                    "example": [
-                      {
-                        "id": 6,
-                        "name": "Mi granjita",
-                        "address": "Dirección de la granja",
-                        "latitude": "12.345678",
-                        "longitude": "-12.345678",
-                        "createdAt": "2025-03-08T05:29:07.000Z",
-                        "updatedAt": "2025-03-08T05:29:07.000Z",
-                        "users": [
-                          {
+                    "example": [{
+                      "id": 6,
+                      "name": "Mi granjita",
+                      "address": "Dirección de la granja",
+                      "latitude": "12.345678",
+                      "longitude": "-12.345678",
+                      "isActive": true,
+                      "createdAt": "2025-03-08T05:29:07.000Z",
+                      "updatedAt": "2025-03-08T05:29:07.000Z",
+                      "users": [
+                        {
+                          "id": 2,
+                          "name": "Brenda Schmeler",
+                          "email": "owner_1@example.com",
+                          "dni": "4772205787",
+                          "id_rol": 2,
+                          "isActive": true,
+                          "rol": {
                             "id": 2,
-                            "name": "Brenda Schmeler",
-                            "email": "owner_1@example.com",
-                            "dni": "4772205787",
-                            "id_rol": 2
-                          },
-                          {
-                            "id": 3,
-                            "name": "Mrs. Mae Sawayn",
-                            "email": "owner_2@example.com",
-                            "dni": "4280177629",
-                            "id_rol": 2
+                            "name": "OWNER"
                           }
-                        ]
-                      }
-                    ]
-                  },
-                  "errors": {
+                        },
+                        {
+                          "id": 3,
+                          "name": "Mrs. Mae Sawayn",
+                          "email": "owner_2@example.com",
+                          "dni": "4280177629",
+                          "id_rol": 2,
+                          "isActive": true,
+                          "rol": {
+                            "id": 2,
+                            "name": "OWNER"
+                          }
+                        }
+                      ]
+                    }],
                     "type": "array",
                     "example": []
                   },
@@ -223,7 +253,7 @@
         "404": {
           "description": "Not Found - Farm with specified ID does not exist",
           "content": {
-            "application/json": {
+          "description": "Not Found - Farm with specified ID does not exist or is inactive",
               "schema": {
                 "type": "object",
                 "properties": {
@@ -240,9 +270,9 @@
                     "example": [
                       {
                         "type": "resource",
-                        "msg": "Farm with ID 6 not found",
+                        "msg": "Active farm with ID 6 not found",
                         "path": "id",
-                        "location": "params"
+                        "msg": "Active farm with ID 6 not found or is inactive"
                       }
                     ]
                   },
@@ -286,5 +316,4 @@
       }
     }
   }
-}
 
