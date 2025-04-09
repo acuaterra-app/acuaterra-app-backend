@@ -84,13 +84,23 @@ module.exports = (sequelize) => {
         model: 'user',
         key: 'id'
       }
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
-    paranoid: true,
     modelName: 'Module',
     tableName: 'modules',
-    timestamps: true
+    timestamps: true,
+    defaultScope: {
+      where: { isActive: true }
+    },
+    scopes: {
+      all: {}
+    }
   });
   
   return Module;

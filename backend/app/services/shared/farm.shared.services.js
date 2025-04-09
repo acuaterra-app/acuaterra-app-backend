@@ -4,21 +4,25 @@ class FarmSharedService {
     async getFarmDetails(farmId) {
         try {
             const farm = await Farm.findOne({
-                where: { id: farmId },
+                where: { 
+                    id: farmId,
+                    isActive: true 
+                },
                 include: [
-                {
-                    model: User,
-                    as: 'users',
-                    through: { attributes: [] },
-                    include: [
                     {
-                        model: Rol,
-                        as: 'rol',
-                        attributes: ['id', 'name']
+                        model: User,
+                        as: 'users',
+                        where: { isActive: true },
+                        through: { attributes: [] },
+                        include: [
+                            {
+                                model: Rol,
+                                as: 'rol',
+                                attributes: ['id', 'name']
+                            }
+                        ],
+                        attributes: ['id', 'name', 'email', 'dni', 'id_rol']
                     }
-                    ],
-                    attributes: ['id', 'name', 'email', 'dni', 'id_rol']
-                }
                 ]
             });
 
@@ -35,12 +39,18 @@ class FarmSharedService {
     async checkUserHasAccessToFarm(userId, farmId) {
         try {
             const farm = await Farm.findOne({
-                where: { id: farmId },
+                where: { 
+                    id: farmId,
+                    isActive: true 
+                },
                 include: [
                     {
                         model: User,
                         as: 'users',
-                        where: { id: userId },
+                        where: { 
+                            id: userId,
+                            isActive: true 
+                        },
                         through: { attributes: [] }
                     }
                 ]

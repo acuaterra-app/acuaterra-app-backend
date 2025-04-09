@@ -75,6 +75,11 @@ module.exports = (sequelize) => {
         model: 'rol',
         key: 'id'
       }
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,

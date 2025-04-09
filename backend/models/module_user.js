@@ -27,6 +27,11 @@ module.exports = (sequelize) => {
         key: 'id'
       },
       onDelete: 'CASCADE'
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
@@ -34,6 +39,5 @@ module.exports = (sequelize) => {
     tableName: 'module_user',
     timestamps:true
   });
-
   return ModuleUser;
 };

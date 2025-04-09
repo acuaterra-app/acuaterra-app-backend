@@ -33,12 +33,23 @@ module.exports = (sequelize) => {
     longitude: {
         type: DataTypes.STRING(256),
         allowNull: false
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
     modelName: 'Farm',
     tableName: 'farms',
-    timestamps: true
+    timestamps: true,
+    defaultScope: {
+      where: { isActive: true }
+    },
+    scopes: {
+      all: {}
+    }
   });
 
   return Farm;

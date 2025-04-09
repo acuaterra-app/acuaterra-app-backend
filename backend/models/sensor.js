@@ -41,10 +41,14 @@ module.exports = (sequelize) => {
         model: 'module',
         key: 'id'
       }
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
-    paranoid: true,
     modelName: 'Sensor',
     tableName: 'sensors',
     timestamps: true

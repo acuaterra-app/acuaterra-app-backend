@@ -2,7 +2,7 @@
   "/api/v2/admin/users/{id}": {
     "delete": {
       "summary": "Delete a user",
-      "description": "Deletes an existing user from the system by their unique identifier",
+      "description": "Soft deletes an existing user by setting their isActive status to false. This operation deactivates the user in the system without permanently removing data, allowing for potential reactivation in the future. Deactivated users will no longer appear in regular queries.",
       "tags": [
         "Admin/Users"
       ],
@@ -24,7 +24,7 @@
       ],
       "responses": {
         "200": {
-          "description": "User successfully deleted",
+          "description": "User successfully deactivated",
           "content": {
             "application/json": {
               "schema": {
@@ -32,46 +32,51 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "User deleted successfully"
+                    "example": "User deactivated successfully"
                   },
                   "data": {
                     "type": "object",
                     "properties": {
                       "id": {
                         "type": "integer",
-                        "description": "Unique identifier of the deleted user"
+                        "description": "Unique identifier of the deactivated user"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Indicates the user has been deactivated"
                       },
                       "name": {
                         "type": "string",
-                        "description": "Full name of the deleted user"
+                        "description": "Full name of the deactivated user"
                       },
                       "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Email address of the deleted user"
+                        "description": "Email address of the deactivated user"
                       },
                       "dni": {
                         "type": "string",
-                        "description": "Document Number ID of the deleted user"
+                        "description": "Document Number ID of the deactivated user"
                       },
                       "id_rol": {
                         "type": "integer",
-                        "description": "Role ID of the deleted user"
+                        "description": "Role ID of the deactivated user"
                       },
                       "address": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Physical address of the deleted user"
+                        "description": "Physical address of the deactivated user"
                       },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Timestamp when the deleted user was created"
+                        "description": "Timestamp when the deactivated user was created"
                       },
                       "updatedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Timestamp when the deleted user was last updated"
+                        "description": "Timestamp when the deactivated user was last updated"
                       }
                     }
                   },
@@ -100,9 +105,10 @@
                 ]
               },
               "example": {
-                "message": "User deleted successfully",
+                "message": "User deactivated successfully",
                 "data": {
                   "id": 12,
+                  "isActive": false,
                   "name": "NewPrueba2",
                   "email": "acuaterra_523@test.test",
                   "dni": "1978954342222",
@@ -132,7 +138,7 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "Error deleting user"
+                    "example": "Error deactivating user"
                   },
                   "data": {
                     "type": "array",
@@ -145,7 +151,7 @@
                       "properties": {
                         "msg": {
                           "type": "string",
-                          "example": "User not found"
+                          "example": "User not found or already inactive"
                         }
                       }
                     }
@@ -157,11 +163,11 @@
                 }
               },
               "example": {
-                "message": "Error deleting user",
+                "message": "Error deactivating user",
                 "data": [],
                 "errors": [
                   {
-                    "msg": "User not found"
+                    "msg": "User not found or already inactive"
                   }
                 ],
                 "meta": {}
@@ -178,7 +184,7 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "Error deleting user"
+                    "example": "Error deactivating user"
                   },
                   "data": {
                     "type": "array",
@@ -202,7 +208,7 @@
                 }
               },
               "example": {
-                "message": "Error deleting user",
+                "message": "Error deactivating user",
                 "data": [],
                 "errors": [
                   {

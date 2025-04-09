@@ -2,7 +2,7 @@
     "/api/v2/shared/users/{id}": {
         "put": {
             "summary": "Update user",
-            "description": "Allows updating the information of an existing user specified by their ID",
+            "description": "Allows updating the information of an existing active user specified by their ID. Only users with isActive=true can be updated. Attempts to update inactive users will result in a 404 Not Found response.",
             "tags": [
                 "Shared/Users"
             ],
@@ -57,7 +57,14 @@
                                     "example": "11232143"
                                 }
                             },
-                            "required": ["name", "email", "dni", "id_rol", "address", "contact"  ]
+                            "required": [
+                                "name",
+                                "email",
+                                "dni",
+                                "id_rol",
+                                "address",
+                                "contact"
+                            ]
                         }
                     }
                 }
@@ -108,6 +115,11 @@
                                                 "description": "Updated contact number",
                                                 "nullable": true
                                             },
+                                            "isActive": {
+                                                "type": "boolean",
+                                                "example": true,
+                                                "description": "Indicates whether the user is active in the system"
+                                            },
                                             "updatedAt": {
                                                 "type": "string",
                                                 "format": "date-time",
@@ -123,7 +135,11 @@
                                         "description": "List of errors, if any"
                                     }
                                 },
-                                "required": ["message", "data", "errors"]
+                                "required": [
+                                    "message",
+                                    "data",
+                                    "errors"
+                                ]
                             },
                             "example": {
                                 "message": "User updated successfully",
@@ -135,46 +151,69 @@
                                     "id_rol": 3,
                                     "address": "123 Main Street",
                                     "contact": "11232143",
-                                    "updatedAt": "2025-03-07T04:51:36.000Z"
-                                },
-                                "errors": []
+                                    "isActive": true,
+                                    "updatedAt": "2025-03-07T04:51:36.000Z",
+                                    "errors": []
+                                }
                             }
                         }
-                    }
-                },
-                "400": {
-                    "description": "Data validation error",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "message": {
-                                        "type": "string",
-                                        "example": "Data validation error"
-                                    },
-                                    "errors": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
+                    },
+                    "400": {
+                        "description": "Data validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User is not authenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have permission to perform this action"
+                    },
+                    "404": {
+                        "description": "User not found or inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "User with the specified ID does not exist or is inactive"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
-                },
-                "401": {
-                    "description": "Unauthorized - User is not authenticated"
-                },
-                "403": {
-                    "description": "Forbidden - User does not have permission to perform this action"
-                },
-                "404": {
-                    "description": "User not found"
-                },
-                "500": {
-                    "description": "Internal server error"
                 }
             }
         }

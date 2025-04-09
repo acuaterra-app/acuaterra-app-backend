@@ -4,7 +4,7 @@
     "get": {
       "tags": ["Shared/Farms"],
       "summary": "Retrieve Farm Details",
-      "description": "Retrieves detailed information about a specific farm.\n\n## Route Parameters\n\n### Required Parameters\n- **id**: Farm Identifier\n  - Type: Integer\n  - Description: Unique identifier of the farm to retrieve\n  - Location: Route parameter\n\n## Authorization\n- Requires valid authentication token\n- User must have appropriate permissions to view farm details",
+      "description": "Retrieves detailed information about a specific active farm. Only farms with isActive=true will be returned. Inactive farms will result in a 404 Not Found response.\n\n## Route Parameters\n\n### Required Parameters\n- **id**: Farm Identifier\n  - Type: Integer\n  - Description: Unique identifier of the farm to retrieve\n  - Location: Route parameter\n\n## Authorization\n- Requires valid authentication token\n- User must have appropriate permissions to view farm details",
       "operationId": "getFarmDetails",
       "parameters": [
         {
@@ -64,6 +64,11 @@
                       "status": {
                         "type": "string",
                         "example": "Active"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates whether the farm is active in the system"
                       },
                       "createdAt": {
                         "type": "string",
@@ -175,7 +180,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": ["No farm found with the specified ID"]
+                    "example": ["No active farm found with the specified ID"]
                   },
                   "meta": {
                     "type": "object",

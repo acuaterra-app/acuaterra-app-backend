@@ -101,7 +101,8 @@ class ModuleOwnerService {
                         fish_age,
                         dimensions,
                         id_farm,
-                        created_by_user_id
+                        created_by_user_id,
+                        isActive: true
                     }, { transaction: moduleTransaction }),
 
                     Promise.resolve(this.generateSensorCredentials(name))
@@ -124,12 +125,16 @@ class ModuleOwnerService {
                         type: 'sensor',
                         moduleId: newModule.id
                     }),
-                    address: `${location} (${latitude}, ${longitude})`
+                    address: `${location} (${latitude}, ${longitude})`,
+                    isActive: true
                 }, { transaction: moduleTransaction });
 
                 if (users && users.length > 0) {
                     const foundUsers = await User.findAll({
-                        where: { id: { [Op.in]: users } },
+                        where: { 
+                            id: { [Op.in]: users },
+                            isActive: true 
+                        },
                         transaction: moduleTransaction
                     });
 
@@ -173,7 +178,10 @@ class ModuleOwnerService {
             }
 
             const owner = await User.findByPk(created_by_user_id, {
-                attributes: ['email']
+                attributes: ['email'],
+                where: {
+                    isActive: true
+                }
             });
             await this.sendSensorCredentialsEmail(
                 owner.email,
@@ -183,11 +191,17 @@ class ModuleOwnerService {
             );
 
             const result = await Module.findByPk(newModule.id, {
+                where: {
+                    isActive: true
+                },
                 include: [
                     {
                         model: Farm,
                         as: 'farm',
-                        attributes: ['id', 'name']
+                        attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        }
                     },
                     {
                         model: User,
@@ -241,17 +255,26 @@ class ModuleOwnerService {
                 fish_quantity,
                 fish_age,
                 dimensions,
-                id_farm
+                id_farm,
+                isActive: true
             }, {
-                where: { id }
+                where: { 
+                    id,
+                    isActive: true 
+                }
             });
 
-            const moduleInstance = await Module.findByPk(id);
+            const moduleInstance = await Module.findByPk(id, {
+                where: {
+                    isActive: true
+                }
+            });
 
             if (users && users.length > 0) {
                 const foundUsers = await User.findAll({
                     where: {
-                        id: users
+                        id: users,
+                        isActive: true
                     }
                 });
 
@@ -259,11 +282,17 @@ class ModuleOwnerService {
             }
 
             return await Module.findByPk(id, {
+                where: {
+                    isActive: true
+                },
                 include: [
                     {
                         model: Farm,
                         as: 'farm',
-                        attributes: ['id', 'name']
+                        attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        }
                     },
                     {
                         model: User,
@@ -281,31 +310,49 @@ class ModuleOwnerService {
     async getById(id) {
         try {
             const module = await Module.findByPk(id, {
+                where: {
+                    isActive: true
+                },
                 include: [
                     {
                         model: Farm,
                         as: 'farm',
-                        attributes: ['id', 'name']
+                        attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        }
                     },
                     {
                         model: User,
                         as: 'creator',
-                        attributes: ['id', 'name', 'email']
+                        attributes: ['id', 'name', 'email'],
+                        where: {
+                            isActive: true
+                        }
                     },
                     {
                         model: User,
                         as: 'users',
                         attributes: ['id', 'name', 'email', 'dni'],
-                        through: { attributes: [] }
+                        through: { attributes: [] },
+                        where: {
+                            isActive: true
+                        }
                     },
                     {
                         model: Sensor,
                         as: 'sensors',
                         attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        },
                         include: [
                             {
                                 model: Threshold,
-                                as: 'thresholds'
+                                as: 'thresholds',
+                                where: {
+                                    isActive: true
+                                }
                             }
                         ]
                     }
@@ -321,7 +368,11 @@ class ModuleOwnerService {
 
     async delete(id) {
         try {
-            const moduleToDelete = await Module.findByPk(id);
+            const moduleToDelete = await Module.findByPk(id, {
+                where: {
+                    isActive: true
+                }
+            });
 
             await this.softDeleteModule(id);
 
@@ -336,41 +387,59 @@ class ModuleOwnerService {
         const transaction = await sequelize.transaction();
 
         try {
-            // Fetch all sensors for this module
-            // Note: id_module is still valid for sensor-module relationships
-            const sensors = await Sensor.findAll({
-                where: { id_module: moduleId },
-                include: [
-                    {
-                        model: Measurement,
-                        as: 'measurements'
-                    },
-                    {
-                        model: Threshold,
-                        as: 'thresholds'
-                    }
-                ]
+            const module = await Module.findByPk(moduleId, {
+                where: {
+                    isActive: true
+                }
             });
 
-            for (const sensor of sensors) {
-                for (const measurement of sensor.measurements) {
-                    await measurement.destroy({ transaction });
-                }
-
-                for (const threshold of sensor.thresholds) {
-                    await threshold.destroy({ transaction });
-                }
-
-                await sensor.destroy({ transaction });
+            if (!module) {
+                throw new Error('Module not found');
             }
 
-            await Module.destroy({
-                where: { id: moduleId },
+            const sensors = await Sensor.findAll({
+                where: { id_module: moduleId },
+                attributes: ['id'],
                 transaction
             });
+            
+            const sensorIds = sensors.map(sensor => sensor.id);
+
+            await Module.update(
+                { isActive: false },
+                {
+                    where: { id: moduleId },
+                    transaction
+                }
+            );
+
+            if (sensorIds.length > 0) {
+                await Sensor.update(
+                    { isActive: false },
+                    {
+                        where: { id_module: moduleId },
+                        transaction
+                    }
+                );
+
+                await Threshold.update(
+                    { isActive: false },
+                    {
+                        where: { id_sensor: { [Op.in]: sensorIds } },
+                        transaction
+                    }
+                );
+
+                await Measurement.update(
+                    { isActive: false },
+                    {
+                        where: { id_sensor: { [Op.in]: sensorIds } },
+                        transaction
+                    }
+                );
+            }
 
             await transaction.commit();
-            console.log(`Módule ${moduleId} and their relationships successfully eliminated (soft delete)`);
             return true;
         } catch (error) {
             await transaction.rollback();

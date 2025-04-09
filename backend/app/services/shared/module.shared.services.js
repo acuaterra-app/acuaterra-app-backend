@@ -11,11 +11,15 @@ class ModuleService {
             const {count, rows} = await Module.findAndCountAll({
                 limit: limit,
                 offset: offset,
-                order: [[sortField, sortOrder]],
+                where: {
+                    id_farm: farmId,
+                    isActive: true
+                },
                 include: [
                     {
                         model: User,
                         as: 'creator',
+                        where: { isActive: true },
                         attributes: ['id', 'name', 'email', 'dni', 'id_rol'],
                         include: [
                             {
@@ -28,12 +32,10 @@ class ModuleService {
                     {
                         model: Farm,
                         as: 'farm',
+                        where: { isActive: true },
                         attributes: ['id', 'name', 'address', 'latitude', 'longitude']
                     }
                 ],
-                where: {
-                    id_farm: farmId
-                },
                 distinct: true
             });
 

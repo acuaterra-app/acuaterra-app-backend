@@ -3,8 +3,7 @@
     "post": {
       "tags": ["Module/Measurements"],
       "summary": "Create a new measurement",
-      "description": "Creates a new measurement for a module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid module\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm\n  - Purpose: Time when the measurement was taken",
-      "operationId": "createMeasurement",
+      "description": "Creates a new measurement for an active module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid active module\n- Sensor must be active to record measurements\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n  - Note: Sensor must be active\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm\n  - Purpose: Time when the measurement was taken",
       "security": [
         {
           "bearerAuth": []
@@ -96,15 +95,38 @@
                           "type": "string",
                           "format": "date-time",
                           "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "sensor": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Temperature Sensor"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "temperature"
+                            },
+                            "moduleId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the sensor is active"
+                            }
+                          }
                         }
                       }
                     }
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   }
                 }
@@ -184,9 +206,6 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   }
                 }
@@ -195,7 +214,7 @@
           }
         },
         "400": {
-          "description": "Bad Request - Invalid input data",
+          "description": "Bad Request - Invalid input data or inactive components",
           "content": {
             "application/json": {
               "schema": {
@@ -207,9 +226,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -225,6 +241,12 @@
                     "example": [
                       {
                         "msg": "Invalid sensor type"
+                      },
+                      {
+                        "msg": "Sensor is not active"
+                      },
+                      {
+                        "msg": "Module is not active"
                       }
                     ]
                   }
@@ -246,9 +268,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -285,9 +304,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -324,9 +340,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -355,8 +368,7 @@
     "get": {
       "tags": ["Module/Measurements"],
       "summary": "Get measurements list",
-      "description": "Retrieves measurements for the authenticated user's module sensors, ordered by date and time in descending order (newest first).\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from modules created by or assigned to the user\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific sensor by ID",
-      "operationId": "getMeasurements",
+      "description": "Retrieves measurements for the authenticated user's active module sensors, ordered by date and time in descending order (newest first).\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from active modules created by or assigned to the user\n- Only returns measurements from active sensors\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific active sensor by ID",
       "security": [
         {
           "bearerAuth": []
@@ -370,7 +382,7 @@
           "schema": {
             "type": "integer"
           },
-          "description": "ID of the specific sensor to retrieve measurements for. If not provided, returns measurements from all sensors associated with the module."
+          "description": "ID of the specific active sensor to retrieve measurements for. If not provided, returns measurements from all active sensors associated with the active module."
         }
       ],
       "responses": {
@@ -431,6 +443,11 @@
                             "moduleId": {
                               "type": "integer",
                               "example": 1
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the sensor is active"
                             }
                           }
                         }
@@ -447,7 +464,7 @@
           }
         },
         "204": {
-          "description": "No measurements found",
+          "description": "No active measurements found",
           "content": {
             "application/json": {
               "schema": {
@@ -455,7 +472,7 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "No measurements found"
+                    "example": "No active measurements found"
                   },
                   "data": {
                     "type": "array",
@@ -483,9 +500,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -522,9 +536,6 @@
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {
@@ -548,6 +559,46 @@
             }
           }
         },
+        "404": {
+          "description": "Not Found - Sensor not found or inactive",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Sensor not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "resource",
+                        "msg": "Sensor is not active or not found"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
         "500": {
           "description": "Internal Server Error",
           "content": {
@@ -557,13 +608,10 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "Error getting measurements"
+                    "example": "Error retrieving measurements"
                   },
                   "data": {
                     "type": "array",
-                    "items": {
-                      "type": "object"
-                    },
                     "example": []
                   },
                   "errors": {

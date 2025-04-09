@@ -3,7 +3,7 @@
     "get": {
       "tags": ["Shared/Modules"],
       "summary": "Get all modules for a specific farm",
-      "description": "Retrieves a paginated list of all modules for the specified farm with detailed information including creator and farm data.",
+      "description": "Retrieves a paginated list of all active modules (isActive=true) for the specified farm with detailed information including creator and farm data. Only active users and farms are included in the relationships.",
       "parameters": [
         {
           "in": "path",
@@ -31,6 +31,25 @@
             "default": 10
           },
           "description": "Number of items per page"
+        },
+        {
+          "in": "query",
+          "name": "sortField",
+          "schema": {
+            "type": "string",
+            "default": "createdAt"
+          },
+          "description": "Field to sort the results by"
+        },
+        {
+          "in": "query",
+          "name": "sortOrder",
+          "schema": {
+            "type": "string",
+            "default": "DESC",
+            "enum": ["ASC", "DESC"]
+          },
+          "description": "Sort order (ASC for ascending, DESC for descending)"
         }
       ],
       "security": [
@@ -109,6 +128,11 @@
                           "format": "date-time",
                           "example": "2025-03-04T21:55:42.000Z"
                         },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the module is active in the system"
+                        },
                         "creator": {
                           "type": "object",
                           "properties": {
@@ -131,6 +155,24 @@
                             "id_rol": {
                               "type": "integer",
                               "example": 1
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the user is active in the system"
+                            },
+                            "rol": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "example": 1
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "Administrator"
+                                }
+                              }
                             }
                           }
                         },
@@ -156,6 +198,11 @@
                             "longitude": {
                               "type": "string",
                               "example": "146.6592"
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the farm is active in the system"
                             }
                           }
                         }
