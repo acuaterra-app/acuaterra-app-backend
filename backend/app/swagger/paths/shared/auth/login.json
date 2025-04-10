@@ -12,8 +12,7 @@
               "type": "object",
               "required": [
                 "email",
-                "password",
-                "device_id"
+                "password"
               ],
               "properties": {
                 "email": {
@@ -30,7 +29,7 @@
                 },
                 "device_id": {
                   "type": "string",
-                  "description": "Device ID of the user's device. Required. Used to identify the device for notifications and security purposes.",
+                  "description": "Device ID of the user's device. Optional. Used to identify the device for notifications and security purposes.",
                   "example": "d12a4f7e-8b59-4c1f-9af2-0324e1142aab"
                 }
               }
@@ -46,12 +45,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "message": {
+                  "msg": {
                     "type": "string",
-                    "example": "Login successful"
+                    "example": "Successful login"
                   },
                   "data": {
-                    "type": "object",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
                     "properties": {
                       "token": {
                         "type": "string",
@@ -100,18 +101,20 @@
                         "example": false,
                         "description": "Appears only when the user must change their password"
                       }
+                      }
                     }
-                  },
+                  ],
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "example": []
-                  },
-                  "meta": {
-                    "type": "object",
-                    "example": {}
                   }
                 }
               }
@@ -125,9 +128,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "message": {
+                  "msg": {
                     "type": "string",
-                    "example": "Validation error"
+                    "example": "Authentication error"
                   },
                   "data": {
                     "type": "array",
@@ -141,21 +144,11 @@
                         "msg": {
                           "type": "string",
                           "example": "Email is required"
-                        },
-                        "param": {
-                          "type": "string",
-                          "example": "email"
-                        },
-                        "location": {
-                          "type": "string",
-                          "example": "body"
+                        }
+                      }
                         }
                       }
                     }
-                  },
-                  "meta": {
-                    "type": "object",
-                    "example": {}
                   }
                 }
               }
@@ -169,9 +162,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "message": {
+                  "msg": {
                     "type": "string",
-                    "example": "Invalid email or password"
+                    "example": "Credentials do not match"
                   },
                   "data": {
                     "type": "array",
@@ -180,10 +173,6 @@
                   "errors": {
                     "type": "array",
                     "example": []
-                  },
-                  "meta": {
-                    "type": "object",
-                    "example": {}
                   }
                 }
               }
@@ -197,9 +186,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "message": {
+                  "msg": {
                     "type": "string",
-                    "example": "Internal server error"
+                    "example": "Authentication error"
                   },
                   "data": {
                     "type": "array",
@@ -207,11 +196,11 @@
                   },
                   "errors": {
                     "type": "array",
-                    "example": []
-                  },
-                  "meta": {
-                    "type": "object",
-                    "example": {}
+                    "example": [
+                      {
+                        "msg": "Internal server error"
+                      }
+                    ]
                   }
                 }
               }
