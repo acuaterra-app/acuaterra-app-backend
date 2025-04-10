@@ -1,7 +1,5 @@
 const {User} = require("../../../models");
 const ApiResponse = require("../../utils/apiResponse");
-const {getRoleNameById} = require("../../enums/roles.enum");
-
 class AuthController {
 
     /**
@@ -13,32 +11,30 @@ class AuthController {
     }
 
     async login(req, res) {
-
         try {
             const {email, password, device_id} = req.body;
 
-            const token = await this.authService.login(password, email);
-            const user = await User.findOne({where: {email}});
+            const loginResponse = await this.authService.login(password, email);
             
-            // Update the user's device_id
-            await User.update({ device_id }, { where: { id: user.id } });
+            if (device_id) {
+                await User.update({ device_id }, { where: { email } });
+            }
             
-            const result = ApiResponse.createApiResponse('Successful login', [{
-                token,
-                user: {id: user.id, dni: user.dni, name: user.name, email: user.email, id_rol: user.id_rol, rol: getRoleNameById(user.id_rol), contact: user.contact},
-            }]);
-
+            const result = ApiResponse.createApiResponse('Successful login',
+                [loginResponse],
+                {}
+            );
             res.json(result);
 
         } catch (error) {
-            console.error("Error updating farm:", error);
+            console.error("Error en autenticación:", error);
             const response = ApiResponse.createApiResponse(
-                "Error authentication",
+                "Error de autenticación",
                 [],
                 [{ msg: error.message }]
             );
 
-            if (error.message.includes("Credentials does not match")) {
+            if (error.message.includes("Las credenciales no coinciden")) {
                 return res.status(400).json(response);
             }
             return res.status(500).json(response);
@@ -62,6 +58,32 @@ class AuthController {
             res.status(400).json(ApiResponse.createApiResponse('Logout failed', [], [{
                 'error' :error.message
             }]));
+        }
+    }
+    async changeTemporaryPassword(req, res) {
+        try {
+            const { email, oldPassword, newPassword } = req.body;
+
+            const updatedUser = await this.authService.changeTemporaryPassword(email, oldPassword, newPassword);
+            
+            const result = ApiResponse.createApiResponse('Contraseña actualizada exitosamente', [
+                { user: updatedUser }
+            ]);
+            res.json(result);
+
+        } catch (error) {
+            console.error("Error al cambiar contraseña:", error);
+            const response = ApiResponse.createApiResponse(
+                "Error al cambiar contraseña",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("Usuario no encontrado") ||
+                error.message.includes("La contraseña actual es incorrecta")) {
+                return res.status(400).json(response);
+            }
+            return res.status(500).json(response);
         }
     }
 }

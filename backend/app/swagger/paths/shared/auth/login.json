@@ -3,7 +3,7 @@
     "post": {
       "summary": "User login",
       "tags": ["Authentication"],
-      "description": "Authenticates a user with their email and password and returns an access token for accessing protected resources.\n\n## Form Fields and Validation Rules\n\n### Required Fields\nAll fields listed below are required for successful authentication.\n\n### Field Specifications\n\n- **email**\n  - **Type**: String\n  - **Format**: Email\n  - **Validation**: \n    - Must be a valid email format\n    - Must exist in the system\n    - Case insensitive\n  - **Purpose**: Identifies the user account\n\n- **password**\n  - **Type**: String\n  - **Validation**: \n    - Must match the stored password for the associated email\n    - Case sensitive\n    - Minimum 8 characters recommended for security\n  - **Purpose**: Verifies user identity\n\nOn successful authentication, the system returns a JWT token and user details including ID, email, name, and role. This token must be included in the Authorization header for subsequent authenticated requests.",
+      "description": "Authenticates a user with their email and password and returns an access token for accessing protected resources.\n\n## Form Fields and Validation Rules\n\n### Required Fields\nAll fields listed below are required for successful authentication.\n\n### Field Specifications\n\n- **email**\n  - **Type**: String\n  - **Format**: Email\n  - **Validation**: \n    - Must be a valid email format\n    - Must exist in the system\n    - Case insensitive\n  - **Purpose**: Identifies the user account\n\n- **password**\n  - **Type**: String\n  - **Validation**: \n    - Must match the stored password for the associated email\n    - Case sensitive\n    - Minimum 8 characters recommended for security\n  - **Purpose**: Verifies user identity\n\n- **device_id** (optional)\n  - **Type**: String\n  - **Purpose**: Identifies the user's device for notifications\n\n## Temporary Password Flow\n\nWhen a new user is created or a password is reset, the user receives a temporary password and must change it on first login. In these cases:\n\n1. The login response includes `mustChangePassword: true`\n2. The frontend should redirect the user to the password change screen\n3. The user must change their password before accessing other parts of the application\n\nOn successful authentication, the system returns a JWT token and user details including ID, email, name, role, and mustChangePassword flag. This token must be included in the Authorization header for subsequent authenticated requests.",
       "requestBody": {
         "required": true,
         "content": {
@@ -61,8 +61,12 @@
                         "type": "object",
                         "properties": {
                           "id": {
+                            "type": "integer",
+                            "example": 12345
+                          },
+                          "dni": {
                             "type": "string",
-                            "example": "12345"
+                            "example": "12345678"
                           },
                           "email": {
                             "type": "string",
@@ -72,11 +76,29 @@
                             "type": "string",
                             "example": "John Doe"
                           },
-                          "role": {
+                          "id_rol": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "rol": {
                             "type": "string",
-                            "example": "user"
+                            "example": "owner"
+                          },
+                          "contact": {
+                            "type": "string",
+                            "example": "123456789"
+                          },
+                          "mustChangePassword": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Indicates if the user must change their password"
                           }
                         }
+                      },
+                      "mustChangePassword": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Appears only when the user must change their password"
                       }
                     }
                   },

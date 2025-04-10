@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { validateUserLogin } = require("../validators/shared/auth.validator");
+const { validateUserLogin, validateChangePassword } = require("../validators/shared/auth.validator");
 const {validate} = require("../middleware/validate.middleware");
 const AuthController = require("../controllers/shared/auth.controller");
 const ValidateTokenMiddleware = require("../middleware/validateToken.middleware");
@@ -24,6 +24,11 @@ router.post(
     '/logout',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     (req, res) => authController.logout(req, res)
+);
+router.post(
+    '/change-password',
+    validate(validateChangePassword),
+    (req, res) => authController.changeTemporaryPassword(req, res)
 );
 
 module.exports = router;
