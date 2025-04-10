@@ -261,6 +261,55 @@ class UserOwnerService {
             throw new Error(`Error updating monitor user: ${error.message}`);
         }
     }
+
+    async disableMonitor(monitorUser) {
+        let transaction = null;
+
+        try {
+            transaction = await sequelize.transaction();
+
+            await monitorUser.update({
+                isActive: false
+            }, { transaction });
+
+            await transaction.commit();
+
+            const disabledUser = await User.findByPk(monitorUser.id, {
+                attributes: [
+                    'id',
+                    'name',
+                    'email',
+                    'dni',
+                    'address',
+                    'contact',
+                    'id_rol',
+                    'isActive',
+                    'createdAt',
+                    'updatedAt'
+                ],
+                include: [
+                    {
+                        model: Rol,
+                        as: 'rol',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Module,
+                        as: 'assigned_modules',
+                        attributes: ['id', 'name', 'location', 'species_fish'],
+                        through: { attributes: [] }
+                    }
+                ]
+            });
+
+            return disabledUser;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            throw new Error(`Error disabling the monitor: ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserOwnerService;

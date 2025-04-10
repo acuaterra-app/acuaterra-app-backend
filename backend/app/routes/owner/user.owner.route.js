@@ -15,6 +15,7 @@ const ValidateUsrMonitorUpdateMiddleware = require("../../middleware/validateUse
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 const ValidateUserMonitorCreationMiddleware = require("../../middleware/validateUserMonitorCreation.middleware");
+const ValidateMonitorDisableMiddleware = require("../../middleware/validateMonitorDisable.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const userOwnerService = new UserOwnerService();
@@ -23,6 +24,7 @@ const userOwnerController = new UserOwnerController(userOwnerService);
 const validateAccess = new ValidateModuleAccessMiddleware();
 const validateUserMonitorCreation = new ValidateUserMonitorCreationMiddleware();
 const validateUserUpdate = new ValidateUsrMonitorUpdateMiddleware();
+const validateMonitorDisable = new ValidateMonitorDisableMiddleware();
 
 router.get('/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
@@ -46,6 +48,14 @@ router.put('/:id',
     validate(validateMonitorUpdate),
     (req, res, next) => validateUserUpdate.validate(req, res, next),
     (req, res) => userOwnerController.updateMonitor(req, res)
+);
+
+router.delete('/:id',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    (req, res, next) => validateAccess.validateOwnerFarmAccess(req, res, next),
+    (req, res, next) => validateMonitorDisable.validate(req, res, next),
+    (req, res) => userOwnerController.disableMonitor(req, res)
 );
 
 module.exports = router;

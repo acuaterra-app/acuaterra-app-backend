@@ -1,0 +1,305 @@
+{
+  "/api/v2/owner/users/{id}": {
+    "delete": {
+      "tags": [
+        "Owner/Users"
+      ],
+      "summary": "Disable an existing monitor user",
+      "description": "Disables an existing user with monitor role by setting isActive to false instead of permanently deleting the record.\n\n## Features\n\n- Disables a monitor user instead of permanently deleting them\n- Preserves historical data and audit trails\n- Prevents disabled monitors from accessing the system\n- Only accessible by OWNER role users\n- Owners can only disable monitors assigned to modules in farms they manage\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that owns the module\n  - Can only disable MONITOR role users\n  - The monitor must be assigned to modules from farms managed by the owner",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the monitor user to disable",
+          "schema": {
+            "type": "integer"
+          },
+          "example": 57
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Monitor user disabled successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "The monitor with ID 57 has been successfully disabled."
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 57
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "john.doe@example.com"
+                        },
+                        "dni": {
+                          "type": "string",
+                          "example": "12345678"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Monitor Street"
+                        },
+                        "contact": {
+                          "type": "string",
+                          "example": "12345789"
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-04T20:58:42.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-09T23:30:42.000Z"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "MONITOR"
+                            }
+                          }
+                        },
+                        "assigned_modules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 8
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Tank Module A1"
+                              },
+                              "location": {
+                                "type": "string",
+                                "example": "Section B, Building 2"
+                              },
+                              "species_fish": {
+                                "type": "string",
+                                "example": "Tilapia"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Authentication token is missing or invalid"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization Error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "You are not authorized to disable this monitor"
+                        },
+                        "details": {
+                          "type": "string",
+                          "example": "The monitor is assigned to modules that belong to farms you do not manage"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "The owner does not have any farms assigned to manage users"
+                      },
+                      {
+                        "msg": "You are not authorized to disable this monitor",
+                        "details": "The monitor is assigned to modules that belong to farms you do not manage"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Monitor not found or already disabled",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error disabling monitor"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "The monitor with ID 999 does not exist or is already disabled."
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error disabling monitor"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Error disabling monitor: Database connection error"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Error disabling monitor: Database connection error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        {
+          "apiKey": []
+        }
+      ]
+    }
+  }
+}
+
