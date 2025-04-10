@@ -66,21 +66,21 @@ class AuthController {
 
             const updatedUser = await this.authService.changeTemporaryPassword(email, oldPassword, newPassword);
             
-            const result = ApiResponse.createApiResponse('Contraseña actualizada exitosamente', [
+            const result = ApiResponse.createApiResponse('Password updated successfully', [
                 { user: updatedUser }
             ]);
             res.json(result);
 
         } catch (error) {
-            console.error("Error al cambiar contraseña:", error);
+            console.error("Error changing password:", error);
             const response = ApiResponse.createApiResponse(
-                "Error al cambiar contraseña",
+                "Error changing password",
                 [],
                 [{ msg: error.message }]
             );
 
-            if (error.message.includes("Usuario no encontrado") ||
-                error.message.includes("La contraseña actual es incorrecta")) {
+            if (error.message.includes("User not found") ||
+                error.message.includes("The current password is incorrect")) {
                 return res.status(400).json(response);
             }
             return res.status(500).json(response);
