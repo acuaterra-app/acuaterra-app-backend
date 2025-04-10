@@ -2,14 +2,6 @@
 
 Este documento describe la implementación del sistema de autenticación de Acuaterra, incluyendo el flujo para manejo de contraseñas temporales.
 
-## Índice
-1. [Descripción General](#descripción-general)
-2. [Endpoints Disponibles](#endpoints-disponibles)
-3. [Flujos de Autenticación](#flujos-de-autenticación)
-4. [Manejo de Errores](#manejo-de-errores)
-5. [Consideraciones de Seguridad](#consideraciones-de-seguridad)
-6. [Implementación en Frontend](#implementación-en-frontend)
-
 ## Descripción General
 
 El sistema de autenticación de Acuaterra proporciona las siguientes funcionalidades:
