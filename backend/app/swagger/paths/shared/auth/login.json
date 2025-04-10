@@ -1,5 +1,5 @@
 {
-  "/api/v2/auth/login": {
+  "/api/auth/login": {
     "post": {
       "summary": "User login",
       "tags": ["Authentication"],
@@ -53,57 +53,72 @@
                     "type": "array",
                     "items": {
                       "type": "object",
-                    "properties": {
-                      "token": {
-                        "type": "string",
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                      },
-                      "user": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "example": 12345
-                          },
-                          "dni": {
-                            "type": "string",
-                            "example": "12345678"
-                          },
-                          "email": {
-                            "type": "string",
-                            "example": "user@example.com"
-                          },
-                          "name": {
-                            "type": "string",
-                            "example": "John Doe"
-                          },
-                          "id_rol": {
-                            "type": "integer",
-                            "example": 2
-                          },
-                          "rol": {
-                            "type": "string",
-                            "example": "owner"
-                          },
-                          "contact": {
-                            "type": "string",
-                            "example": "123456789"
-                          },
-                          "mustChangePassword": {
-                            "type": "boolean",
-                            "example": false,
-                            "description": "Indicates if the user must change their password"
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 12345
+                            },
+                            "dni": {
+                              "type": "string",
+                              "example": "12345678"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "user@example.com"
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "John Doe"
+                            },
+                            "id_rol": {
+                              "type": "integer",
+                              "example": 2
+                            },
+                            "rol": {
+                              "type": "string",
+                              "example": "owner"
+                            },
+                            "contact": {
+                              "type": "string",
+                              "example": "123456789"
+                            },
+                            "mustChangePassword": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Indicates if the user must change their password"
+                            }
                           }
+                        },
+                        "mustChangePassword": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Appears only when the user must change their password"
                         }
-                      },
-                      "mustChangePassword": {
-                        "type": "boolean",
-                        "example": false,
-                        "description": "Appears only when the user must change their password"
                       }
+                    },
+                    "example": [
+                      {
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "user": {
+                          "id": 12345,
+                          "dni": "12345678",
+                          "name": "John Doe",
+                          "email": "user@example.com",
+                          "id_rol": 2,
+                          "rol": "owner",
+                          "contact": "123456789",
+                          "mustChangePassword": false
+                        }
                       }
-                    }
-                  ],
+                    ]
+                  },
                   "errors": {
                     "type": "array",
                     "items": {
@@ -146,9 +161,12 @@
                           "example": "Email is required"
                         }
                       }
-                        }
+                    },
+                    "example": [
+                      {
+                        "msg": "Email is required"
                       }
-                    }
+                    ]
                   }
                 }
               }
@@ -211,4 +229,3 @@
     }
   }
 }
-
