@@ -109,6 +109,30 @@ class userOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async disableMonitor(req, res) {
+        try {
+            const monitorToDisable = req.monitorToDisable;
+            const { id } = monitorToDisable;
+
+            const result = await this.userOwnerService.disableMonitor(monitorToDisable);
+
+            const response = ApiResponse.createApiResponse(
+                `The monitor with ID ${id} has been successfully disabled.`,
+                [result],
+                []
+            );
+
+            return res.json(response);
+        } catch (error) {
+            const response = ApiResponse.createApiResponse(
+                "Error disabling monitor",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
 }
 
 module.exports = userOwnerController;
