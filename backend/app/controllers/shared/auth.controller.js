@@ -22,7 +22,7 @@ class AuthController {
             
             const result = ApiResponse.createApiResponse('Successful login',
                 [loginResponse],
-                {}
+                []
             );
             res.json(result);
 
