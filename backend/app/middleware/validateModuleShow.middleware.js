@@ -23,7 +23,7 @@ class ValidateModuleShowMiddleware {
             });
 
             if (!module) {
-                return res.status(403).json(
+                return res.status(404).json(
                     ApiResponse.createApiResponse(
                         'Access denied',
                         [],
