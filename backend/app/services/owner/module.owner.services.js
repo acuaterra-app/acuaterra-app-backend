@@ -318,6 +318,7 @@ class ModuleOwnerService {
                         model: Farm,
                         as: 'farm',
                         attributes: ['id', 'name'],
+                        required: true,
                         where: {
                             isActive: true
                         }
@@ -326,6 +327,7 @@ class ModuleOwnerService {
                         model: User,
                         as: 'creator',
                         attributes: ['id', 'name', 'email'],
+                        required: false,
                         where: {
                             isActive: true
                         }
@@ -335,6 +337,7 @@ class ModuleOwnerService {
                         as: 'users',
                         attributes: ['id', 'name', 'email', 'dni'],
                         through: { attributes: [] },
+                        required: false,
                         where: {
                             isActive: true
                         }
@@ -342,17 +345,14 @@ class ModuleOwnerService {
                     {
                         model: Sensor,
                         as: 'sensors',
-                        attributes: ['id', 'name'],
-                        where: {
-                            isActive: true
-                        },
+                        attributes: ['id', 'name', 'type', 'isActive'],
+                        required: false,
                         include: [
                             {
                                 model: Threshold,
                                 as: 'thresholds',
-                                where: {
-                                    isActive: true
-                                }
+                                attributes: ['id', 'type', 'value', 'isActive'],
+                                required: false
                             }
                         ]
                     }
