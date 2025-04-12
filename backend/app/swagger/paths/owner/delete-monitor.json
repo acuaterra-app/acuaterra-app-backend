@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Disable an existing monitor user",
-      "description": "Disables an existing user with monitor role by setting isActive to false instead of permanently deleting the record.\n\n## Features\n\n- Disables a monitor user instead of permanently deleting them\n- Preserves historical data and audit trails\n- Prevents disabled monitors from accessing the system\n- Only accessible by OWNER role users\n- Owners can only disable monitors assigned to modules in farms they manage\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that owns the module\n  - Can only disable MONITOR role users\n  - The monitor must be assigned to modules from farms managed by the owner",
+      "description": "Disables a monitor user by setting isActive to false.\n\n## Features\n\n- Disables a monitor user (soft delete)\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - The monitor must exist and be active\n  - The monitor must have the MONITOR role\n  - If the monitor has modules assigned, at least one module must belong to a farm managed by the owner\n  - Validation is performed directly on the module relationships rather than requiring separate farm validation\n  - Access is granted if the owner has access to any module the monitor is assigned to",
       "parameters": [
         {
           "name": "id",
@@ -98,15 +98,15 @@
                             "properties": {
                               "id": {
                                 "type": "integer",
-                                "example": 8
+                                "example": 13
                               },
                               "name": {
                                 "type": "string",
-                                "example": "Tank Module A1"
+                                "example": "moduleDuber"
                               },
                               "location": {
                                 "type": "string",
-                                "example": "Section B, Building 2"
+                                "example": "Cauca 1"
                               },
                               "species_fish": {
                                 "type": "string",
@@ -121,42 +121,6 @@
                   "errors": {
                     "type": "array",
                     "example": []
-                  },
-                  "meta": {
-                    "type": "object",
-                    "example": {}
-                  }
-                }
-              }
-            }
-          }
-        },
-        "401": {
-          "description": "Unauthorized - Invalid or missing token",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "example": "Unauthorized access"
-                  },
-                  "data": {
-                    "type": "array",
-                    "example": []
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Authentication token is missing or invalid"
-                        }
-                      }
-                    }
                   },
                   "meta": {
                     "type": "object",
@@ -184,26 +148,13 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "You are not authorized to disable this monitor"
-                        },
-                        "details": {
-                          "type": "string",
-                          "example": "The monitor is assigned to modules that belong to farms you do not manage"
-                        }
-                      }
-                    },
                     "example": [
                       {
-                        "msg": "The owner does not have any farms assigned to manage users"
+                        "msg": "You do not have access to any modules through your farms."
                       },
                       {
                         "msg": "You are not authorized to disable this monitor",
-                        "details": "The monitor is assigned to modules that belong to farms you do not manage"
+                        "details": "The monitor is assigned to modules that belong to farms that you do not manage."
                       }
                     ]
                   },
@@ -233,15 +184,11 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "The monitor with ID 999 does not exist or is already disabled."
-                        }
+                    "example": [
+                      {
+                        "msg": "The monitor with ID 999 does not exist or is already disabled."
                       }
-                    }
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -269,15 +216,6 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Error disabling monitor: Database connection error"
-                        }
-                      }
-                    },
                     "example": [
                       {
                         "msg": "Error disabling monitor: Database connection error"

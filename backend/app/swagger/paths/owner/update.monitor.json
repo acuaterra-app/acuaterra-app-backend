@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Update an existing monitor user",
-      "description": "Updates an existing user with monitor role and can change its associated module.\n\n## Features\n\n- Updates a monitor user's information\n- Can reassign the monitor to a different module\n- Only accessible by OWNER role users\n- Owners can only update monitors assigned to modules in farms they manage\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that owns the module\n  - Can only update MONITOR role users\n  - The module must exist and belong to owner's farm\n  - Monitor user must be assigned to modules from farms managed by the owner",
+      "description": "Updates the information of an existing monitor user.\n\n## Features\n\n- Updates monitor user profile information\n- Optionally changes module assignment\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Monitor user must exist and be active\n  - Owner must have access to at least one module that the monitor is assigned to\n  - If changing module assignment, the owner must have access to the new module through their farms\n  - Validation is performed directly on the module relationships rather than requiring separate farm validation",
       "parameters": [
         {
           "name": "id",
@@ -132,19 +132,19 @@
                             "properties": {
                               "id": {
                                 "type": "integer",
-                                "example": 9
+                                "example": 7
                               },
                               "name": {
                                 "type": "string",
-                                "example": "Tank Module B2"
+                                "example": "ModuloMessias"
                               },
                               "location": {
                                 "type": "string",
-                                "example": "Section C, Building 3"
+                                "example": "Ubicación del módulo 123"
                               },
                               "species_fish": {
                                 "type": "string",
-                                "example": "Salmon"
+                                "example": "Especie de pez"
                               }
                             }
                           }
@@ -267,30 +267,23 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "You are not authorized to edit this Monitor user"
-                        },
-                        "details": {
-                          "type": "string",
-                          "example": "The monitor is assigned to module Tank A which belongs to a farm that you do not manage"
-                        }
-                      }
-                    },
                     "example": [
                       {
-                        "msg": "The Owner does not have any assigned farms to manage users"
+                        "msg": "User with id 999 not found in the system or is inactive"
                       },
                       {
                         "msg": "You are not authorized to edit this Monitor user",
-                        "details": "The monitor is assigned to module Tank A which belongs to a farm that you do not manage"
+                        "details": "The monitor is assigned to modules from farms that you do not manage"
                       },
                       {
                         "msg": "You cannot assign this module because it belongs to a different farm",
-                        "details": "The module belongs to the farm Farm B, which is not managed by you (1, 3, 4)"
+                        "details": "The module belongs to the farm Farm A, which you do not manage"
+                      },
+                      {
+                        "msg": "Module with id 999 does not exist in the system"
+                      },
+                      {
+                        "msg": "Module with id 999 has no associated farm"
                       }
                     ]
                   },

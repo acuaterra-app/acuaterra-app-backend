@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Create a new monitor user",
-      "description": "Creates a new user with monitor role and associates it with a specific module.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Associates the user with the specified module\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that owns the module\n  - Can only create MONITOR role users\n  - Module must exist and have an associated farm\n  - The module's farm must be one of the farms managed by the owner\n  - An owner can only create monitors for modules in farms they manage",
+      "description": "Creates a new user with monitor role and associates it with a specific module.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Associates the user with the specified module\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must have access to the module through their associated farms\n  - Can only create MONITOR role users\n  - Module must exist and have an associated farm\n  - The module must belong to a farm managed by the owner\n  - Validation is performed directly on the module relationship rather than requiring separate farm validation",
       "requestBody": {
         "required": true,
         "content": {
@@ -268,26 +268,16 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "You do not have permission to create monitors in this module"
-                        },
-                        "details": {
-                          "type": "string",
-                          "example": "The module belongs to the farm Farm A, which you do not manage"
-                        }
-                      }
-                    },
                     "example": [
                       {
-                        "msg": "The owner does not have any farms assigned to manage users"
+                        "msg": "You do not have access to any modules through your farms."
                       },
                       {
                         "msg": "You do not have permission to create monitors in this module",
                         "details": "The module belongs to the farm Farm A, which you do not manage"
+                      },
+                      {
+                        "msg": "The module with ID 999 does not exist in the system"
                       }
                     ]
                   },
@@ -317,15 +307,11 @@
                   },
                   "errors": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Error creating Monitor User: Error sending email to the new monitor user: Mail server connection error"
-                        }
+                    "example": [
+                      {
+                        "msg": "Error creating Monitor User: Error sending email to the new monitor user: Mail server connection error"
                       }
-                    }
+                    ]
                   },
                   "meta": {
                     "type": "object",
