@@ -4,7 +4,6 @@ const BasedThreshold = require("../../utils/based.threshold");
 class ThresholdService {
     constructor() {
         this.model = new Threshold;
-        this.based = new BasedThreshold();
     }
 
     async create(thresholdData) {
@@ -76,12 +75,12 @@ class ThresholdService {
                 {
                     id_sensor: id,
                     type: 'min',
-                    value: this.based.getDefaultMinThreshold(sensor.type)
+                    value: await BasedThreshold.getDefaultMinThreshold(sensor.type)
                 },
                 {
                     id_sensor: id,
                     type: 'max',
-                    value: this.based.getDefaultMaxThreshold(sensor.type)
+                    value: await BasedThreshold.getDefaultMaxThreshold(sensor.type)
                 }
             ];
 
