@@ -7,7 +7,19 @@ const validateCreateModule = [
         .notEmpty().withMessage('Name is required')
         .isString().withMessage('Name must be text')
         .trim()
-        .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters'),
+        .isLength({ max: 100 }).withMessage('Name cannot exceed 100 characters')
+        .custom(async (name, { req }) => {
+            const existingModule = await Module.findOne({
+                where: {
+                    name: name,
+                    id_farm: req.body.id_farm
+                }
+            });
+            if (existingModule) {
+                throw new Error('The module name must not be duplicated within the same farm.');
+            }
+            return true;
+        }),
 
     body('location')
         .notEmpty().withMessage('Location is required')
