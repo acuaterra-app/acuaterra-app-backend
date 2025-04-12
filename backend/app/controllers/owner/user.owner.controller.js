@@ -11,8 +11,11 @@ class userOwnerController {
             const limit = req.query.limit || 10;
             const sortField = req.query.sortField || 'createdAt';
             const sortOrder = req.query.sortOrder || 'DESC';
+            const ownerId = req.user.id;
+            
+            const ownerModuleIds = req.ownerModuleIds || [];
 
-            const result = await this.userOwnerService.getMonitorUsers(page, limit, sortField, sortOrder);
+            const result = await this.userOwnerService.getMonitorUsers(ownerId, page, limit, sortField, sortOrder, ownerModuleIds);
 
             if (result.rows.length === 0) {
                 const paginationMeta = {
