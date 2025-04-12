@@ -12,7 +12,7 @@ class UserOwnerService {
         this.mailer = mailer || new Mailer(process.env.RESEND_API_KEY);
     }
 
-    async getMonitorUsers(page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
+    async getMonitorUsers(ownerId, page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC', moduleIds = []) {
         try {
             page = parseInt(page) || 1;
             limit = parseInt(limit) || 10;
@@ -20,6 +20,42 @@ class UserOwnerService {
             const offset = (page - 1) * limit;
             
             sortOrder = ['ASC', 'DESC'].includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
+            
+            if (!moduleIds || moduleIds.length === 0) {
+                const ownerModules = await Module.findAll({
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: Farm,
+                            as: 'farm',
+                            where: { isActive: true },
+                            include: [
+                                {
+                                    model: User,
+                                    as: 'users',
+                                    where: { 
+                                        id: ownerId,
+                                        isActive: true 
+                                    },
+                                    through: { attributes: [] }
+                                }
+                            ]
+                        }
+                    ]
+                });
+                
+                moduleIds = ownerModules.map(module => module.id);
+            }
+            
+            if (moduleIds.length === 0) {
+                return {
+                    count: 0,
+                    rows: [],
+                    totalPages: 0,
+                    currentPage: page,
+                    perPage: limit
+                };
+            }
             
             const result = await User.findAndCountAll({
                 attributes: [
@@ -45,10 +81,13 @@ class UserOwnerService {
                         as: 'rol'
                     },
                     {
-                        model: Farm,
-                        attributes: ['id', 'name'],
-                        as: 'Farms',
-                        where: { isActive: true },
+                        model: Module,
+                        as: 'assigned_modules',
+                        attributes: ['id', 'name', 'location', 'species_fish'],
+                        where: { 
+                            id: { [Op.in]: moduleIds },
+                            isActive: true 
+                        },
                         through: { attributes: [] }
                     }
                 ],

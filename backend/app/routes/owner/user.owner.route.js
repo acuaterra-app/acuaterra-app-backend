@@ -30,7 +30,7 @@ router.get('/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
     validate(validatePagination),
-    (req, res, next) => validateAccess.validateOwnerFarmAccess(req, res, next),
+    (req, res, next) => validateAccess.validateOwnerModuleAccess(req, res, next),
     (req, res) => userOwnerController.index(req, res)
 );
 
@@ -53,7 +53,6 @@ router.put('/:id',
 router.delete('/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
-    (req, res, next) => validateAccess.validateOwnerFarmAccess(req, res, next),
     (req, res, next) => validateMonitorDisable.validate(req, res, next),
     (req, res) => userOwnerController.disableMonitor(req, res)
 );

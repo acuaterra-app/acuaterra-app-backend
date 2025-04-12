@@ -21,6 +21,11 @@ class ValidateMonitorDisableMiddleware {
                         model: Module,
                         as: 'assigned_modules',
                         attributes: ['id', 'name', 'id_farm'],
+                        include: [{
+                            model: Farm,
+                            as: 'farm',
+                            attributes: ['id', 'name']
+                        }]
                     }
                 ]
             });
@@ -34,52 +39,48 @@ class ValidateMonitorDisableMiddleware {
                 return res.status(404).json(response);
             }
 
-            const ownerFarms = await Farm.findAll({
-                include: [{
-                    model: User,
-                    as: 'users',
-                    where: { id: loggedUserId },
-                    attributes: [],
-                    through: { attributes: [] }
-                }]
-            });
+            if (!monitorToDisable.assigned_modules || monitorToDisable.assigned_modules.length === 0) {
+                req.monitorToDisable = monitorToDisable;
+                return next();
+            }
 
-            if (!ownerFarms || ownerFarms.length === 0) {
+            let hasAccessToAnyModule = false;
+            
+            for (const module of monitorToDisable.assigned_modules) {
+                if (!module.farm) continue;
+                
+                const farmAccess = await Farm.findOne({
+                    where: { 
+                        id: module.farm.id,
+                        isActive: true
+                    },
+                    include: [{
+                        model: User,
+                        as: 'users',
+                        where: { 
+                            id: loggedUserId,
+                            isActive: true 
+                        },
+                        through: { attributes: [] }
+                    }]
+                });
+                
+                if (farmAccess) {
+                    hasAccessToAnyModule = true;
+                    break;
+                }
+            }
+            
+            if (!hasAccessToAnyModule) {
                 const response = ApiResponse.createApiResponse(
                     'Authorization Error',
                     [],
-                    [{ msg: 'The owner does not have any farms assigned to manage users' }]
+                    [{
+                        msg: 'You are not authorized to disable this monitor',
+                        details: 'The monitor is assigned to modules that belong to farms that you do not manage.'
+                    }]
                 );
                 return res.status(403).json(response);
-            }
-
-            const ownerFarmIds = ownerFarms.map(farm => farm.id);
-
-            if (!monitorToDisable.assigned_modules || monitorToDisable.assigned_modules.length === 0) {
-                return next();
-            } else {
-                let hasAccess = false;
-                
-                for (const module of monitorToDisable.assigned_modules) {
-                    const farmId = module.id_farm;
-                    
-                    if (ownerFarmIds.includes(farmId)) {
-                        hasAccess = true;
-                        break;
-                    }
-                }
-                
-                if (!hasAccess) {
-                    const response = ApiResponse.createApiResponse(
-                        'Authorization Error',
-                        [],
-                        [{
-                            msg: 'You are not authorized to disable this monitor',
-                            details: 'The monitor is assigned to modules that belong to farms that you do not manage.'
-                        }]
-                    );
-                    return res.status(403).json(response);
-                }
             }
 
             req.monitorToDisable = monitorToDisable;

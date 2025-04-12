@@ -1,46 +1,50 @@
-const { Farm, User } = require('../../models');
+const { Farm, User, Module } = require('../../models');
 const ApiResponse = require("../utils/apiResponse");
 const { Op } = require('sequelize');
 
 class ValidateModuleAccessMiddleware {
 
-    async validateOwnerFarmAccess(req, res, next) {
+    async validateOwnerModuleAccess(req, res, next) {
         try {
-            const authenticatedUser = req.user;
+            const ownerId = req.user.id;
 
-            const userFarms = await Farm.findAll({
-                include: [
-                    {
+            const ownerModules = await Module.findAll({
+                where: { isActive: true },
+                include: [{
+                    model: Farm,
+                    as: 'farm',
+                    where: { isActive: true },
+                    include: [{
                         model: User,
                         as: 'users',
                         required: true,
-                        where: {
-                            [Op.or]: [
-                                { id: authenticatedUser.id }
-                            ]
+                        where: { 
+                            id: ownerId,
+                            isActive: true 
                         },
-                        through: {
-                            attributes: []
-                        }
-                    }
-                ]
+                        through: { attributes: [] }
+                    }]
+                }]
             });
 
-            if (!userFarms || userFarms.length === 0) {
+            if (!ownerModules || ownerModules.length === 0) {
                 return res.status(403).json(
                     ApiResponse.createApiResponse('Authorization failed',
                         [],
                         [{
-                            msg: 'No farms with associated monitor users were found.'
+                            msg: 'You do not have access to any modules through your farms.'
                         }]
                     )
                 );
             }
 
-            req.userFarms = userFarms;
+            req.ownerModules = ownerModules;
+            
+            req.ownerModuleIds = ownerModules.map(module => module.id);
+            
             next();
         } catch (error) {
-            console.error('Owner farm access validation error:', error);
+            console.error('Owner module access validation error:', error);
             return res.status(500).json(
                 ApiResponse.createApiResponse('Server error',
                     [],
