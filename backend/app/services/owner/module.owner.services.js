@@ -1,4 +1,4 @@
-const { Module, Farm, User, Sensor, Measurement, Threshold, sequelize } = require('../../../models');
+const { Module, Farm, User, Sensor, Measurement, Threshold, ModuleUser, sequelize } = require('../../../models');
 const SensorService = require("../shared/sensor.shared.service");
 const ThresholdService = require("../shared/threshold.shared.service");
 const Mailer = require("../../utils/Mailer");
@@ -445,6 +445,76 @@ class ModuleOwnerService {
             await transaction.rollback();
             console.error(`Error performing soft delete of module: ${moduleId}:`, error);
             throw new Error(`Error deleting module: ${error.message}`);
+        }
+    }
+
+    async assignMonitorToModule(moduleId, monitorId) {
+        const transaction = await sequelize.transaction();
+        try {
+            const [moduleUser, created] = await ModuleUser.findOrCreate({
+                where: {
+                    id_module: moduleId,
+                    id_user: monitorId
+                },
+                defaults: { isActive: true },
+                transaction
+            });
+
+            if (!created && !moduleUser.isActive) {
+                await moduleUser.update({ isActive: true }, { transaction });
+            }
+
+            await transaction.commit();
+
+            return await Module.findByPk(moduleId, {
+                include: [{
+                    model: User,
+                    as: 'users',
+                    attributes: ['id', 'name', 'email', 'dni'],
+                    where: { isActive: true },
+                    through: { attributes: [] }
+                }],
+                where: { isActive: true }
+            });
+        } catch (error) {
+            await transaction.rollback();
+            throw new Error(`Error asignando monitor al módulo: ${error.message}`);
+        }
+    }
+    async unassignMonitorFromModule(moduleId, monitorId) {
+        const transaction = await sequelize.transaction();
+        try {
+            const relation = await ModuleUser.findOne({
+                where: {
+                    id_module: moduleId,
+                    id_user: monitorId,
+                    isActive: true
+                },
+                transaction
+            });
+
+            if (!relation) {
+                throw new Error('Monitor is not assigned to this module');
+            }
+
+            await relation.update({ isActive: false }, { transaction });
+            await transaction.commit();
+
+            return await Module.findByPk(moduleId, {
+                include: [
+                    {
+                        model: User,
+                        as: 'users',
+                        attributes: ['id', 'name', 'email', 'dni'],
+                        where: { isActive: true },
+                        through: { attributes: [] }
+                    }
+                ],
+                where: { isActive: true }
+            });
+        } catch (error) {
+            await transaction.rollback();
+            throw new Error(`Error unassigning monitor from module: ${error.message}`);
         }
     }
 }

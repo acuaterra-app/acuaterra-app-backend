@@ -12,6 +12,7 @@ const ValidateModuleCreateMiddleware = require("../../middleware/validateModuleC
 const ValidateModuleUpdateMiddleware = require("../../middleware/validateModuleUpdate.middleware");
 const ValidateModuleDeleteMiddleware = require("../../middleware/validateModuleDelete.middleware");
 const ValidateModuleShowMiddleware = require("../../middleware/validateModuleShow.middleware");
+const ValidateModuleMonitorAssignmentMiddleware = require("../../middleware/validateModuleMonitorAssignment.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const moduleOwnerService = new ModuleOwnerService();
@@ -21,6 +22,7 @@ const validateModuleCreate = new ValidateModuleCreateMiddleware();
 const validateModuleUpdate = new ValidateModuleUpdateMiddleware();
 const validateModuleDelete = new ValidateModuleDeleteMiddleware();
 const validateModuleShow = new ValidateModuleShowMiddleware();
+const validateModuleMonitorAssignment = new ValidateModuleMonitorAssignmentMiddleware();
 
 router.post(
     '/',
@@ -54,6 +56,14 @@ router.delete(
     validateRoleMiddleware.validate([Role.OWNER]),
     (req, res, next) => validateModuleDelete.validate(req, res, next),
     (req, res) => moduleController.delete(req, res)
+);
+
+router.post(
+    '/:moduleId/monitors/:monitorId',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    (req, res, next) => validateModuleMonitorAssignment.validate(req, res, next),
+    (req, res) => moduleController.assignMonitor(req, res)
 );
 
 module.exports = router;

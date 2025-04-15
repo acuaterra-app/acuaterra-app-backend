@@ -77,13 +77,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImRuaSI6IjM0OTIxNDQ0NTkiLCJpYXQiOjE3NDI2Njc2NjgsImV4cCI6MTc0MjY4NTY2OH0.IptHe49ACeaexijrZvKDBWGRISudABXHDY-zSvjYMUY",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiNTk5NTQ4MDYzMSIsImlhdCI6MTc0Mjc3OTA0NywiZXhwIjoxNzQyNzk3MDQ3fQ.XzvARF2lE_uQs4tr0_nim56XJyDOgMJabwPSUAXsHRc",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"name\": \"NameMOdule11\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 35,\r\n  \"users\": [41, 42]\r\n}",
+									"raw": "{\r\n  \"name\": \"zz\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 1,\r\n  \"users\": [4]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -190,6 +190,46 @@
 										"owner",
 										"modules",
 										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "assign monitor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDc0ODc1NiwiZXhwIjoxNzQ0NzY2NzU2fQ.-Flta6QpsVjt9Fom4lnwR9ZIualTO5x5sJ_GhTZonMg",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"action\": \"assign\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/modules/32/monitors/112",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"32",
+										"monitors",
+										"112"
 									]
 								}
 							},
