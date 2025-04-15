@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { validateUserLogin, validateChangePassword } = require("../validators/shared/auth.validator");
+const { 
+    validateUserLogin, 
+    validateChangePassword,
+    validatePasswordResetRequest,
+    validatePasswordReset
+} = require("../validators/shared/auth.validator");
 const {validate} = require("../middleware/validate.middleware");
 const AuthController = require("../controllers/shared/auth.controller");
 const ValidateTokenMiddleware = require("../middleware/validateToken.middleware");
@@ -29,6 +34,18 @@ router.post(
     '/change-password',
     validate(validateChangePassword),
     (req, res) => authController.changeTemporaryPassword(req, res)
+);
+
+router.post(
+    '/request-password-reset',
+    validate(validatePasswordResetRequest),
+    (req, res) => authController.requestPasswordReset(req, res)
+);
+
+router.post(
+    '/reset-password',
+    validate(validatePasswordReset),
+    (req, res) => authController.resetPassword(req, res)
 );
 
 module.exports = router;

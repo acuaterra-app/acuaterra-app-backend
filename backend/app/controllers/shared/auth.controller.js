@@ -2,10 +2,6 @@ const {User} = require("../../../models");
 const ApiResponse = require("../../utils/apiResponse");
 class AuthController {
 
-    /**
-     *
-     * @param {AuthService} authService
-     */
     constructor(authService) {
         this.authService = authService;
     }
@@ -83,6 +79,68 @@ class AuthController {
                 error.message.includes("The current password is incorrect")) {
                 return res.status(400).json(response);
             }
+            return res.status(500).json(response);
+        }
+    }
+
+    async requestPasswordReset(req, res) {
+        try {
+            const { email } = req.body;
+            
+            await this.authService.requestPasswordReset(email);
+            
+            const result = ApiResponse.createApiResponse(
+                'An email has been sent with instructions to reset your password.',
+                [],
+                []
+            );
+            
+            res.json(result);
+        } catch (error) {
+            console.error("Error requesting password reset:", error);
+            
+            const response = ApiResponse.createApiResponse(
+                "Error requesting password reset",
+                [],
+                [{ msg: error.message }]
+            );
+            
+            if (error.message.includes("User not found") || 
+                error.message.includes("User is inactive")) {
+                return res.status(400).json(response);
+            }
+            
+            return res.status(500).json(response);
+        }
+    }
+
+    async resetPassword(req, res) {
+        try {
+            const { token, newPassword } = req.body;
+            
+            const updatedUser = await this.authService.resetPassword(token, newPassword);
+            
+            const result = ApiResponse.createApiResponse(
+                'Password updated successfully',
+                [{ user: updatedUser }]
+            );
+            
+            res.json(result);
+        } catch (error) {
+            console.error("Error resetting password:", error);
+            
+            const response = ApiResponse.createApiResponse(
+                "Error resetting password",
+                [],
+                [{ msg: error.message }]
+            );
+            
+            if (error.message.includes("expired") || 
+                error.message.includes("invalid") || 
+                error.message.includes("User not found")) {
+                return res.status(400).json(response);
+            }
+            
             return res.status(500).json(response);
         }
     }

@@ -1,13 +1,14 @@
 const bcrypt = require("bcrypt");
 const {User} = require("../../../models");
 const {getRoleNameById} = require("../../enums/roles.enum");
+const jwt = require('jsonwebtoken');
+const Mailer = require('../../utils/Mailer');
+const ejs = require('ejs');
+const path = require('path');
+const fs = require('fs');
 
 class AuthService {
 
-    /**
-     * @param {BlackListService} blackListService
-     * @param {TokenGeneratorService} tokenGenerator
-     */
     constructor(blackListService, tokenGenerator) {
         this.blackListService = blackListService;
         this.tokenGenerator = tokenGenerator;
@@ -76,6 +77,96 @@ class AuthService {
             contact: user.contact,
             mustChangePassword: user.mustChangePassword
         };
+    }
+
+    async requestPasswordReset(email) {
+        const user = await User.findOne({where: {email}});
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (!user.isActive) {
+            throw new Error('User is inactive');
+        }
+
+        const secret = process.env.JWT_SECRET;
+        const payload = {
+            email: user.email,
+            id: user.id,
+            purpose: 'password_reset'
+        };
+        const options = { expiresIn: '15m' };
+        const token = jwt.sign(payload, secret, options);
+
+        // TODO: url pendiente por hacer para el front
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const resetPasswordUrl = `${baseUrl}/reset-password?token=${token}`;
+
+        // TODO: log solo para prueba apenas se implemente from QUITAR
+        console.log(token)
+
+        const templatePath = path.join(__dirname, '../../../app/views/emails/password_reset.ejs');
+        const template = fs.readFileSync(templatePath, 'utf8');
+        const emailContent = ejs.render(template, {
+            name: user.name,
+            email: user.email,
+            resetPasswordUrl
+        });
+
+        const mailer = new Mailer(process.env.RESEND_API_KEY);
+        const from = process.env.RESEND_FROM_EMAIL;
+        const result = await mailer.sendEmail(
+            user.email,
+            'Recuperación de contraseña - Acuaterra',
+            emailContent,
+            from
+        );
+
+        if (!result.success) {
+            throw new Error('Failed to send reset password email');
+        }
+
+        return {
+            success: true,
+            message: 'Reset password email sent successfully'
+        };
+    }
+
+    async resetPassword(token, newPassword) {
+        try {
+            const secret = process.env.JWT_SECRET;
+            const decoded = jwt.verify(token, secret);
+            
+            if (decoded.purpose !== 'password_reset') {
+                throw new Error('Invalid token purpose');
+            }
+
+            const user = await User.findOne({ where: { email: decoded.email, id: decoded.id } });
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            if (!user.isActive) {
+                throw new Error('User is inactive');
+            }
+
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+            user.password = hashedPassword;
+            user.mustChangePassword = false;
+            await user.save();
+
+            return this._formatUserResponse(user);
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                throw new Error('Password reset link has expired');
+            }
+            if (error.name === 'JsonWebTokenError') {
+                throw new Error('Invalid password reset link');
+            }
+            throw error;
+        }
     }
 }
 
