@@ -113,13 +113,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDIwNzIwMzgsImV4cCI6MTc0MjA5MDAzOH0.UhesXPXqNFhwaVowsayeazRd-NHuPeMQgEcGGUGZErs",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjMyODU4MTgyNyIsImlhdCI6MTc0NDY3Njg1OSwiZXhwIjoxNzQ0Njk0ODU5fQ.OU--NgpPrUyOIVK28KEnZU8cehfUui8c8sKq5t2-_Dw",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"user\",\r\n    \"email\": \"user2@example.com\",\r\n    \"dni\": \"112340\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle 1 # 10 - 19\",\r\n    \"contact\": \"12345321\"\r\n}",
+									"raw": "{\r\n    \"name\": \"NewAdmin\",\r\n    \"email\": \"newadmin@acuaterra.tech\",\r\n    \"dni\": \"7112340\",\r\n    \"id_rol\": \"1\",\r\n    \"address\": \"calle 1 # 10 - 19\",\r\n    \"contact\": \"12345321\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -226,13 +226,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0Mzk5MDUxNCwiZXhwIjoxNzQ0MDA4NTE0fQ.Qto-PHL0oToR6tIHhbLvEp28aXYXvqakKzeZQ_olEJk",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiOTcxMTUwNDQ2MiIsImlhdCI6MTc0NDc0NTAyOSwiZXhwIjoxNzQ0NzYzMDI5fQ.eUXwkbCbYl2LYFt9OjQN_nNyWcKWDxl9CRqMO-_omx8",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"New1\",\r\n    \"email\": \"leonidas1@acuaterra.tech\",\r\n    \"dni\": \"143214421378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\",\r\n    \"id_module\": 3\r\n}",
+									"raw": "{\r\n    \"name\": \"olmo\",\r\n    \"email\": \"olmo@acuaterra.tech\",\r\n    \"dni\": \"432121378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -354,7 +354,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n    // \"email\": \"admin1@example.com\",\n    \"password\": \"password\"\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n  //\"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    //\"password\": \"55f52b145337\"\n}",
+							"raw": "{   \n   // \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n   // \"password\": \"password\"\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n  //\"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    //\"password\": \"55f52b145337\"\n    \"email\": \"newadmin@acuaterra.tech\",\n    \"password\": \"NewAdmin88\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"

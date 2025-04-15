@@ -130,20 +130,6 @@ class UserOwnerService {
                 createdBy: data.createdBy || null,
                 updatedBy: data.updatedBy || null
             }, { transaction });
-
-            const module = await Module.findByPk(data.id_module, {
-                transaction
-            });
-            
-            if (!module) {
-                await transaction.rollback();
-                throw new Error('Module not found');
-            }
-
-            await ModuleUser.create({
-                id_module: module.id,
-                id_user: newUser.id
-            }, { transaction });
             
             const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL || 'https://acuaterra.tech/reset-password';
             const subject = 'Bienvenido a Acuaterra Usuario Monitor - Credenciales de acceso';
@@ -195,12 +181,6 @@ class UserOwnerService {
                         model: Rol, 
                         as: 'rol', 
                         attributes: ['id', 'name'] 
-                    },
-                    { 
-                        model: Module, 
-                        as: 'assigned_modules', 
-                        attributes: ['id', 'name', 'location', 'species_fish'], 
-                        through: { attributes: [] } 
                     }
                 ]
             });
