@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Create a new monitor user",
-      "description": "Creates a new user with monitor role and associates it with a specific module.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Associates the user with the specified module\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must have access to the module through their associated farms\n  - Can only create MONITOR role users\n  - Module must exist and have an associated farm\n  - The module must belong to a farm managed by the owner\n  - Validation is performed directly on the module relationship rather than requiring separate farm validation",
+      "description": "Creates a new user with monitor role.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Can only create MONITOR role users\n\n## Automatic Processing\n\n- The `id_rol` is automatically set to MONITOR (3) if not provided\n- Any `farm_id` in the request body is automatically removed for security reasons\n\n## Validation Rules\n\n- **name**: Required, must be a string between 3 and 100 characters\n- **email**: Required, must be a valid email format, must be unique in the system\n- **dni**: Required, must be an integer between 5 and 100 characters, must be unique in the system\n- **address**: Required, must be a string (max 100 characters) containing at least one number and one word\n- **contact**: Required, must be an integer between 5 and 100 characters",
       "requestBody": {
         "required": true,
         "content": {
@@ -17,8 +17,7 @@
                 "email",
                 "dni",
                 "address",
-                "contact",
-                "id_module"
+                "contact"
               ],
               "properties": {
                 "name": {
@@ -33,24 +32,24 @@
                   "example": "john.doe@example.com"
                 },
                 "dni": {
-                  "type": "string",
-                  "description": "Document or identification number of the monitor user",
-                  "example": "12345678"
+                  "type": "integer",
+                  "description": "Document or identification number of the monitor user (must be between 5-100 digits and unique)",
+                  "example": 12345678
                 },
                 "address": {
                   "type": "string",
-                  "description": "Physical address where the monitor is located",
+                  "description": "Physical address where the monitor is located (must contain at least one number and one word)",
                   "example": "123 Monitoring St, City"
                 },
                 "contact": {
-                  "type": "string",
-                  "description": "Contact phone number of the monitor user",
-                  "example": "+1234567890"
-                },
-                "id_module": {
                   "type": "integer",
-                  "description": "Identifier of the module to be monitored",
-                  "example": 8
+                  "description": "Contact phone number of the monitor user (must be between 5-100 digits)",
+                  "example": 1234567890
+                },
+                "id_rol": {
+                  "type": "integer",
+                  "description": "Optional. Role ID for the user. If not provided, automatically set to MONITOR (3)",
+                  "example": 3
                 }
               }
             }
@@ -88,16 +87,16 @@
                           "example": "john.smith@acuaterra.tech"
                         },
                         "dni": {
-                          "type": "string",
-                          "example": "14322621378"
+                          "type": "integer",
+                          "example": 14322621378
                         },
                         "address": {
                           "type": "string",
                           "example": "123 Monitor Street"
                         },
                         "contact": {
-                          "type": "string",
-                          "example": "12345789"
+                          "type": "integer",
+                          "example": 12345789
                         },
                         "id_rol": {
                           "type": "integer",
@@ -123,30 +122,6 @@
                             "name": {
                               "type": "string",
                               "example": "MONITOR"
-                            }
-                          }
-                        },
-                        "assigned_modules": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "example": 8
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "Tank Module A1"
-                              },
-                              "location": {
-                                "type": "string",
-                                "example": "Section B, Building 2"
-                              },
-                              "species_fish": {
-                                "type": "string",
-                                "example": "Tilapia"
-                              }
                             }
                           }
                         }
@@ -200,8 +175,33 @@
                     },
                     "example": [
                       {
-                        "msg": "Name is required and must be a valid string",
+                        "msg": "Name is required",
                         "param": "name",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Email already exists",
+                        "param": "email",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "DNI must be a Int",
+                        "param": "dni",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Address must contain at least one number",
+                        "param": "address",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Contact must be between 5 and 100 characters",
+                        "param": "contact",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "The assigned role must be Monitor (3)",
+                        "param": "id_rol",
                         "location": "body"
                       }
                     ]
@@ -270,14 +270,7 @@
                     "type": "array",
                     "example": [
                       {
-                        "msg": "You do not have access to any modules through your farms."
-                      },
-                      {
-                        "msg": "You do not have permission to create monitors in this module",
-                        "details": "The module belongs to the farm Farm A, which you do not manage"
-                      },
-                      {
-                        "msg": "The module with ID 999 does not exist in the system"
+                        "msg": "The assigned role must be Monitor (3)"
                       }
                     ]
                   },
