@@ -111,7 +111,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{ \r\n    \"email\": \"thearanda88@gmail.com\",\r\n    \"oldPassword\": \"Thearanda88\",\r\n    \"newPassword\": \"Thedaniel88\" \r\n}",
+									"raw": "{ \r\n    \"email\": \"newadmin@acuaterra.tech\",\r\n    \"oldPassword\": \"395381ym\",\r\n    \"newPassword\": \"NewAdmin88\" \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -119,7 +119,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/auth//change-password",
+									"raw": "{{server}}/api/v2/auth/change-password",
 									"host": [
 										"{{server}}"
 									],
@@ -127,8 +127,65 @@
 										"api",
 										"v2",
 										"auth",
-										"",
 										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request password reset",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"newadmin@acuaterra.tech\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/auth/request-password-reset",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"auth",
+										"request-password-reset"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5ld2FkbWluQGFjdWF0ZXJyYS50ZWNoIiwiaWQiOjEwOSwicHVycG9zZSI6InBhc3N3b3JkX3Jlc2V0IiwiaWF0IjoxNzQ0NjgwMzk2LCJleHAiOjE3NDQ2ODEyOTZ9.gzAjpI-HYh6AqZ-F26dsILdHDElZ9j_wE3RE0G0B4OU\",\r\n    \"newPassword\": \"NewAdmin88\",\r\n    \"confirmPassword\": \"NewAdmin88\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/auth/reset-password",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"auth",
+										"reset-password"
 									]
 								}
 							},
