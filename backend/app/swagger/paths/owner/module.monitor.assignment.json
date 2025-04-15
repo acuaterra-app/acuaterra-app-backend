@@ -1,0 +1,341 @@
+{
+  "/api/v2/owner/modules/{moduleId}/monitors/{monitorId}": {
+    "post": {
+      "tags": [
+        "Owner/Modules"
+      ],
+      "summary": "Assign or unassign a monitor to/from a module",
+      "description": "Assigns or unassigns a monitor user to a specific module. The owner must have access to the module.\n\n## Features\n\n- Allows assigning a monitor to a module\n- Allows unassigning a monitor from a module\n- Only accessible by OWNER role users who have access to the module\n- Validates that the user being assigned is a MONITOR\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**: Owner must have access to the module through their associated farms",
+      "parameters": [
+        {
+          "name": "moduleId",
+          "in": "path",
+          "required": true,
+          "description": "ID of the module to assign/unassign the monitor to/from",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "monitorId",
+          "in": "path",
+          "required": true,
+          "description": "ID of the monitor user to assign/unassign",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "enum": ["assign", "unassign"],
+                  "description": "Action to perform - assign or unassign the monitor",
+                  "default": "assign"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Monitor assigned/unassigned successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Monitor assigned to module successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Module Name"
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 12
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Monitor Name"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "monitor@example.com"
+                              },
+                              "dni": {
+                                "type": "string",
+                                "example": "12345678"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid input or operation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error in monitor assignment"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Invalid action. Must be \"assign\" or \"unassign\""
+                      },
+                      {
+                        "msg": "Monitor is already assigned to this module"
+                      },
+                      {
+                        "msg": "The specified user is not an active monitor"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Missing or invalid authentication",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authentication failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Authentication token is missing"
+                      },
+                      {
+                        "msg": "Invalid token"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have permission",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access Denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "You do not have access to this module or the module does not exist"
+                      },
+                      {
+                        "msg": "Only users with OWNER role can access this resource"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Module, monitor, or relationship not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error in monitor assignment"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Module not found or inactive"
+                      },
+                      {
+                        "msg": "Monitor not found or inactive"
+                      },
+                      {
+                        "msg": "Monitor is not assigned to this module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error in monitor assignment"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "An error occurred while validating module-monitor assignment"
+                      },
+                      {
+                        "msg": "Error assigning monitor to module: Database error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        {
+          "apiKey": []
+        }
+      ]
+    }
+  }
+}
