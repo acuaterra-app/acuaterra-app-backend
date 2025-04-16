@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Update an existing monitor user",
-      "description": "Updates the information of an existing monitor user.\n\n## Features\n\n- Updates monitor user profile information\n- Optionally changes module assignment\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Monitor user must exist and be active\n  - Owner must have access to at least one module that the monitor is assigned to\n  - If changing module assignment, the owner must have access to the new module through their farms\n  - Validation is performed directly on the module relationships rather than requiring separate farm validation",
+      "description": "Updates the basic information of an existing monitor user.\n\n## Features\n\n- Updates monitor user profile information\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Monitor user must exist and be active",
       "parameters": [
         {
           "name": "id",
@@ -50,11 +50,6 @@
                   "type": "string",
                   "description": "Contact phone number of the monitor user",
                   "example": "+0987654321"
-                },
-                "id_module": {
-                  "type": "integer",
-                  "description": "Identifier of the module to be monitored",
-                  "example": 9
                 }
               }
             }
@@ -124,30 +119,6 @@
                               "example": "MONITOR"
                             }
                           }
-                        },
-                        "assigned_modules": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "example": 7
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "ModuloMessias"
-                              },
-                              "location": {
-                                "type": "string",
-                                "example": "Ubicación del módulo 123"
-                              },
-                              "species_fish": {
-                                "type": "string",
-                                "example": "Especie de pez"
-                              }
-                            }
-                          }
                         }
                       }
                     }
@@ -186,8 +157,7 @@
                       "type": "object",
                       "properties": {
                         "msg": {
-                          "type": "string",
-                          "example": "Field validation failed"
+                          "type": "string"
                         },
                         "param": {
                           "type": "string"
@@ -270,20 +240,6 @@
                     "example": [
                       {
                         "msg": "User with id 999 not found in the system or is inactive"
-                      },
-                      {
-                        "msg": "You are not authorized to edit this Monitor user",
-                        "details": "The monitor is assigned to modules from farms that you do not manage"
-                      },
-                      {
-                        "msg": "You cannot assign this module because it belongs to a different farm",
-                        "details": "The module belongs to the farm Farm A, which you do not manage"
-                      },
-                      {
-                        "msg": "Module with id 999 does not exist in the system"
-                      },
-                      {
-                        "msg": "Module with id 999 has no associated farm"
                       }
                     ]
                   },
@@ -297,7 +253,7 @@
           }
         },
         "404": {
-          "description": "Not Found - User or module not found",
+          "description": "Not Found - User not found",
           "content": {
             "application/json": {
               "schema": {
@@ -321,18 +277,7 @@
                           "example": "User with id 999 not found in the system"
                         }
                       }
-                    },
-                    "example": [
-                      {
-                        "msg": "User with id 999 not found in the system"
-                      },
-                      {
-                        "msg": "Module with id 999 does not exist in the system"
-                      },
-                      {
-                        "msg": "Module with id 123 has no associated farm"
-                      }
-                    ]
+                    }
                   },
                   "meta": {
                     "type": "object",
@@ -365,20 +310,10 @@
                       "properties": {
                         "msg": {
                           "type": "string",
-                          "example": "Error processing monitor user validation"
-                        },
-                        "details": {
-                          "type": "string",
-                          "example": "Database connection error"
+                          "example": "Error processing monitor user update"
                         }
                       }
-                    },
-                    "example": [
-                      {
-                        "msg": "Error processing monitor user validation",
-                        "details": "Database connection error"
-                      }
-                    ]
+                    }
                   },
                   "meta": {
                     "type": "object",

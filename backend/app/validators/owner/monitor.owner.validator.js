@@ -108,18 +108,7 @@ const validateMonitorUpdate = [
         .notEmpty().withMessage('Contact is required')
         .isInt().withMessage('Contact must be a Int')
         .trim()
-        .isLength({ min: 5, max: 100 }).withMessage('Contact must be between 5 and 100 characters'),
-
-    body('id_module')
-        .notEmpty().withMessage('Module ID is required')
-        .isInt().withMessage('Module ID must be an integer')
-        .custom(async (id) => {
-            const module = await Module.findByPk(id);
-            if (!module) {
-                throw new Error('The specified module does not exist');
-            }
-            return true;
-        })
+        .isLength({ min: 5, max: 100 }).withMessage('Contact must be between 5 and 100 characters')
 ];
 
 module.exports = { validateMonitorRegistration, validateMonitorUpdate };

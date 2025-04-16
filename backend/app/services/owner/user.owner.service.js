@@ -222,27 +222,6 @@ class UserOwnerService {
                 updatedBy: data.updatedBy || null
             }, { transaction });
 
-            if (data.id_module) {
-                const module = await Module.findByPk(data.id_module, {
-                    transaction
-                });
-
-                if (!module) {
-                    await transaction.rollback();
-                    throw new Error('Module not found');
-                }
-
-                await ModuleUser.destroy({
-                    where: { id_user: existingUser.id },
-                    transaction
-                });
-
-                await ModuleUser.create({
-                    id_module: module.id,
-                    id_user: existingUser.id
-                }, { transaction });
-            }
-
             await transaction.commit();
 
             const updatedUser = await User.findByPk(existingUser.id, {
@@ -262,12 +241,6 @@ class UserOwnerService {
                         model: Rol,
                         as: 'rol',
                         attributes: ['id', 'name']
-                    },
-                    {
-                        model: Module,
-                        as: 'assigned_modules',
-                        attributes: ['id', 'name', 'location', 'species_fish'],
-                        through: { attributes: [] }
                     }
                 ]
             });
