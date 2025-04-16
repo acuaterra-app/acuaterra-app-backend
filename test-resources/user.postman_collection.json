@@ -263,13 +263,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0Mzk5MDUxNCwiZXhwIjoxNzQ0MDA4NTE0fQ.Qto-PHL0oToR6tIHhbLvEp28aXYXvqakKzeZQ_olEJk",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiOTcxMTUwNDQ2MiIsImlhdCI6MTc0NDgzMDg0NCwiZXhwIjoxNzQ0ODQ4ODQ0fQ.2q9zKuBOPwoCJ6I92hJCGlosVAIs4PUi6EbMyBfJjJI",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"New1Edi\",\r\n    \"email\": \"leoEditado@acuaterra.tech\",\r\n    \"dni\": \"143226378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\",\r\n    \"id_module\": 3\r\n}",
+									"raw": "{\r\n    \"name\": \"NewLeonidas\",\r\n    \"email\": \"leoEditado@acuaterra.tech\",\r\n    \"dni\": \"143226378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
