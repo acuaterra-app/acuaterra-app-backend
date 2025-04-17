@@ -136,6 +136,29 @@ class userOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async reactivateMonitor(req, res) {
+        try {
+            const monitorToReactivate = req.monitorToReactivate;
+
+            const result = await this.userOwnerService.reactivateMonitor(monitorToReactivate);
+
+            const response = ApiResponse.createApiResponse(
+                `The monitor with ID ${monitorToReactivate.id} has been successfully reactivated.`,
+                [result],
+                []
+            );
+
+            return res.json(response);
+        } catch (error) {
+            const response = ApiResponse.createApiResponse(
+                "Error reactivating the monitor",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
 }
 
 module.exports = userOwnerController;

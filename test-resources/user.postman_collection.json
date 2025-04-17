@@ -295,25 +295,52 @@
 							"response": []
 						},
 						{
-							"name": "delete user monitor",
+							"name": "deactivate user monitor",
 							"request": {
 								"method": "DELETE",
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiOTcxMTUwNDQ2MiIsImlhdCI6MTc0NDI1OTgwMywiZXhwIjoxNzQ0Mjc3ODAzfQ.IQwXQEI9WcGVvMe7woxjpk-EmHnDMWpqQSoDFQFurgc",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/admin/users/59",
+									"raw": "{{server}}/api/v2/owner/users/59",
 									"host": [
 										"{{server}}"
 									],
 									"path": [
 										"api",
 										"v2",
-										"admin",
+										"owner",
+										"users",
+										"59"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "activate user monitor",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/users/59",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
 										"users",
 										"59"
 									]
@@ -354,7 +381,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \n   // \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n   // \"password\": \"password\"\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n  //\"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    //\"password\": \"55f52b145337\"\n    \"email\": \"newadmin@acuaterra.tech\",\n    \"password\": \"NewAdmin88\" \n}",
+							"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n  //\"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    //\"password\": \"55f52b145337\"\n    //\"email\": \"newadmin@acuaterra.tech\",\n    //\"password\": \"NewAdmin88\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"

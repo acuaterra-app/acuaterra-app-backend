@@ -1,0 +1,239 @@
+{
+  "/api/v2/owner/users/{id}": {
+    "patch": {
+      "tags": [
+        "Owner/Users"
+      ],
+      "summary": "Reactivate a previously disabled monitor user",
+      "description": "Reactivates a monitor user by setting isActive to true.\n\n## Features\n\n- Reactivates a monitor user that was previously disabled\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - The monitor must exist and be inactive (isActive: false)\n  - The monitor must have the MONITOR role\n  - If the monitor has modules assigned, at least one module must belong to a farm managed by the owner\n  - Validation is performed directly on the module relationships rather than requiring separate farm validation\n  - Access is granted if the owner has access to any module the monitor is assigned to",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the monitor user to reactivate",
+          "schema": {
+            "type": "integer"
+          },
+          "example": 57
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Monitor user reactivated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "The monitor with ID 57 has been successfully reactivated."
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 57
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "john.doe@example.com"
+                        },
+                        "dni": {
+                          "type": "string",
+                          "example": "12345678"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Monitor Street"
+                        },
+                        "contact": {
+                          "type": "string",
+                          "example": "12345789"
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-04T20:58:42.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-16T23:30:42.000Z"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "MONITOR"
+                            }
+                          }
+                        },
+                        "assigned_modules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 13
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "moduleDuber"
+                              },
+                              "location": {
+                                "type": "string",
+                                "example": "Cauca 1"
+                              },
+                              "species_fish": {
+                                "type": "string",
+                                "example": "Tilapia"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization Error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "You are not authorized to reactivate this monitor",
+                        "details": "The monitor is assigned to modules that belong to farms that you do not manage."
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Monitor not found or already active",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error reactivating monitor"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "The monitor with ID 999 does not exist, is not a monitor, or is already active."
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error reactivating monitor"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Error reactivating monitor: Database connection error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        {
+          "apiKey": []
+        }
+      ]
+    }
+  }
+}
