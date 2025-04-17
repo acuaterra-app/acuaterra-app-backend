@@ -202,13 +202,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDc0ODc1NiwiZXhwIjoxNzQ0NzY2NzU2fQ.-Flta6QpsVjt9Fom4lnwR9ZIualTO5x5sJ_GhTZonMg",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"action\": \"assign\"\r\n}",
+									"raw": "{\r\n    \"action\": \"assign\",\r\n    \"monitorIds\": [116, 117, 118]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -216,7 +216,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/v2/owner/modules/32/monitors/112",
+									"raw": "http://localhost:3000/api/v2/owner/modules/32/monitors",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -228,8 +228,7 @@
 										"owner",
 										"modules",
 										"32",
-										"monitors",
-										"112"
+										"monitors"
 									]
 								}
 							},

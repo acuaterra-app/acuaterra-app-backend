@@ -132,20 +132,18 @@ class ModuleOwnerController {
 
     async assignMonitor(req, res) {
         try {
-            const { moduleId, monitorId } = req.params;
-            const { action = 'assign' } = req.body;
+            const { moduleId } = req.params;
+            const { action = 'assign', monitorIds } = req.body;
 
             let result;
             if (action === 'assign') {
-                result = await this.moduleOwnerService.assignMonitorToModule(moduleId, monitorId);
+                result = await this.moduleOwnerService.assignMonitorToModule(moduleId, monitorIds);
             } else if (action === 'unassign') {
-                result = await this.moduleOwnerService.unassignMonitorFromModule(moduleId, monitorId);
-            } else {
-                throw new Error('Invalid action. Must be "assign" or "unassign"');
+                result = await this.moduleOwnerService.unassignMonitorFromModule(moduleId, monitorIds);
             }
 
             const response = ApiResponse.createApiResponse(
-                `Monitor ${action === 'assign' ? 'assigned to' : 'unassigned from'} module successfully`,
+                `Monitor(s) ${action === 'assign' ? 'assigned(s)' : 'deallocated(s)'} from the module successfully`,
                 [result],
                 []
             );
