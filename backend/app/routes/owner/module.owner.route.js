@@ -59,7 +59,7 @@ router.delete(
 );
 
 router.post(
-    '/:moduleId/monitors/:monitorId',
+    '/:moduleId/monitors',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER]),
     (req, res, next) => validateModuleMonitorAssignment.validate(req, res, next),

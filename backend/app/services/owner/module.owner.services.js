@@ -448,73 +448,97 @@ class ModuleOwnerService {
         }
     }
 
-    async assignMonitorToModule(moduleId, monitorId) {
+    async assignMonitorToModule(moduleId, monitorIds) {
         const transaction = await sequelize.transaction();
         try {
-            const [moduleUser, created] = await ModuleUser.findOrCreate({
-                where: {
-                    id_module: moduleId,
-                    id_user: monitorId
-                },
-                defaults: { isActive: true },
-                transaction
+            const moduleIdToUse = typeof moduleId === 'object' ? moduleId.id : moduleId;
+            
+            const monitorIdsArray = Array.isArray(monitorIds) ? monitorIds : [monitorIds];
+            
+            const assignmentPromises = monitorIdsArray.map(async (monitorId) => {
+                const monitorIdToUse = typeof monitorId === 'object' ? monitorId.id : monitorId;
+                
+                const [moduleUser, created] = await ModuleUser.findOrCreate({
+                    where: {
+                        id_module: moduleIdToUse,
+                        id_user: monitorIdToUse
+                    },
+                    defaults: { 
+                        isActive: true
+                    },
+                    transaction
+                });
+
+                if (!created && !moduleUser.isActive) {
+                    await moduleUser.update({ 
+                        isActive: true
+                    }, { transaction });
+                }
+                
+                return moduleUser;
             });
 
-            if (!created && !moduleUser.isActive) {
-                await moduleUser.update({ isActive: true }, { transaction });
-            }
-
+            await Promise.all(assignmentPromises);
+            
             await transaction.commit();
 
-            return await Module.findByPk(moduleId, {
+            return await Module.findByPk(moduleIdToUse, {
                 include: [{
                     model: User,
                     as: 'users',
                     attributes: ['id', 'name', 'email', 'dni'],
-                    where: { isActive: true },
-                    through: { attributes: [] }
-                }],
-                where: { isActive: true }
+                    through: { attributes: [] },
+                    where: {
+                        isActive: true
+                    }
+                }]
             });
         } catch (error) {
             await transaction.rollback();
-            throw new Error(`Error asignando monitor al módulo: ${error.message}`);
+            throw new Error(`Error assigning monitors to the module: ${error.message}`);
         }
     }
-    async unassignMonitorFromModule(moduleId, monitorId) {
+
+    async unassignMonitorFromModule(moduleId, monitorIds) {
         const transaction = await sequelize.transaction();
         try {
-            const relation = await ModuleUser.findOne({
-                where: {
-                    id_module: moduleId,
-                    id_user: monitorId,
-                    isActive: true
-                },
-                transaction
-            });
+            const moduleIdToUse = typeof moduleId === 'object' ? moduleId.id : moduleId;
+            const monitorIdsArray = Array.isArray(monitorIds) ? monitorIds : [monitorIds];
 
-            if (!relation) {
-                throw new Error('Monitor is not assigned to this module');
+            const result = await ModuleUser.update(
+                { 
+                    isActive: false
+                },
+                {
+                    where: {
+                        id_module: moduleIdToUse,
+                        id_user: { [Op.in]: monitorIdsArray },
+                        isActive: true
+                    },
+                    transaction
+                }
+            );
+
+            if (result[0] === 0) {
+                throw new Error('No active monitors found to unassign');
             }
 
-            await relation.update({ isActive: false }, { transaction });
             await transaction.commit();
 
-            return await Module.findByPk(moduleId, {
-                include: [
-                    {
-                        model: User,
-                        as: 'users',
-                        attributes: ['id', 'name', 'email', 'dni'],
-                        where: { isActive: true },
-                        through: { attributes: [] }
+            return await Module.findByPk(moduleIdToUse, {
+                include: [{
+                    model: User,
+                    as: 'users',
+                    attributes: ['id', 'name', 'email', 'dni'],
+                    through: { attributes: [] },
+                    where: {
+                        isActive: true
                     }
-                ],
-                where: { isActive: true }
+                }]
             });
         } catch (error) {
             await transaction.rollback();
-            throw new Error(`Error unassigning monitor from module: ${error.message}`);
+            throw new Error(`Error deallocating monitors from module: ${error.message}`);
         }
     }
 }
