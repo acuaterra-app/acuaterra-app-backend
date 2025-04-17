@@ -504,11 +504,9 @@ class ModuleOwnerService {
         try {
             const moduleIdToUse = typeof moduleId === 'object' ? moduleId.id : moduleId;
             const monitorIdsArray = Array.isArray(monitorIds) ? monitorIds : [monitorIds];
-
-            const result = await ModuleUser.update(
-                { 
-                    isActive: false
-                },
+            
+            await ModuleUser.update(
+                { isActive: false },
                 {
                     where: {
                         id_module: moduleIdToUse,
@@ -519,26 +517,37 @@ class ModuleOwnerService {
                 }
             );
 
-            if (result[0] === 0) {
-                throw new Error('No active monitors found to unassign');
-            }
-
             await transaction.commit();
 
-            return await Module.findByPk(moduleIdToUse, {
+            const updatedModule = await Module.findByPk(moduleIdToUse, {
                 include: [{
                     model: User,
                     as: 'users',
                     attributes: ['id', 'name', 'email', 'dni'],
-                    through: { attributes: [] },
+                    through: { 
+                        attributes: [],
+                        where: {
+                            isActive: true
+                        }
+                    },
                     where: {
                         isActive: true
                     }
                 }]
             });
+
+            return {
+                statusCode: 200,
+                data: updatedModule
+            };
         } catch (error) {
             await transaction.rollback();
-            throw new Error(`Error deallocating monitors from module: ${error.message}`);
+            console.error('Error unassigning monitors from module:', error);
+            
+            return {
+                statusCode: 500,
+                message: `Error unassigning monitors from module: ${error.message}`
+            };
         }
     }
 }
