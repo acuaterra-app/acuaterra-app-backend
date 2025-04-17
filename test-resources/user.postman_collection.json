@@ -174,7 +174,7 @@
 					"name": "owner",
 					"item": [
 						{
-							"name": "lsit monitores Mobile",
+							"name": "lsit monitores Mobile actives and inactives",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -343,6 +343,35 @@
 										"owner",
 										"users",
 										"59"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "lsit monitores Mobile actives",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDkyODgzNSwiZXhwIjoxNzQ0OTQ2ODM1fQ.xayLwaeaK7jB_yYO1UOUvRTxhtnljkxd8vlXx3QjU-Y",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users/monitors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users",
+										"monitors"
 									]
 								}
 							},

@@ -1,4 +1,4 @@
-const { User, Rol, Farm, Module, ModuleUser, sequelize } = require('../../../models');
+const { User, Rol, Farm, Module, ModuleUser, FarmUser, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
 const { ROLES } = require('../../enums/roles.enum');
 const bcrypt = require('bcryptjs');
@@ -348,6 +348,77 @@ class UserOwnerService {
                 await transaction.rollback();
             }
             throw new Error(`Error reactivating the monitor: ${error.message}`);
+        }
+    }
+
+    async getActiveMonitors(ownerId = null) {
+        try {
+            if (!ownerId) {
+                const allMonitors = await User.findAll({
+                    attributes: ['id', 'name'],
+                    where: {
+                        id_rol: ROLES.MONITOR,
+                        isActive: true
+                    },
+                    order: [['name', 'ASC']]
+                });
+                return allMonitors.map(monitor => ({
+                    id: monitor.id,
+                    fullName: monitor.name
+                }));
+            }
+
+            const ownerModules = await Module.findAll({
+                where: { isActive: true },
+                include: [{
+                    model: Farm,
+                    as: 'farm',
+                    where: { isActive: true },
+                    include: [{
+                        model: User,
+                        as: 'users',
+                        required: true,
+                        where: {
+                            id: ownerId,
+                            isActive: true
+                        },
+                        through: { attributes: [] }
+                    }]
+                }]
+            });
+
+            if (!ownerModules || ownerModules.length === 0) {
+                return [];
+            }
+
+            const moduleIds = ownerModules.map(module => module.id);
+
+            const monitors = await User.findAll({
+                attributes: ['id', 'name'],
+                where: {
+                    id_rol: ROLES.MONITOR,
+                    isActive: true
+                },
+                include: [{
+                    model: Module,
+                    as: 'assigned_modules',
+                    where: {
+                        id: { [Op.in]: moduleIds },
+                        isActive: true
+                    },
+                    through: { attributes: [] }
+                }],
+                order: [['name', 'ASC']],
+                distinct: true
+            });
+
+            return monitors.map(monitor => ({
+                id: monitor.id,
+                fullName: monitor.name
+            }));
+        } catch (error) {
+            console.error("Error getting active monitors:", error);
+            throw new Error(`Error getting active monitors: ${error.message}`);
         }
     }
 }
