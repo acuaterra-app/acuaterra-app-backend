@@ -3,7 +3,7 @@
     "get": {
       "summary": "Get monitor users associated with owner's modules",
       "tags": ["Owner/Users"],
-      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with modules from the authenticated owner's farms.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows only users associated with modules that belong to the authenticated user's farms\n- Includes pagination and sorting capabilities\n\n## Query Parameters\n\n- **page**\n  - **Type**: Integer\n  - **Description**: Page number for pagination\n  - **Required**: No\n  - **Default**: 1\n\n- **limit**\n  - **Type**: Integer\n  - **Description**: Number of records per page\n  - **Required**: No\n  - **Default**: 10\n\n- **sortField**\n  - **Type**: String\n  - **Description**: Field to sort by\n  - **Required**: No\n  - **Default**: 'createdAt'\n\n- **sortOrder**\n  - **Type**: String\n  - **Description**: Sort direction (ASC or DESC)\n  - **Required**: No\n  - **Default**: 'DESC'\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Middleware**: validateOwnerModuleAccess\n  - Validates that the owner has access to modules through their farms\n  - Filters users to show only those with MONITOR role\n  - Ensures that only monitors from modules in the owner's farms are returned",
+      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with modules from the authenticated owner's farms, including both active and inactive monitors.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows both active and inactive monitor users\n- Shows only users associated with modules that belong to the authenticated user's farms\n- Includes pagination and sorting capabilities\n\n",
       "responses": {
         "200": {
           "description": "Monitor users retrieved successfully",
@@ -50,6 +50,11 @@
                         "contact": {
                           "type": "string",
                           "example": "1234567890"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the monitor user is active (true) or inactive (false)"
                         },
                         "assigned_modules": {
                           "type": "array",
@@ -114,7 +119,8 @@
                         "properties": {
                           "total": {
                             "type": "integer",
-                            "example": 15
+                            "example": 15,
+                            "description": "Total number of monitor users (both active and inactive)"
                           },
                           "totalPages": {
                             "type": "integer",
@@ -167,7 +173,7 @@
                         "msg": "You do not have access to any modules through your farms."
                       },
                       {
-                        "msg": "There are no monitors available at partner farms."
+                        "msg": "There are no monitors (active or inactive) available at partner farms."
                       }
                     ]
                   }

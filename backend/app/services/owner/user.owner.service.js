@@ -71,8 +71,7 @@ class UserOwnerService {
                     'isActive'
                 ],
                 where: {
-                    id_rol: ROLES.MONITOR,
-                    isActive: true
+                    id_rol: ROLES.MONITOR
                 },
                 include: [
                     {
