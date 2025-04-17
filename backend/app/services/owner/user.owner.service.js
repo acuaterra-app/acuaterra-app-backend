@@ -302,6 +302,55 @@ class UserOwnerService {
             throw new Error(`Error disabling the monitor: ${error.message}`);
         }
     }
+
+    async reactivateMonitor(monitorToReactivate) {
+        let transaction = null;
+
+        try {
+            transaction = await sequelize.transaction();
+
+            await monitorToReactivate.update({
+                isActive: true
+            }, { transaction });
+
+            await transaction.commit();
+
+            const reactivatedUser = await User.findByPk(monitorToReactivate.id, {
+                attributes: [
+                    'id',
+                    'name',
+                    'email',
+                    'dni',
+                    'address',
+                    'contact',
+                    'id_rol',
+                    'isActive',
+                    'createdAt',
+                    'updatedAt'
+                ],
+                include: [
+                    {
+                        model: Rol,
+                        as: 'rol',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Module,
+                        as: 'assigned_modules',
+                        attributes: ['id', 'name', 'location', 'species_fish'],
+                        through: { attributes: [] }
+                    }
+                ]
+            });
+
+            return reactivatedUser;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            throw new Error(`Error reactivating the monitor: ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserOwnerService;
