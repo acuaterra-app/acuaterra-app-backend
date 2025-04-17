@@ -5,7 +5,7 @@
         "Owner/Modules"
       ],
       "summary": "Assign or unassign multiple monitors to/from a module",
-      "description": "Assigns or unassigns multiple monitors to a specific module simultaneously. Supports batch operations for both assignment and unassignment.",
+      "description": "Assigns or unassigns multiple monitors to a specific module simultaneously. When unassigning monitors, they will be marked as inactive in the relationship and will not appear in the modules user list in the response.",
       "parameters": [
         {
           "name": "moduleId",
@@ -28,7 +28,7 @@
                 "action": {
                   "type": "string",
                   "enum": ["assign", "unassign"],
-                  "description": "Action to perform - assign or unassign the monitors",
+                  "description": "Action to perform - assign or unassign the monitors. When unassigning, monitors will be marked as inactive and wont appear in the modules user list.",
                   "default": "assign"
                 },
                 "monitorIds": {
@@ -37,7 +37,7 @@
                     "type": "integer"
                   },
                   "description": "Array of monitor IDs to assign/unassign",
-                  "example": [1, 2, 3]
+                  "example": [116, 117, 118]
                 }
               }
             },
@@ -46,14 +46,14 @@
                 "summary": "Assign multiple monitors",
                 "value": {
                   "action": "assign",
-                  "monitorIds": [1, 2, 3]
+                  "monitorIds": [116, 117, 118]
                 }
               },
               "unassign_monitors": {
                 "summary": "Unassign monitors",
                 "value": {
                   "action": "unassign",
-                  "monitorIds": [1]
+                  "monitorIds": [116, 117, 118]
                 }
               }
             }
@@ -70,33 +70,51 @@
                 "properties": {
                   "message": {
                     "type": "string",
-                    "example": "Monitor(es) asignado(s) al módulo exitosamente"
+                    "example": "Monitor(s) deallocated(s) from the module successfully"
                   },
                   "data": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "id": {
+                        "statusCode": {
                           "type": "integer",
-                          "example": 5
+                          "example": 200
                         },
-                        "users": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer"
-                              },
-                              "name": {
-                                "type": "string"
-                              },
-                              "email": {
-                                "type": "string"
-                              },
-                              "dni": {
-                                "type": "string"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 32
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Modulito"
+                            },
+                            "location": {
+                              "type": "string",
+                              "example": "Zona 5"
+                            },
+                            "users": {
+                              "type": "array",
+                              "description": "List of users assigned to the module. Only active monitors will appear in this list. Unassigned monitors are marked as inactive and are not included.",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "dni": {
+                                    "type": "string"
+                                  }
+                                }
                               }
                             }
                           }
@@ -114,6 +132,10 @@
                         }
                       }
                     }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "description": "Additional metadata about the operation"
                   }
                 }
               }

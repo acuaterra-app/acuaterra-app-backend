@@ -202,13 +202,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDkyMzYzNiwiZXhwIjoxNzQ0OTQxNjM2fQ.6L7v5RbKgRCtj7-qYSsAuLvAut_6nUIn1N9dL0NW2aQ",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"action\": \"assign\",\r\n    \"monitorIds\": [116, 117, 118]\r\n}",
+									"raw": "{\r\n    //\"action\": \"assign\",\r\n    \"action\": \"unassign\",\r\n    \"monitorIds\": [116, 117, 118]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
