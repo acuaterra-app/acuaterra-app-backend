@@ -1,5 +1,5 @@
 const ApiResponse = require('../../utils/apiResponse');
-
+const { ROLES } = require('../../enums/roles.enum');
 class userOwnerController {
     constructor(userOwnerService) {
         this.userOwnerService = userOwnerService;
@@ -153,6 +153,38 @@ class userOwnerController {
         } catch (error) {
             const response = ApiResponse.createApiResponse(
                 "Error reactivating the monitor",
+                [],
+                [{ msg: error.message }]
+            );
+            return res.status(500).json(response);
+        }
+    }
+
+    async getActiveMonitors(req, res) {
+        try {
+            const ownerFarmIds = req.user.id_rol === ROLES.OWNER ? req.ownerFarmIds : null;
+            const result = await this.userOwnerService.getActiveMonitors(ownerFarmIds);
+            
+            if (result.length === 0) {
+                const response = ApiResponse.createApiResponse(
+                    "No active monitors available.",
+                    [],
+                    []
+                );
+                return res.json(response);
+            }
+
+            const response = ApiResponse.createApiResponse(
+                "Active monitors successfully recovered",
+                [result],
+                []
+            );
+
+            return res.json(response);
+        } catch (error) {
+            console.error("Error getting active monitors:", error);
+            const response = ApiResponse.createApiResponse(
+                "Error getting active monitors",
                 [],
                 [{ msg: error.message }]
             );

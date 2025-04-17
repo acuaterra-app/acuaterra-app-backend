@@ -1,0 +1,212 @@
+{
+  "/api/v2/owner/users/monitors": {
+    "get": {
+      "summary": "Get list of active monitors",
+      "tags": ["Owner/Users"],
+      "description": "Returns a list of active monitors associated with the owner's farms and modules. The endpoint performs the following validations and filters:\n1. Verifies user has OWNER role\n2. Checks for active farms associated with the owner\n3. Retrieves monitors linked to owner's farms and modules\n4. Filters out inactive monitors\n5. Returns a simplified list format for checkbox usage in forms.\n\nNote: If the owner has no active farms or modules, an empty list will be returned.",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "fullName": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "success": {
+                  "summary": "Successful response with monitors",
+                  "value": {
+                    "message": "Active monitors successfully recovered",
+                    "data": [
+                      {
+                        "id": 1,
+                        "fullName": "John Doe"
+                      },
+                      {
+                        "id": 2,
+                        "fullName": "Jane Smith"
+                      }
+                    ],
+                    "errors": []
+                  }
+                },
+                "empty": {
+                  "summary": "Successful response with no monitors",
+                  "value": {
+                    "message": "No active monitors available.",
+                    "data": [],
+                    "errors": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "array"
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "unauthorized": {
+                  "summary": "Invalid or missing token",
+                  "value": {
+                    "message": "Unauthorized",
+                    "data": [],
+                    "errors": [
+                      {
+                        "msg": "Invalid token or token not provided"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have access to any farm",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "array"
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "noAccess": {
+                  "summary": "No access to farms",
+                  "value": {
+                    "message": "He has no access to any farm",
+                    "data": [],
+                    "errors": [
+                      {
+                        "msg": "Has no farms assigned or active"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "array"
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "serverError": {
+                  "summary": "Internal server error",
+                  "value": {
+                    "message": "Error getting active monitors",
+                    "data": [],
+                    "errors": [
+                      {
+                        "msg": "Error validating access permissions"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
