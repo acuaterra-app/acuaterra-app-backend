@@ -52,9 +52,9 @@ class MeasurementService {
         }
     }
 
-    async getMeasurementsByOwnerModule(userId, sensorId = null) {
+    async getMeasurementsByOwnerModule(userId, sensorId = null, limit = 100) {
         try {
-            const userModules = await Module.findAll({
+            const modules = await Module.findAll({
                 where: {
                     isActive: true,
                     [Op.or]: [
@@ -62,54 +62,72 @@ class MeasurementService {
                         { '$users.id$': userId }
                     ]
                 },
-                include: [
-                    {
-                        model: User,
-                        as: 'users',
-                        where: { isActive: true },
-                        through: { attributes: [] }
-                    },
-                    {
-                        model: Sensor,
-                        as: 'sensors',
-                        required: sensorId ? true : false,
-                        where: {
-                            isActive: true,
-                            ...(sensorId ? { id: sensorId } : {})
-                        }
-                    }
-                ]
+                include: [{
+                    model: User,
+                    as: 'users',
+                    attributes: [],
+                    required: false,
+                    through: { attributes: [] },
+                    where: { isActive: true }
+                }],
+                attributes: ['id'],
+                order: [['id', 'ASC']]
             });
-
-            if (userModules.length === 0) {
-                return {
-                    success: false,
-                    message: 'No module found for user',
-                    data: []
+            
+            if (!modules.length) {
+                return { 
+                    success: true, 
+                    message: 'No active modules', 
+                    data: [] 
                 };
             }
-
-            const sensorIds = userModules.flatMap(module =>
-                module.sensors.map(sensor => sensor.id)
-            );
-
-            const measurements = await Measurement.findAll({
-                where: {
-                    id_sensor: sensorIds
-                },
-                order: [['date', 'DESC'], ['time', 'DESC']]
+            
+            const moduleIds = modules.map(m => m.id);
+            const sensorQuery = { 
+                isActive: true, 
+                id_module: { [Op.in]: moduleIds }
+            };
+            
+            if (sensorId) sensorQuery.id = sensorId;
+            
+            const sensors = await Sensor.findAll({
+                where: sensorQuery,
+                attributes: ['id'],
+                order: [['id', 'ASC']]
             });
-
-            return {
-                success: true,
-                message: 'Measurements retrieved successfully',
-                data: measurements
+            
+            if (!sensors.length) {
+                return { 
+                    success: true, 
+                    message: 'No active sensors', 
+                    data: [] 
+                };
+            }
+            
+            const sensorIds = sensors.map(s => s.id);
+            const measurements = await Measurement.findAll({
+                where: { 
+                    id_sensor: { [Op.in]: sensorIds }
+                },
+                order: [['date', 'DESC'], ['time', 'DESC']],
+                limit: limit,
+                include: [{
+                    model: Sensor,
+                    as: 'sensor',
+                    attributes: ['id', 'name', 'type', 'id_module']
+                }]
+            });
+            
+            return { 
+                success: true, 
+                message: 'Measurements retrieved', 
+                data: measurements 
             };
         } catch (error) {
             return {
-                success: false,
-                message: 'Error obtaining measurements',
-                error: error.message
+                success: false, 
+                message: `${error.message}`, 
+                data: [] 
             };
         }
     }
