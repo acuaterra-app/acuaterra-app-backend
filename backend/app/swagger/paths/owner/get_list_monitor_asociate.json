@@ -1,9 +1,9 @@
 {
   "/api/v2/owner/users": {
     "get": {
-      "summary": "Get monitor users associated with owner's modules",
+      "summary": "Get monitor users associated with owner's farms",
       "tags": ["Owner/Users"],
-      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with modules from the authenticated owner's farms, including both active and inactive monitors.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows both active and inactive monitor users\n- Shows only users associated with modules that belong to the authenticated user's farms\n- Includes pagination and sorting capabilities\n\n",
+      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with the authenticated owner's farms, including both active and inactive monitors.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows both active and inactive monitor users\n- Shows only users associated with farms belonging to the authenticated owner\n- Includes pagination and sorting capabilities\n\n",
       "responses": {
         "200": {
           "description": "Monitor users retrieved successfully",
@@ -56,7 +56,7 @@
                           "example": true,
                           "description": "Indicates whether the monitor user is active (true) or inactive (false)"
                         },
-                        "assigned_modules": {
+                        "farms": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -67,19 +67,23 @@
                               },
                               "name": {
                                 "type": "string",
-                                "example": "modulo D"
+                                "example": "Farm Alpha"
                               },
-                              "location": {
+                              "address": {
                                 "type": "string",
-                                "example": "Ubicación del módulo 123"
+                                "example": "123 Farm Road"
                               },
-                              "species_fish": {
+                              "latitude": {
                                 "type": "string",
-                                "example": "Especie de pez"
+                                "example": "4.6097102"
+                              },
+                              "longitude": {
+                                "type": "string",
+                                "example": "-74.0817500"
                               }
                             }
                           },
-                          "description": "List of modules associated with the monitor user"
+                          "description": "List of farms associated with the monitor user"
                         },
                         "rol": {
                           "type": "object",
@@ -152,7 +156,7 @@
           }
         },
         "403": {
-          "description": "Forbidden - No monitor users found or no access to modules",
+          "description": "Forbidden - No monitor users found or no access to farms",
           "content": {
             "application/json": {
               "schema": {
@@ -170,10 +174,10 @@
                     "type": "array",
                     "example": [
                       {
-                        "msg": "You do not have access to any modules through your farms."
+                        "msg": "You do not have access to any farms."
                       },
                       {
-                        "msg": "There are no monitors (active or inactive) available at partner farms."
+                        "msg": "No monitors found associated with your farms."
                       }
                     ]
                   }
@@ -201,7 +205,7 @@
                     "type": "array",
                     "example": [
                       {
-                        "msg": "Error getting monitor users: Farm is associated to Module using an alias. You must use the 'as' keyword to specify the alias within your include statement."
+                        "msg": "Error getting monitor users: Database connection error"
                       }
                     ]
                   }
