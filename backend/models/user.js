@@ -11,7 +11,8 @@ module.exports = (sequelize) => {
       User.belongsToMany(models.Farm, {
         through: 'farm_user',
         foreignKey: 'id_user',
-        otherKey: 'id_farm'
+        otherKey: 'id_farm',
+        as: 'farms'
       });
       
       User.hasMany(models.Module, {

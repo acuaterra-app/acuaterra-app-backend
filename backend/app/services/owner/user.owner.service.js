@@ -12,7 +12,7 @@ class UserOwnerService {
         this.mailer = mailer || new Mailer(process.env.RESEND_API_KEY);
     }
 
-    async getMonitorUsers(ownerId, page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC', moduleIds = []) {
+    async getMonitorUsers(ownerId, page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'DESC') {
         try {
             page = parseInt(page) || 1;
             limit = parseInt(limit) || 10;
@@ -21,33 +21,23 @@ class UserOwnerService {
             
             sortOrder = ['ASC', 'DESC'].includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
             
-            if (!moduleIds || moduleIds.length === 0) {
-                const ownerModules = await Module.findAll({
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: Farm,
-                            as: 'farm',
-                            where: { isActive: true },
-                            include: [
-                                {
-                                    model: User,
-                                    as: 'users',
-                                    where: { 
-                                        id: ownerId,
-                                        isActive: true 
-                                    },
-                                    through: { attributes: [] }
-                                }
-                            ]
-                        }
-                    ]
-                });
-                
-                moduleIds = ownerModules.map(module => module.id);
-            }
+            const ownerFarms = await Farm.findAll({
+                attributes: ['id'],
+                where: { isActive: true },
+                include: [
+                    {
+                        model: User,
+                        as: 'users',
+                        where: { 
+                            id: ownerId,
+                            isActive: true 
+                        },
+                        through: { attributes: [] }
+                    }
+                ]
+            });
             
-            if (moduleIds.length === 0) {
+            if (!ownerFarms || ownerFarms.length === 0) {
                 return {
                     count: 0,
                     rows: [],
@@ -57,7 +47,10 @@ class UserOwnerService {
                 };
             }
             
+            const farmIds = ownerFarms.map(farm => farm.id);
+            
             const result = await User.findAndCountAll({
+                distinct: true,
                 attributes: [
                     'id',
                     'name',
@@ -80,14 +73,17 @@ class UserOwnerService {
                         as: 'rol'
                     },
                     {
-                        model: Module,
-                        as: 'assigned_modules',
-                        attributes: ['id', 'name', 'location', 'species_fish'],
+                        model: Farm,
+                        as: 'farms',
+                        attributes: ['id', 'name', 'address', 'latitude', 'longitude'],
                         where: { 
-                            id: { [Op.in]: moduleIds },
-                            isActive: true 
+                            id: { [Op.in]: farmIds },
+                            isActive: true
                         },
-                        through: { attributes: [] }
+                        through: { 
+                            attributes: [],
+                            where: { isActive: true }  // Only active farm-user associations
+                        }
                     }
                 ],
                 order: [[sortField, sortOrder]],
@@ -115,6 +111,32 @@ class UserOwnerService {
         try {
             transaction = await sequelize.transaction();
             
+            if (!data.createdBy) {
+                await transaction.rollback();
+                throw new Error('Owner ID is required to create a monitor user');
+            }
+            
+            const ownerFarms = await Farm.findAll({
+                where: { isActive: true },
+                include: [
+                    {
+                        model: User,
+                        as: 'users',
+                        where: { 
+                            id: data.createdBy,
+                            isActive: true 
+                        },
+                        through: { attributes: [] }
+                    }
+                ],
+                transaction
+            });
+            
+            if (!ownerFarms || ownerFarms.length === 0) {
+                await transaction.rollback();
+                throw new Error('No active farms found for this owner');
+            }
+            
             const temporaryPassword = uuidv4().substring(0, 8);
             const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
             
@@ -129,6 +151,13 @@ class UserOwnerService {
                 createdBy: data.createdBy || null,
                 updatedBy: data.updatedBy || null
             }, { transaction });
+            
+            for (const farm of ownerFarms) {
+                await FarmUser.create({
+                    id_user: newUser.id,
+                    id_farm: farm.id
+                }, { transaction });
+            }
             
             const resetPasswordUrl = process.env.RESET_PASSWORD_FRONTEND_URL || 'https://acuaterra.tech/reset-password';
             const subject = 'Bienvenido a Acuaterra Usuario Monitor - Credenciales de acceso';
@@ -189,7 +218,7 @@ class UserOwnerService {
             if (transaction && !transaction.finished) {
                 await transaction.rollback();
             }
-            throw new Error(`Error creation User Monitor: ${error.message}`);
+            throw new Error(`Error creating Monitor User: ${error.message}`);
         }
     }
 

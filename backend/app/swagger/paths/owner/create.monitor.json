@@ -5,7 +5,7 @@
         "Owner/Users"
       ],
       "summary": "Create a new monitor user",
-      "description": "Creates a new user with monitor role.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Can only create MONITOR role users\n\n## Automatic Processing\n\n- The `id_rol` is automatically set to MONITOR (3) if not provided\n- Any `farm_id` in the request body is automatically removed for security reasons\n\n## Validation Rules\n\n- **name**: Required, must be a string between 3 and 100 characters\n- **email**: Required, must be a valid email format, must be unique in the system\n- **dni**: Required, must be an integer between 5 and 100 characters, must be unique in the system\n- **address**: Required, must be a string (max 100 characters) containing at least one number and one word\n- **contact**: Required, must be an integer between 5 and 100 characters",
+      "description": "Creates a new user with monitor role and automatically associates them with the owner's farms.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Automatically associates the monitor with all active farms of the authenticated owner\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Can only create MONITOR role users\n\n## Automatic Processing\n\n- The `id_rol` is automatically set to MONITOR (3) if not provided\n- The monitor is automatically associated with all active farms of the owner\n- Any `farm_id` in the request body is automatically removed for security reasons\n\n## Validation Rules\n\n- **name**: Required, must be a string between 3 and 100 characters\n- **email**: Required, must be a valid email format, must be unique in the system\n- **dni**: Required, must be an integer between 5 and 100 characters, must be unique in the system\n- **address**: Required, must be a string (max 100 characters) containing at least one number and one word\n- **contact**: Required, must be an integer between 5 and 100 characters",
       "requestBody": {
         "required": true,
         "content": {
@@ -124,6 +124,35 @@
                               "example": "MONITOR"
                             }
                           }
+                        },
+                        "farms": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 14
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Farm Alpha"
+                              },
+                              "address": {
+                                "type": "string",
+                                "example": "123 Farm Road"
+                              },
+                              "latitude": {
+                                "type": "string",
+                                "example": "4.6097102"
+                              },
+                              "longitude": {
+                                "type": "string",
+                                "example": "-74.0817500"
+                              }
+                            }
+                          },
+                          "description": "List of farms associated with the monitor user"
                         }
                       }
                     }
@@ -303,6 +332,9 @@
                     "example": [
                       {
                         "msg": "Error creating Monitor User: Error sending email to the new monitor user: Mail server connection error"
+                      },
+                      {
+                        "msg": "Error creating Monitor User: No active farms found for this owner"
                       }
                     ]
                   },

@@ -13,9 +13,7 @@ class userOwnerController {
             const sortOrder = req.query.sortOrder || 'DESC';
             const ownerId = req.user.id;
             
-            const ownerModuleIds = req.ownerModuleIds || [];
-
-            const result = await this.userOwnerService.getMonitorUsers(ownerId, page, limit, sortField, sortOrder, ownerModuleIds);
+            const result = await this.userOwnerService.getMonitorUsers(ownerId, page, limit, sortField, sortOrder);
 
             if (result.rows.length === 0) {
                 const paginationMeta = {
@@ -29,7 +27,7 @@ class userOwnerController {
                     }
                 };
                 const response = ApiResponse.createApiResponse(
-                    "There are no monitors available at partner farms.",
+                    "No monitors found associated with your farms.",
                     [],
                     [],
                     paginationMeta
@@ -69,7 +67,13 @@ class userOwnerController {
 
     async createMonitor(req, res) {
         try {
-            const monitorData = req.body;
+            const ownerId = req.user.id;
+            const monitorData = {
+                ...req.body,
+                createdBy: ownerId,
+                updatedBy: ownerId
+            };
+            
             const result = await this.userOwnerService.createMonitorUser(monitorData);
 
             const response = ApiResponse.createApiResponse(
