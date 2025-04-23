@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e3b8e4ba-dd42-48c3-af2e-83999394cb9a",
+		"_postman_id": "5f6158f2-e337-4874-a200-4bea809facff",
 		"name": "auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -36,7 +36,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+									"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -44,9 +44,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{server}}/api/v2/auth/login",
+									"raw": "https://backend.acuaterra.tech/api/v2/auth/login",
+									"protocol": "https",
 									"host": [
-										"{{server}}"
+										"backend",
+										"acuaterra",
+										"tech"
 									],
 									"path": [
 										"api",
@@ -73,7 +76,8 @@
 									{
 										"key": "Authorization",
 										"value": "{{token}}",
-										"type": "text"
+										"type": "text",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -95,6 +99,93 @@
 										"v2",
 										"auth",
 										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "password change",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n    \"email\": \"newadmin@acuaterra.tech\",\r\n    \"oldPassword\": \"395381ym\",\r\n    \"newPassword\": \"NewAdmin88\" \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/auth/change-password",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"auth",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request password reset",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"newadmin@acuaterra.tech\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/auth/request-password-reset",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"auth",
+										"request-password-reset"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5ld2FkbWluQGFjdWF0ZXJyYS50ZWNoIiwiaWQiOjEwOSwicHVycG9zZSI6InBhc3N3b3JkX3Jlc2V0IiwiaWF0IjoxNzQ0NjgwMzk2LCJleHAiOjE3NDQ2ODEyOTZ9.gzAjpI-HYh6AqZ-F26dsILdHDElZ9j_wE3RE0G0B4OU\",\r\n    \"newPassword\": \"NewAdmin88\",\r\n    \"confirmPassword\": \"NewAdmin88\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/auth/reset-password",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"auth",
+										"reset-password"
 									]
 								}
 							},

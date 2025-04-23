@@ -1,0 +1,301 @@
+{
+	"info": {
+		"_postman_id": "164809e4-0565-45dc-9ea3-7ac995cbe0f2",
+		"name": "modules",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37390175"
+	},
+	"item": [
+		{
+			"name": "v2",
+			"item": [
+				{
+					"name": "shared",
+					"item": [
+						{
+							"name": "list",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDIxNDY3MjYsImV4cCI6MTc0MjE2NDcyNn0.eP8Xqxv7JxWWWI26DrBuKqzVTWcV2NPRX2Ar5Cg2ypk",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://backend.acuaterra.tech/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
+									"protocol": "https",
+									"host": [
+										"backend",
+										"acuaterra",
+										"tech"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"modules",
+										"1"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										},
+										{
+											"key": "limit",
+											"value": "1"
+										},
+										{
+											"key": "sortField",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "DESC"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "owner",
+					"item": [
+						{
+							"name": "create modules",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiNTk5NTQ4MDYzMSIsImlhdCI6MTc0Mjc3OTA0NywiZXhwIjoxNzQyNzk3MDQ3fQ.XzvARF2lE_uQs4tr0_nim56XJyDOgMJabwPSUAXsHRc",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"zz\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 1,\r\n  \"users\": [4]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "edit module",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImRuaSI6IjM0OTIxNDQ0NTkiLCJpYXQiOjE3NDI1Mjg3NTIsImV4cCI6MTc0MjU0Njc1Mn0.4YwYo3cFaVGzUO9LpFjkTqgjT84HiAtwhw14n5CFTLk",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"PruebaUnoEditandoMod\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 36,\r\n  \"users\": [45, 44, 43]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/41",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"41"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete module",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDI2Njc3ODgsImV4cCI6MTc0MjY4NTc4OH0.xIoo8CyQbsxjF527htdm-7uAHRos7SxeWIC4lDPxwcQ",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/40",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"40"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "show",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiMzg0MDgxMTQxMiIsImlhdCI6MTc0MjcwMzg1OSwiZXhwIjoxNzQyNzIxODU5fQ.1DjfxBrKRiMo3J2nzkp3wFIwAVH2INdNg7RLCOGzp5M",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "assign monitor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDkyMzYzNiwiZXhwIjoxNzQ0OTQxNjM2fQ.6L7v5RbKgRCtj7-qYSsAuLvAut_6nUIn1N9dL0NW2aQ",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    //\"action\": \"assign\",\r\n    \"action\": \"unassign\",\r\n    \"monitorIds\": [116, 117, 118]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/modules/32/monitors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"32",
+										"monitors"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"// Verifica si la respuesta contiene el token",
+									"if (response.data && response.data[0].token) {",
+									"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n    //\"email\": \"user@example.com\",\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v2/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "afelipe.vega@gmail.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "http://localhost:9000"
+		}
+	]
+}

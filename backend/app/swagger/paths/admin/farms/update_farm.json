@@ -1,0 +1,330 @@
+{
+  "/api/v2/admin/farms/{id}": {
+    "put": {
+      "summary": "Update farm by ID",
+      "tags": ["Admin/Farms"],
+      "description": "Updates a farm's information including name, address, coordinates, and associated users. Only active farms (isActive=true) can be updated. Attempts to update inactive farms will result in a 404 Not Found response.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the farm to update\n  - **Required**: Yes\n\n## Form Fields and Validation Rules\n\n### Field Specifications\n",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the farm to update",
+          "schema": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["name", "address", "latitude", "longitude", "users"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the farm. Required. Must be a string between 3 and 100 characters.",
+                  "example": "Nuevo Nombre"
+                },
+                "address": {
+                  "type": "string",
+                  "description": "Physical address of the farm. Required. Must be a string between 5 and 200 characters.",
+                  "example": "Nueva Dirección"
+                },
+                "latitude": {
+                  "type": "string",
+                  "description": "Latitude coordinate of the farm location. Required. Must be a valid number between -90 and 90.",
+                  "example": "-1.345678"
+                },
+                "longitude": {
+                  "type": "string",
+                  "description": "Longitude coordinate of the farm location. Required. Must be a valid number between -180 and 180.",
+                  "example": "2.345678"
+                },
+                "users": {
+                  "type": "array",
+                  "description": "Array of user IDs to be associated with the farm. Required. Must contain at least one user ID. Each user ID must be a valid number, must exist in the system, and must have the OWNER role. This will replace all existing user associations.",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "example": [2]
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Farm updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm updated successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Nuevo Nombre"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "Nueva Dirección"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "-1.345678"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "2.345678"
+                        },
+                        "isActive": {
+                          "type": "boolean", 
+                          "example": true,
+                          "description": "Indicates whether the farm is active in the system"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-04T21:55:40.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-08T05:55:38.000Z"
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Brenda Schmeler"
+                              },
+                              "email": {
+                                "type": "string",
+                                "format": "email",
+                                "example": "owner_1@example.com"
+                              },
+                              "dni": {
+                                "type": "string",
+                                "example": "4772205787"
+                              },
+                              "id_rol": {
+                                "type": "integer",
+                                "example": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "id": 1,
+                        "name": "Nuevo Nombre",
+                        "address": "Nueva Dirección",
+                        "latitude": "-1.345678",
+                        "longitude": "2.345678",
+                        "isActive": true,
+                        "createdAt": "2025-03-04T21:55:40.000Z",
+                        "updatedAt": "2025-03-08T05:55:38.000Z",
+                        "users": [
+                          {
+                            "id": 2,
+                            "name": "Brenda Schmeler",
+                            "email": "owner_1@example.com",
+                            "dni": "4772205787",
+                            "id_rol": 2
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Validation error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Request error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "field",
+                        "msg": "name is required",
+                        "path": "name",
+                        "location": "body"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Farm with specified ID does not exist",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "type": "resource",
+                        "msg": "Active farm with ID 1 not found",
+                        "path": "id",
+                        "location": "params"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

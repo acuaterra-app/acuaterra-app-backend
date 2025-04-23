@@ -3,7 +3,6 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Threshold extends Model {
     static associate(models) {
-      // A threshold belongs to a sensor
       Threshold.belongsTo(models.Sensor, {
         foreignKey: 'id_sensor',
         as: 'sensor'
@@ -26,14 +25,19 @@ module.exports = (sequelize) => {
           key: 'id'
         }
       },
-      min_value: {
+      value: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: true
+        allowNull: false
       },
-      max_value: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: true
-      }
+      type: {
+        type: DataTypes.ENUM('min', 'max'),
+        allowNull: false
+      },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+            allowNull: false
+        }
     },
     {
       sequelize,

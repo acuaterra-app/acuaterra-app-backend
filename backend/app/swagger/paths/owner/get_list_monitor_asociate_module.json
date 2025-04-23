@@ -1,0 +1,217 @@
+{
+  "/api/v2/owner/users": {
+    "get": {
+      "summary": "Get monitor users associated with owner's modules",
+      "tags": ["Owner/Users"],
+      "description": "Retrieves a paginated list of MONITOR users (id_rol = 3) that are associated with modules from the authenticated owner's farms, including both active and inactive monitors.\n\n## Features\n\n- Lists only users with MONITOR role (id_rol = 3)\n- Shows both active and inactive monitor users\n- Shows only users associated with modules that belong to the authenticated user's farms\n- Includes pagination and sorting capabilities\n\n",
+      "responses": {
+        "200": {
+          "description": "Monitor users retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Monitor users successfully recovered"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "monitor@example.com"
+                        },
+                        "dni": {
+                          "type": "string",
+                          "example": "12345678"
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "example": 3,
+                          "description": "MONITOR role ID"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "contact": {
+                          "type": "string",
+                          "example": "1234567890"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the monitor user is active (true) or inactive (false)"
+                        },
+                        "assigned_modules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 14
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "modulo D"
+                              },
+                              "location": {
+                                "type": "string",
+                                "example": "Ubicación del módulo 123"
+                              },
+                              "species_fish": {
+                                "type": "string",
+                                "example": "Especie de pez"
+                              }
+                            }
+                          },
+                          "description": "List of modules associated with the monitor user"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "monitor"
+                            }
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-12T01:54:41.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-12T01:54:41.000Z"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "example": 15,
+                            "description": "Total number of monitor users (both active and inactive)"
+                          },
+                          "totalPages": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "currentPage": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "perPage": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "hasNext": {
+                            "type": "boolean",
+                            "example": true
+                          },
+                          "hasPrev": {
+                            "type": "boolean",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - No monitor users found or no access to modules",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "You do not have access to any modules through your farms."
+                      },
+                      {
+                        "msg": "There are no monitors (active or inactive) available at partner farms."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving monitor users"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Error getting monitor users: Farm is associated to Module using an alias. You must use the 'as' keyword to specify the alias within your include statement."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

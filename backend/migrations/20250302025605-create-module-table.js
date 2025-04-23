@@ -16,6 +16,14 @@ module.exports = {
       location: {
         type: Sequelize.TEXT
       },
+      latitude: {
+        type: Sequelize.STRING(256),
+        allowNull: false
+      },
+      longitude: {
+        type: Sequelize.STRING(256),
+        allowNull: false
+      },
       species_fish: {
         type: Sequelize.STRING(100),
         allowNull: false
@@ -31,6 +39,14 @@ module.exports = {
       dimensions: {
         type: Sequelize.STRING(100),
         allowNull: false
+      },
+      id_farm: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'farms',
+          key: 'id'
+        }
       },
       created_by_user_id: {
         type: Sequelize.INTEGER,

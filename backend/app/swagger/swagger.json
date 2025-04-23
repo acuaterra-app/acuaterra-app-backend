@@ -1,0 +1,70 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "2.0.0",
+    "description": "Documentation for the REST API",
+    "license": {
+      "name": "Licensed Under MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    },
+    "contact": {
+      "name": "API Support",
+      "url": "https://www.example.com/support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://backend.acuaterra.tech",
+      "description": "Production server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter your token (without Bearer prefix)"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "paths": {},
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "API endpoints for user authentication"
+    },
+    {
+      "name": "Shared/Modules",
+      "description": "API endpoints for shared module operations accessible to multiple roles"
+    },
+    {
+      "name": "Shared/Users",
+      "description": "API endpoints for shared user operations accessible to multiple roles"
+    },
+    {
+      "name": "Admin/Users",
+      "description": "API Admin endpoints for user management"
+    },
+    {
+      "name": "Admin/Farms",
+      "description": "API Admin endpoints for farm management"
+    },
+    {
+      "name": "Shared/Notifications",
+      "description": "API endpoints for user notification operations accessible to appropriate roles"
+    },
+    {
+      "name": "Temporary Notifications",
+      "description": "API endpoints for testing FCM notifications"
+    }
+  ]
+}
+

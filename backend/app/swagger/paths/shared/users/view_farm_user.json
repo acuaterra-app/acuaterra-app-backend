@@ -1,0 +1,228 @@
+{
+
+  "/api/v2/shared/farms/{id}": {
+    "get": {
+      "tags": ["Shared/Farms"],
+      "summary": "Retrieve Farm Details",
+      "description": "Retrieves detailed information about a specific active farm. Only farms with isActive=true will be returned. Inactive farms will result in a 404 Not Found response.\n\n## Route Parameters\n\n### Required Parameters\n- **id**: Farm Identifier\n  - Type: Integer\n  - Description: Unique identifier of the farm to retrieve\n  - Location: Route parameter\n\n## Authorization\n- Requires valid authentication token\n- User must have appropriate permissions to view farm details",
+      "operationId": "getFarmDetails",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Unique identifier of the farm"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Farm details retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm details retrieved successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Green Acres Farm"
+                      },
+                      "location": {
+                        "type": "string",
+                        "example": "California, USA"
+                      },
+                      "size": {
+                        "type": "number",
+                        "example": 250.5
+                      },
+                      "owner": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 12
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "John Doe"
+                          }
+                        }
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "Active"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates whether the farm is active in the system"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-03-15T10:30:00Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-03-15T11:45:00Z"
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid Farm ID",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid farm ID"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Farm ID must be a positive integer"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - Insufficient Permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["You do not have permission to view this farm"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Farm Does Not Exist",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm not found"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["No active farm found with the specified ID"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "An error occurred while processing your request"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Internal server error"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

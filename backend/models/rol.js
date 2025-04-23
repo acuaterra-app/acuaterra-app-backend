@@ -3,7 +3,6 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Rol extends Model {
     static associate(models) {
-      // define association here
       Rol.hasMany(models.User, {
         foreignKey: 'id_rol',
         as: 'users'
@@ -26,7 +25,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'Rol',
     tableName: 'roles',
-    timestamps: true // Assuming the table doesn't have createdAt and updatedAt fields
+    timestamps: true
   });
   
   return Rol;

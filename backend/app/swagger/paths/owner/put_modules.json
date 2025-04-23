@@ -1,0 +1,418 @@
+{
+  "/api/v2/owner/modules/{id}": {
+    "put": {
+      "tags": ["Owner/Modules"],
+      "summary": "Update an existing module",
+      "description": "Updates an existing active module with the provided information. Only modules with isActive=true can be updated. Attempts to update inactive modules will result in a 404 Not Found response.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "type": "integer",
+          "description": "ID of the module to update"
+        },
+        {
+          "in": "body",
+          "name": "moduleData",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the module"
+              },
+              "location": {
+                "type": "string",
+                "description": "Location of the module"
+              },
+              "latitude": {
+                "type": "string",
+                "description": "Latitude of the module"
+              },
+              "longitude": {
+                "type": "string",
+                "description": "Longitude of the module"
+              },
+              "species_fish": {
+                "type": "string",
+                "description": "Species of fish"
+              },
+              "fish_quantity": {
+                "type": "string",
+                "description": "Quantity of fish"
+              },
+              "fish_age": {
+                "type": "string",
+                "description": "Age of the fish"
+              },
+              "dimensions": {
+                "type": "string",
+                "description": "Dimensions of the module"
+              },
+              "id_farm": {
+                "type": "integer",
+                "description": "ID of the farm"
+              },
+              "users": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "description": "Array of user IDs with monitor role to assign to this module"
+              }
+            }
+          }
+        }
+      ],
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful operation - module updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module updated successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Module 1"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "Location 1"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "12.34"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "-45.67"
+                        },
+                        "species_fish": {
+                          "type": "string",
+                          "example": "Species 1"
+                        },
+                        "fish_quantity": {
+                          "type": "string",
+                          "example": "10"
+                        },
+                        "fish_age": {
+                          "type": "string",
+                          "example": "5"
+                        },
+                        "dimensions": {
+                          "type": "string",
+                          "example": "1x1x1"
+                        },
+                        "id_farm": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "created_by_user_id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the module is active in the system"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-04T21:55:42.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-04T21:55:42.000Z"
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 42
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Monitor User"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "monitor@example.com"
+                              }
+                            }
+                          }
+                        },
+                        "creator": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "John Doe"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "johndoe@example.com"
+                            }
+                          }
+                        },
+                        "farm": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Farm 1"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "123 Main St"
+                            },
+                            "latitude": {
+                              "type": "string",
+                              "example": "12.34"
+                            },
+                            "longitude": {
+                              "type": "string",
+                              "example": "-45.67"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to update module"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Invalid module data provided"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Authentication required to access this resource"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Only monitor users can be assigned to modules"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not found - Module with specified ID does not exist or is inactive",
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Module with given ID does not exist"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Error validating module update permissions"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+

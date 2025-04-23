@@ -1,0 +1,317 @@
+{
+  "/api/v2/shared/notifications": {
+    "get": {
+      "tags": ["Shared/Notifications"],
+      "summary": "List user notifications",
+      "description": "Retrieves a paginated list of notifications for the authenticated user with OWNER or MONITOR role.",
+      "parameters": [
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+          },
+          "description": "Page number for pagination"
+        },
+        {
+          "in": "query",
+          "name": "limit",
+          "schema": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "description": "Number of notifications per page (between 1 and 100)"
+        },
+        {
+          "in": "query",
+          "name": "state",
+          "schema": {
+            "type": "string",
+            "enum": ["read", "unread"],
+            "description": "Filter notifications by state"
+          },
+          "description": "Optional filter for notification state (read, unread, or omit for all)"
+        }
+      ],
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful operation - notifications retrieved",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Notifications retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "New alert in Module A"
+                        },
+                        "id_user": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "read": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "state": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2023-06-15T14:30:00.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2023-06-15T14:30:00.000Z"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "totalItems": {
+                            "type": "integer",
+                            "example": 25
+                          },
+                          "totalPages": {
+                            "type": "integer",
+                            "example": 3
+                          },
+                          "currentPage": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "itemsPerPage": {
+                            "type": "integer",
+                            "example": 10
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request - invalid pagination parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Validation failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "error": "Invalid pagination parameters. Page must be >= 1 and limit must be between 1 and 100"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - missing authentication",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "error": "Authentication required to access this resource"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - insufficient permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization failed"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "error": "You do not have permission to view these notifications"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - user not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "User not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "error": "The requested user does not exist"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "error": "Error retrieving notifications"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

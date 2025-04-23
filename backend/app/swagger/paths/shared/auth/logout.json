@@ -1,0 +1,101 @@
+{
+  "/api/v2/auth/logout": {
+    "post": {
+      "summary": "User logout",
+      "tags": ["Authentication"],
+      "description": "Invalidates the user's current session token",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful logout",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Logout successful"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

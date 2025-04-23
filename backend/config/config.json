@@ -21,15 +21,15 @@
     "password": "",
     "database": "",
     "host": "",
-    "dialect": "",
+    "dialect": "mysql",
     "port": 0
   },
   "production": {
     "username": "",
     "password": "",
-    "database": "",
-    "host": "",
-    "dialect": "",
-    "port": 0
+    "database": "railway",
+    "host": "shuttle.proxy.rlwy.net",
+    "dialect": "mysql",
+    "port": 26570
   }
 }

@@ -1,0 +1,641 @@
+{
+  "/api/v2/module/measurement": {
+    "post": {
+      "tags": ["Module/Measurements"],
+      "summary": "Create a new measurement",
+      "description": "Creates a new measurement for an active module's sensor.\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have MODULE role\n- User must be associated with a valid active module\n- Sensor must be active to record measurements\n\n## Request Body Fields\n\n### Required Fields\n- type: Sensor type\n  - Type: String\n  - Purpose: Identifies the type of sensor in the module\n  - Note: Sensor must be active\n\n- value: Measurement value\n  - Type: Decimal (10,2)\n  - Purpose: The actual measurement reading from the sensor\n\n- date: Measurement date\n  - Type: String\n  - Format: YYYY-MM-DD\n  - Purpose: Date when the measurement was taken\n\n- time: Measurement time\n  - Type: String\n  - Format: HH:mm\n  - Purpose: Time when the measurement was taken",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "requestBody": {
+        "description": "Measurement data that needs to be created",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["type", "value", "date", "time"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of sensor",
+                  "example": "temperature"
+                },
+                "value": {
+                  "type": "number",
+                  "format": "decimal",
+                  "description": "Measurement value",
+                  "example": 25.5
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date of measurement",
+                  "example": "2024-03-25"
+                },
+                "time": {
+                  "type": "string",
+                  "format": "time",
+                  "description": "Time of measurement",
+                  "example": "14:30"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Measurement created successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Measurement created successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "id_sensor": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "value": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 25.5
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-03-25"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "time",
+                          "example": "14:30"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "sensor": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Temperature Sensor"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "temperature"
+                            },
+                            "moduleId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the sensor is active"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "202": {
+          "description": "Measurement created successfully with alert generated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Measurement created successfully with alert"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "id_sensor": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "value": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 25.5
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-03-25"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "time",
+                          "example": "14:30"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-03-25T19:30:00.000Z"
+                        },
+                        "thresholdInfo": {
+                          "type": "object",
+                          "properties": {
+                            "threshold": {
+                              "type": "number",
+                              "format": "decimal",
+                              "example": 30.0
+                            },
+                            "condition": {
+                              "type": "string",
+                              "example": "greater_than"
+                            },
+                            "message": {
+                              "type": "string",
+                              "example": "Temperature exceeds threshold"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid input data or inactive components",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error creating measurement"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Invalid sensor type"
+                      },
+                      {
+                        "msg": "Sensor is not active"
+                      },
+                      {
+                        "msg": "Module is not active"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Invalid token"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Forbidden"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "User does not have required role"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error creating measurement"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Internal server error"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "get": {
+      "tags": ["Module/Measurements"],
+      "summary": "Get measurements list",
+      "description": "Retrieves measurements for the authenticated user's active module sensors, ordered by date and time in descending order (newest first).\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from active modules created by or assigned to the user\n- Only returns measurements from active sensors\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific active sensor by ID",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "sensorId",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the specific active sensor to retrieve measurements for. If not provided, returns measurements from all active sensors associated with the active module."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Measurements retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Measurements retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "id_sensor": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "value": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 7.5
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2025-03-25"
+                        },
+                        "time": {
+                          "type": "string",
+                          "format": "time",
+                          "example": "16:53"
+                        },
+                        "sensor": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Temperature Sensor"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "temperature"
+                            },
+                            "moduleId": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Indicates whether the sensor is active"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "204": {
+          "description": "No active measurements found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "No active measurements found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Invalid token"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Forbidden"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "User does not have required role"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Sensor not found or inactive",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Sensor not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "resource",
+                        "msg": "Sensor is not active or not found"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving measurements"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Internal server error"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,221 @@
+{
+    "/api/v2/shared/users/{id}": {
+        "put": {
+            "summary": "Update user",
+            "description": "Allows updating the information of an existing active user specified by their ID. Only users with isActive=true can be updated. Attempts to update inactive users will result in a 404 Not Found response.",
+            "tags": [
+                "Shared/Users"
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "description": "Unique ID of the user to update"
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "Full name of the user",
+                                    "example": "UserEdit"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "description": "User's email address",
+                                    "example": "UserEdit1@gmail.com"
+                                },
+                                "dni": {
+                                    "type": "string",
+                                    "description": "Identity document number",
+                                    "example": "1234560011"
+                                },
+                                "id_rol": {
+                                    "type": "string",
+                                    "description": "User role ID",
+                                    "example": "3"
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "description": "User's physical address",
+                                    "example": "123 Main Street"
+                                },
+                                "contact": {
+                                    "type": "string",
+                                    "description": "User's contact number",
+                                    "example": "11232143"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "email",
+                                "dni",
+                                "id_rol",
+                                "address",
+                                "contact"
+                            ]
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "User updated successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "User updated successfully"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "description": "ID of the updated user"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Updated user name"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "description": "Updated email address"
+                                            },
+                                            "dni": {
+                                                "type": "string",
+                                                "description": "Updated document number"
+                                            },
+                                            "id_rol": {
+                                                "type": "integer",
+                                                "description": "Updated role ID"
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "description": "Updated address",
+                                                "nullable": true
+                                            },
+                                            "contact": {
+                                                "type": "string",
+                                                "description": "Updated contact number",
+                                                "nullable": true
+                                            },
+                                            "isActive": {
+                                                "type": "boolean",
+                                                "example": true,
+                                                "description": "Indicates whether the user is active in the system"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "description": "Date and time of the last update"
+                                            }
+                                        }
+                                    },
+                                    "errors": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of errors, if any"
+                                    }
+                                },
+                                "required": [
+                                    "message",
+                                    "data",
+                                    "errors"
+                                ]
+                            },
+                            "example": {
+                                "message": "User updated successfully",
+                                "data": {
+                                    "id": 12,
+                                    "name": "UserEdit",
+                                    "email": "UserEdit1@gmail.com",
+                                    "dni": "1234560011",
+                                    "id_rol": 3,
+                                    "address": "123 Main Street",
+                                    "contact": "11232143",
+                                    "isActive": true,
+                                    "updatedAt": "2025-03-07T04:51:36.000Z",
+                                    "errors": []
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Data validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User is not authenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have permission to perform this action"
+                    },
+                    "404": {
+                        "description": "User not found or inactive",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "User with the specified ID does not exist or is inactive"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    }
+}

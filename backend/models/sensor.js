@@ -3,22 +3,19 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Sensor extends Model {
     static associate(models) {
-      // Sensor belongs to Hardware
-      Sensor.belongsTo(models.Hardware, {
-        foreignKey: 'id_hardware',
-        as: 'hardware'
+      Sensor.belongsTo(models.Module, {
+        foreignKey: 'id_module',
+        as: 'module'
       });
 
-      // Sensor has one threshold
-      Sensor.hasOne(models.Threshold, {
+      Sensor.hasMany(models.Threshold, {
         foreignKey: 'id_sensor',
-        as: 'threshold'
+        as: 'thresholds'
       });
 
-      // Sensor has many parameters
-      Sensor.hasMany(models.Parameter, {
+      Sensor.hasMany(models.Measurement, {
         foreignKey: 'id_sensor',
-        as: 'parameters'
+        as: 'measurements'
       });
     }
   }
@@ -37,13 +34,18 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(50),
       allowNull: true
     },
-    id_hardware: {
+    id_module: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'hardware',
+        model: 'module',
         key: 'id'
       }
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,

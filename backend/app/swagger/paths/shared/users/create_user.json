@@ -1,0 +1,185 @@
+{
+  "/api/v2/shared/users": {
+    "post": {
+      "tags": ["Shared/Users"],
+      "summary": "Create a new user",
+      "description": "Creates a new user in the system.\n\n## Form Fields and Validation Rules\n\n### Required Fields\n- **name**: User's full name\n  - Type: String\n  - Length: 3-100 characters\n  - Validation: Must contain only letters, spaces, and common name characters\n  - Purpose: Used for identification and display throughout the system\n\n- **email**: User's email address\n  - Type: String\n  - Format: Valid email format (example@domain.com)\n  - Validation: Must be unique in the system\n  - Purpose: Used for login and system communications\n\n- **dni**: User's identification number\n  - Type: String\n  - Length: 8-15 characters\n  - Validation: Must be unique in the system\n  - Purpose: Official identification for the user\n\n- **id_rol**: User's role identifier\n  - Type: Integer\n  - Values: Valid role ID from the roles table\n  - Purpose: Determines the user's permissions and access level in the system\n\n### Optional Fields\n- **address**: User's physical address\n  - Type: String\n  - Length: 0-255 characters\n  - Purpose: Contact information for the user\n\n### System-Managed Fields\n- **isActive**: User's active status\n  - Type: Boolean\n  - Default: true\n  - Purpose: Indicates whether the user is active in the system\n  - Behavior: Set to true on creation, changed to false on soft deletion",
+      "operationId": "createUser",
+      "requestBody": {
+        "description": "User object that needs to be created",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["name", "email", "dni", "id_rol"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "User's full name",
+                  "example": "NewPrueba2"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "User's email address",
+                  "example": "acuaterra_523@test.test"
+                },
+                "dni": {
+                  "type": "string",
+                  "description": "User's identification number",
+                  "example": "1978954342222"
+                },
+                "id_rol": {
+                  "type": "integer",
+                  "description": "User's role identifier",
+                  "example": 3
+                },
+                "address": {
+                  "type": "string",
+                  "description": "User's physical address",
+                  "example": "calle 1 # 10 - 19"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "User created successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "User registered successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 8
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "NewPrueba2"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "acuaterra_523@test.test"
+                      },
+                      "dni": {
+                        "type": "string",
+                        "example": "1978954342222"
+                      },
+                      "id_rol": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "calle 1 # 10 - 19"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates whether the user is active in the system"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-08T06:34:39.296Z"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-08T06:34:39.296Z"
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid input data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Validation error"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Email already exists", "Invalid role ID"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "An error occurred while processing your request"
+                  },
+                  "data": {
+                    "type": "object",
+                    "example": null
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Internal server error"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "/api/v2/owner/users/": {
+    "post": {
+      "tags": [
+        "Owner/Users"
+      ],
+      "summary": "Create a new monitor user",
+      "description": "Creates a new user with monitor role.\n\n## Features\n\n- Creates a new user with MONITOR role\n- Sends welcome email with credentials to the new monitor\n- Only accessible by OWNER role users\n\n## Access Control\n\n- **Authentication**: Required (Bearer token)\n- **Role**: OWNER\n- **Permissions**:\n  - Can only create MONITOR role users\n\n## Automatic Processing\n\n- The `id_rol` is automatically set to MONITOR (3) if not provided\n- Any `farm_id` in the request body is automatically removed for security reasons\n\n## Validation Rules\n\n- **name**: Required, must be a string between 3 and 100 characters\n- **email**: Required, must be a valid email format, must be unique in the system\n- **dni**: Required, must be an integer between 5 and 100 characters, must be unique in the system\n- **address**: Required, must be a string (max 100 characters) containing at least one number and one word\n- **contact**: Required, must be an integer between 5 and 100 characters",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "email",
+                "dni",
+                "address",
+                "contact"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Full name of the monitor user",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Valid email address for the monitor user",
+                  "example": "john.doe@example.com"
+                },
+                "dni": {
+                  "type": "integer",
+                  "description": "Document or identification number of the monitor user (must be between 5-100 digits and unique)",
+                  "example": 12345678
+                },
+                "address": {
+                  "type": "string",
+                  "description": "Physical address where the monitor is located (must contain at least one number and one word)",
+                  "example": "123 Monitoring St, City"
+                },
+                "contact": {
+                  "type": "integer",
+                  "description": "Contact phone number of the monitor user (must be between 5-100 digits)",
+                  "example": 1234567890
+                },
+                "id_rol": {
+                  "type": "integer",
+                  "description": "Optional. Role ID for the user. If not provided, automatically set to MONITOR (3)",
+                  "example": 3
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Monitor user created successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Monitor user created successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 57
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Smith"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "john.smith@acuaterra.tech"
+                        },
+                        "dni": {
+                          "type": "integer",
+                          "example": 14322621378
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Monitor Street"
+                        },
+                        "contact": {
+                          "type": "integer",
+                          "example": 12345789
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-04T20:58:42.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-04T20:58:42.000Z"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "MONITOR"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request - Invalid input data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid input data for monitor user creation"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Field validation failed"
+                        },
+                        "param": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Name is required",
+                        "param": "name",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Email already exists",
+                        "param": "email",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "DNI must be a Int",
+                        "param": "dni",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Address must contain at least one number",
+                        "param": "address",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "Contact must be between 5 and 100 characters",
+                        "param": "contact",
+                        "location": "body"
+                      },
+                      {
+                        "msg": "The assigned role must be Monitor (3)",
+                        "param": "id_rol",
+                        "location": "body"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string",
+                          "example": "Authentication token is missing or invalid"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Authorization Error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "The assigned role must be Monitor (3)"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "An unexpected error occurred while creating the monitor user"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Error creating Monitor User: Error sending email to the new monitor user: Mail server connection error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        {
+          "apiKey": []
+        }
+      ]
+    }
+  }
+}

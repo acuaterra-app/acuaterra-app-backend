@@ -1,0 +1,446 @@
+{
+	"info": {
+		"_postman_id": "7c822152-8375-483b-a88e-63bccc8a7bab",
+		"name": "user",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37390175"
+	},
+	"item": [
+		{
+			"name": "v2",
+			"item": [
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "list",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/admin/users",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"admin",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjQ0MTg2MDA2MyIsImlhdCI6MTc0MTkxMzg3MSwiZXhwIjoxNzQxOTMxODcxfQ.D6xHYiGE-2SppB73ky258PgyUapEchwnViujQ7Lk8QM",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"UserEdit\",\r\n    \"email\": \"UserEdit2@gmail.com\",\r\n    \"dni\": \"12345600112\",\r\n    \"id_rol\": \"3\",\r\n    \"address\": \"calle siempre viva 123\",\r\n    \"contact\": \"11232143\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/shared/users/5",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"users",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzcsImRuaSI6IjExMjM0MzIwMTAiLCJpYXQiOjE3NDIwNzIxODEsImV4cCI6MTc0MjA5MDE4MX0.qVLb_P7k2U-NNY8KZ0UID4jMGiQgguuOaTJRB3lO4ZU",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/admin/users/39",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"admin",
+										"users",
+										"39"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "shared",
+					"item": [
+						{
+							"name": "register",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjMyODU4MTgyNyIsImlhdCI6MTc0NDY3Njg1OSwiZXhwIjoxNzQ0Njk0ODU5fQ.OU--NgpPrUyOIVK28KEnZU8cehfUui8c8sKq5t2-_Dw",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"NewAdmin\",\r\n    \"email\": \"newadmin@acuaterra.tech\",\r\n    \"dni\": \"7112340\",\r\n    \"id_rol\": \"1\",\r\n    \"address\": \"calle 1 # 10 - 19\",\r\n    \"contact\": \"12345321\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v2/shared/users",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View Farms User",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZG5pIjoiNzUxMDA5NzA3NSIsImlhdCI6MTc0MjAxNTc5MSwiZXhwIjoxNzQyMDMzNzkxfQ.a5Okm2Yf_BTWAIV9zuQAkOGuELpO3Dceb_B8b0qiXeY",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/shared/farms/3",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"farms",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "owner",
+					"item": [
+						{
+							"name": "lsit monitores Mobile actives and inactives",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiNTk5NTQ4MDYzMSIsImlhdCI6MTc0Mjg0OTkyMiwiZXhwIjoxNzQyODY3OTIyfQ.LllPe0eDHpGLF-JL_UbPLffSR2vhIwdkBob0SJbGVc0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users??page=1&%26limit=10&%26sortField=createdAt&%26sortOrder=DESC",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users"
+									],
+									"query": [
+										{
+											"key": "?page",
+											"value": "1"
+										},
+										{
+											"key": "&limit",
+											"value": "10"
+										},
+										{
+											"key": "&sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "&sortOrder",
+											"value": "DESC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create user monitor",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiOTcxMTUwNDQ2MiIsImlhdCI6MTc0NDc0NTAyOSwiZXhwIjoxNzQ0NzYzMDI5fQ.eUXwkbCbYl2LYFt9OjQN_nNyWcKWDxl9CRqMO-_omx8",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"olmo\",\r\n    \"email\": \"olmo@acuaterra.tech\",\r\n    \"dni\": \"432121378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user monitor",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZG5pIjoiOTcxMTUwNDQ2MiIsImlhdCI6MTc0NDgzMDg0NCwiZXhwIjoxNzQ0ODQ4ODQ0fQ.2q9zKuBOPwoCJ6I92hJCGlosVAIs4PUi6EbMyBfJjJI",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"NewLeonidas\",\r\n    \"email\": \"leoEditado@acuaterra.tech\",\r\n    \"dni\": \"143226378\",\r\n    \"address\": \"Dirección del monitor 123\",\r\n    \"contact\": \"12345789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users/58",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users",
+										"58"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deactivate user monitor",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/users/59",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users",
+										"59"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "activate user monitor",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDg1NDE5OCwiZXhwIjoxNzQ0ODcyMTk4fQ.jvo3oWYPIBHOd6WqLHSlku6HASaYNjBdyn1aQcBolgk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/users/59",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users",
+										"59"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "lsit monitores Mobile actives",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0NDkyODgzNSwiZXhwIjoxNzQ0OTQ2ODM1fQ.xayLwaeaK7jB_yYO1UOUvRTxhtnljkxd8vlXx3QjU-Y",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v2/owner/users/monitors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"users",
+										"monitors"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"// Verifica si la respuesta contiene el token",
+									"if (response.data && response.data[0].token) {",
+									"    pm.environment.set(\"token\", response.data[0].token); // Guarda en el entorno actualmente activo",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n    \"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n    \"password\": \"password\"\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n  //\"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    //\"password\": \"55f52b145337\"\n    //\"email\": \"newadmin@acuaterra.tech\",\n    //\"password\": \"NewAdmin88\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v2/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "http://localhost:9000"
+		}
+	]
+}

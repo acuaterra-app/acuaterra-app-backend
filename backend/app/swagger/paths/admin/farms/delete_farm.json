@@ -1,0 +1,208 @@
+{
+  "/api/v2/admin/farms/{id}": {
+    "delete": {
+      "summary": "Delete farm by ID",
+      "tags": ["Admin/Farms"],
+      "description": "Soft deletes a farm by setting its isActive status to false. This operation deactivates the farm in the system without permanently removing data, allowing for potential reactivation in the future. When a farm is deactivated, it will no longer appear in regular queries, and all related farm-user relationships will also be marked as inactive.",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Farm ID to be deleted",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Farm deleted successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm deactivated successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "deactivated_id": {
+                          "type": "string",
+                          "example": "6"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Status showing the farm is now inactive"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid farm ID format"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Invalid farm ID"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Authentication required"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Farm not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm not found"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Farm with the specified ID does not exist or is already inactive"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["An unexpected error occurred"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

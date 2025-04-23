@@ -1,11 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
-
+const {NOTIFICATION_STATE} = require("../app/enums/notification-state.enum");
 module.exports = (sequelize) => {
   class Notification extends Model {
     static associate(models) {
-      // Define association with Module model (belongs to a module)
-      Notification.belongsTo(models.Module, {
-        foreignKey: 'id_module',
+      // Removed association with Module
+      
+      Notification.belongsTo(models.User, {
+        foreignKey: 'id_user',
         onDelete: 'CASCADE'
       });
     }
@@ -17,25 +18,40 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    id_module: {
+    // Foreign key to associate notifications with users
+    id_user: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Allow null for notifications not tied to specific users
       references: {
-        model: 'module',
+        model: 'users',
         key: 'id'
-      }
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     type: {
       type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    title: {
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     message: {
       type: DataTypes.TEXT,
       allowNull: false
     },
+    data: {
+      type: DataTypes.JSON,
+      allowNull: true
+    },
     date_hour: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    state: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
     }
   }, {
     sequelize,
@@ -46,4 +62,3 @@ module.exports = (sequelize) => {
   
   return Notification;
 };
-

@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class ModuleUser extends Model {
     static associate(models) {
-      // No additional associations needed as they are defined in the User and Module models
+      //
     }
   }
 
@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       },
       onDelete: 'CASCADE'
     },
-    id_person: {
+    id_user: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
@@ -27,13 +27,17 @@ module.exports = (sequelize) => {
         key: 'id'
       },
       onDelete: 'CASCADE'
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false
     }
   }, {
     sequelize,
     modelName: 'ModuleUser',
     tableName: 'module_user',
-    timestamps: false
+    timestamps:true
   });
-
   return ModuleUser;
 };

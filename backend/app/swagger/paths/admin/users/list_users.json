@@ -1,0 +1,259 @@
+{
+  "/api/v2/admin/users": {
+    "get": {
+      "summary": "List all users",
+      "description": "Retrieves a paginated list of all active users (isActive=true) with their details. Inactive users are not included in the results. Results can be filtered by roles and sorted by any field. Available roles for filtering depend on the authenticated user's role: Admins can see ADMIN(1), OWNER(2), and MONITOR(3) roles, while Owners can only see OWNER(2) and MONITOR(3) roles.",
+      "tags": [
+        "Admin/Users"
+      ],
+      "parameters": [
+        {
+          "in": "query",
+          "name": "page",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "description": "Page number for pagination"
+        },
+        {
+          "in": "query",
+          "name": "limit",
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          },
+          "description": "Number of records per page"
+        },
+        {
+          "in": "query",
+          "name": "sortField",
+          "schema": {
+            "type": "string",
+            "default": "createdAt"
+          },
+          "description": "Field to sort the results by"
+        },
+        {
+          "in": "query",
+          "name": "sortOrder",
+          "schema": {
+            "type": "string",
+            "enum": ["ASC", "DESC"],
+            "default": "DESC"
+          },
+          "description": "Sort order direction"
+        },
+        {
+          "in": "query",
+          "name": "roles",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Comma-separated list of role IDs to filter users. Admin can filter by [1 (ADMIN), 2 (OWNER), 3 (MONITOR)]. Owner can filter by [2 (OWNER), 3 (MONITOR)]",
+          "example": "2,3"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successfully retrieved list of users",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "All users retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Unique identifier for the user"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Full name of the user"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "description": "Email address of the user"
+                        },
+                        "dni": {
+                          "type": "string",
+                          "description": "Document Number ID of the user"
+                        },
+                        "id_rol": {
+                          "type": "integer",
+                          "description": "Role ID of the user"
+                        },
+                        "address": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Physical address of the user"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Indicates whether the user is active in the system"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp when the user was created"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Timestamp when the user was last updated"
+                        },
+                        "rol": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "Name of the role assigned to the user"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "email",
+                        "dni",
+                        "id_rol",
+                        "isActive",
+                        "createdAt",
+                        "updatedAt",
+                        "rol"
+                      ]
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "description": "Array of error messages, if any",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "description": "Total number of users in the database"
+                          },
+                          "hasNext": {
+                            "type": "boolean",
+                            "description": "Indicates if there is a next page"
+                          },
+                          "hasPrev": {
+                            "type": "boolean",
+                            "description": "Indicates if there is a previous page"
+                          }
+                        },
+                        "required": [
+                          "total",
+                          "hasNext",
+                          "hasPrev"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "pagination"
+                    ]
+                  }
+                },
+                "required": [
+                  "message",
+                  "data",
+                  "errors",
+                  "meta"
+                ]
+              },
+              "example": {
+                "message": "All users retrieved successfully",
+                "data": [
+                  {
+                    "id": 12,
+                    "name": "NewPrueba2",
+                    "email": "acuaterra_523@test.test",
+                    "dni": "1978954342222",
+                    "id_rol": 3,
+                    "address": "calle 1 # 10 - 19",
+                    "isActive": true,
+                    "createdAt": "2025-03-07T04:51:36.000Z",
+                    "rol": {
+                      "name": "monitor"
+                    }
+                  },
+                  {
+                    "id": 11,
+                    "name": "NewPrueba1",
+                    "email": "acuaterra_52@test.test",
+                    "dni": "197895434222",
+                    "id_rol": 3,
+                    "address": "calle 1 # 10 - 19",
+                    "isActive": true,
+                    "createdAt": "2025-03-06T03:21:44.000Z",
+                    "updatedAt": "2025-03-06T03:21:44.000Z",
+                    "rol": {
+                      "name": "monitor"
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "name": "Verna Schroeder",
+                    "email": "admin@example.com",
+                    "dni": "8032383949",
+                    "id_rol": 1,
+                    "address": null,
+                    "isActive": true,
+                    "createdAt": "2025-03-03T15:48:11.000Z",
+                    "updatedAt": "2025-03-03T15:48:11.000Z",
+                    "rol": {
+                      "name": "admin"
+                    }
+                  }
+                ],
+                "errors": [],
+                "meta": {
+                  "pagination": {
+                    "total": 6,
+                    "hasNext": false,
+                    "hasPrev": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - User is not authenticated"
+        },
+        "403": {
+          "description": "Forbidden - User does not have admin privileges"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  }
+}
+
