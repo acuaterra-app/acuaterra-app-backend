@@ -83,10 +83,11 @@ class UserOwnerService {
                         model: Module,
                         as: 'assigned_modules',
                         attributes: ['id', 'name', 'location', 'species_fish'],
-                        where: { 
+                        required: false, // Hace que la relación sea opcional
+                        where: moduleIds.length > 0 ? { // Aplica el filtro solo si hay moduleIds
                             id: { [Op.in]: moduleIds },
-                            isActive: true 
-                        },
+                            isActive: true
+                        } : undefined,
                         through: { attributes: [] }
                     }
                 ],
