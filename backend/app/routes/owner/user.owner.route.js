@@ -71,7 +71,7 @@ router.patch('/:id',
 
 router.get('/monitors',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([Role.OWNER]),
+    validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
     (req, res, next) => validateOwnerMonitorAccess.validate(req, res, next),
     (req, res) => userOwnerController.getActiveMonitors(req, res)
 );
