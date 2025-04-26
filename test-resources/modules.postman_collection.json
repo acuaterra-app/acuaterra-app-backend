@@ -19,7 +19,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDIxNDY3MjYsImV4cCI6MTc0MjE2NDcyNn0.eP8Xqxv7JxWWWI26DrBuKqzVTWcV2NPRX2Ar5Cg2ypk",
+										"value": "{{token}}",
 										"type": "text"
 									},
 									{
@@ -29,12 +29,9 @@
 									}
 								],
 								"url": {
-									"raw": "https://backend.acuaterra.tech/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
-									"protocol": "https",
+									"raw": "{{server}}/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
 									"host": [
-										"backend",
-										"acuaterra",
-										"tech"
+										"{{server}}"
 									],
 									"path": [
 										"api",
@@ -77,13 +74,13 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiNTk5NTQ4MDYzMSIsImlhdCI6MTc0Mjc3OTA0NywiZXhwIjoxNzQyNzk3MDQ3fQ.XzvARF2lE_uQs4tr0_nim56XJyDOgMJabwPSUAXsHRc",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsImRuaSI6IjEwNjE0NTk4NyIsImlhdCI6MTc0NTY5NDQ5MiwiZXhwIjoxNzQ1NzEyNDkyfQ.XEDDeoL3UEubWRqZLBGS-TEU3KIdD58N3VW3PH-zHmM",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"name\": \"zz\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 1,\r\n  \"users\": [4]\r\n}",
+									"raw": "{\r\n  \"name\": \"Modulo B\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Carpa\",\r\n  \"fish_quantity\": \"8\",\r\n  \"fish_age\": \"2\",\r\n  \"dimensions\": \"2x2x2\",\r\n  \"id_farm\": 7\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -229,6 +226,61 @@
 										"modules",
 										"32",
 										"monitors"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "monitor",
+					"item": [
+						{
+							"name": "list module monitor",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/shared/modules/1?page=2&limit=1&sortField=id&sortOrder=DESC",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"shared",
+										"modules",
+										"1"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										},
+										{
+											"key": "limit",
+											"value": "1"
+										},
+										{
+											"key": "sortField",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "DESC"
+										}
 									]
 								}
 							},

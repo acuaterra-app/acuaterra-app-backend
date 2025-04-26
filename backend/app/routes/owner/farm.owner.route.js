@@ -16,22 +16,15 @@ const farmController = new FarmOwnerController(farmOwnerService);
 const validateRoleMiddleware = new ValidateRoleMiddleware();
 const validateUserAccessMiddleware = new ValidateUserAccessMiddleware();
 
-// Get farms for owner or monitor (filtered for monitors)
 router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    // Allow both OWNER and MONITOR roles for GET requests
     validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
-    // Extend role validation to set proper flags based on role
     validateUserAccessMiddleware.extendRoleValidation(),
-    // Handle role-based access control and filter data for monitors
     validateUserAccessMiddleware.handleRoleBasedAccess(),
     validate(validateFarmPaginate),
     (req, res) => farmController.index(req, res)
 );
-
-// All other routes remain OWNER only
-// We don't need to modify them as validateRoleMiddleware already restricts access
 
 module.exports = router;
 

@@ -3,7 +3,7 @@
     "get": {
       "tags": ["Shared/Modules"],
       "summary": "Get all modules for a specific farm",
-      "description": "Retrieves a paginated list of all active modules (isActive=true) for the specified farm with detailed information including creator and farm data. Only active users and farms are included in the relationships.",
+      "description": "Retrieves a paginated list of all active modules (isActive=true) for the specified farm with detailed information including creator and farm data. Only active users and farms are included in the relationships. This endpoint implements role-based access control through the validateUserAccessMiddleware. When accessed by an OWNER, all modules in the farm are returned. When accessed by a MONITOR, the middleware first verifies the monitor has access to the specified farm, then filters the modules to only include those the monitor has been assigned to.",
       "parameters": [
         {
           "in": "path",
@@ -54,7 +54,7 @@
       ],
       "security": [
         {
-          "apiKey": []
+          "BearerAuth": []
         }
       ],
       "responses": {
@@ -288,7 +288,7 @@
           }
         },
         "401": {
-          "description": "Unauthorized",
+          "description": "Unauthorized - Authentication credentials were missing or invalid",
           "content": {
             "application/json": {
               "schema": {
@@ -309,6 +309,38 @@
                       "type": "string"
                     },
                     "example": ["Authentication required to access this resource"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User doesn't have permission to access this farm",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": [{"error": "Monitor does not have access to this farm"}]
                   },
                   "meta": {
                     "type": "object",

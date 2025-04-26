@@ -17,19 +17,14 @@ const validateUserAccessMiddleware = new ValidateUserAccessMiddleware();
 const moduleService = new ModuleService();
 const moduleController = new ModuleController(moduleService);
 
-// Get All Modules by Farm
 router.get(
     '/:farm_id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validate(validateIndexModules),
-    // Permitir acceso a monitores
     validateRoleMiddleware.validate([Role.ADMIN, Role.OWNER, Role.MONITOR]),
-    // Agregar middleware de validación de acceso
     validateUserAccessMiddleware.extendRoleValidation(),
-    // Verificar acceso del monitor a la granja
     validateUserAccessMiddleware.checkMonitorAccess('farm'),
     validate(validateModulePaginate),
-    // Filtrar módulos según el rol
     validateUserAccessMiddleware.handleRoleBasedAccess(),
     (req, res) => moduleController.index(req, res)
 );

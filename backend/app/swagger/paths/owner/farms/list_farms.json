@@ -1,0 +1,200 @@
+{
+  "/api/v2/owner/farms": {
+    "get": {
+      "tags": ["Owner/Farms"],
+      "summary": "List farms for the authenticated owner or monitor",
+      "description": "Retrieves a paginated list of farms associated with the authenticated user. This endpoint implements role-based access control through the validateUserAccess middleware with the following behavior:\n\n1. When accessed by an OWNER role: All farms owned by that user are returned with complete details.\n\n2. When accessed by a MONITOR role: The middleware automatically filters results to only include farms the monitor has been assigned to via the farm_user relationship with isActive=true. If a monitor has no farms assigned, an empty array is returned while maintaining the pagination metadata.\n\nThe filtering is handled completely by the middleware, which intercepts the response before it's sent to the client. This allows the controller to function normally without special logic for different roles.",
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "page",
+          "in": "query",
+          "description": "Page number for pagination",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+          }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "description": "Number of items per page",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        {
+          "name": "sortField",
+          "in": "query",
+          "description": "Field to sort by",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "id",
+            "enum": ["id", "name", "address", "createdAt", "updatedAt"]
+          }
+        },
+        {
+          "name": "sortOrder",
+          "in": "query",
+          "description": "Sort direction",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "default": "DESC",
+            "enum": ["ASC", "DESC"]
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "List of farms successfully retrieved",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "User farms retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Granja de Tilapias El Dorado"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "Carrera 15 #25-13, Bogotá, Colombia"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "4.6097"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "-74.0817"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-15T10:30:45.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-05T16:20:30.000Z"
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "pagination": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "totalPages": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "currentPage": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "perPage": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "hasNext": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "hasPrev": {
+                            "type": "boolean",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Authentication credentials were missing or invalid"
+        },
+        "403": {
+          "description": "Forbidden - User doesn't have the required role permissions (OWNER or MONITOR)"
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["Failed to retrieve farms"]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

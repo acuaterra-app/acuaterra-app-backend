@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "71d1fa4d-a178-4f4a-aab0-664f6b925570",
+		"_postman_id": "277201da-5079-4895-b13e-8e6f7304b197",
 		"name": "farms",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -46,10 +46,19 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "{{token}}",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZG5pIjoiMjQ0MTg2MDA2MyIsImlhdCI6MTc0MjAxNTMzMiwiZXhwIjoxNzQyMDMzMzMyfQ.SEyML748gsqHDfh2Q8IBX8RIqE0tvpt7tdtjlCNHfZg",
 										"type": "text"
 									}
 								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"nuevaGranja\",\r\n    \"address\": \"nuevaGranja 123\",\r\n    \"latitude\": \"1.2\",\r\n    \"longitude\": \"2.123\",\r\n    \"users\": [2, 3]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{server}}/api/v2/admin/farms/",
 									"host": [
@@ -225,6 +234,55 @@
 					]
 				},
 				{
+					"name": "montor",
+					"item": [
+						{
+							"name": "lists farm monitor",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/farms?page=1&limit=10&sortField=id&sortOrder=DESC",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"farms"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "sortField",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "DESC"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "login",
 					"event": [
 						{
@@ -256,9 +314,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{server}}/api/v2/auth/login",
+							"raw": "https://backend.acuaterra.tech/api/v2/auth/login",
+							"protocol": "https",
 							"host": [
-								"{{server}}"
+								"backend",
+								"acuaterra",
+								"tech"
 							],
 							"path": [
 								"api",
