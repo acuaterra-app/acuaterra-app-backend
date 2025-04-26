@@ -1,0 +1,132 @@
+{
+  "/api/v2/farms/{id}": {
+    "get": {
+      "tags": ["Shared/Farms"],
+      "summary": "Get farm details by ID",
+      "description": "Retrieves detailed information about a specific farm by its ID. Accessible by both OWNER and MONITOR roles. Monitors can only access farms they have been assigned to.",
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID of the farm to retrieve",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Farm details successfully retrieved",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Farm retrieved successfully"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Piscícola Boyacá"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "Vereda La Esperanza, Municipio de Ventaquemada, Boyacá"
+                      },
+                      "latitude": {
+                        "type": "string",
+                        "example": "5.3735"
+                      },
+                      "longitude": {
+                        "type": "string",
+                        "example": "-73.5215"
+                      },
+                      "isActive": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-15T14:32:21.000Z"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-10T09:15:30.000Z"
+                      },
+                      "modules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Módulo de Truchas"
+                            },
+                            "isActive": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-03-16T10:25:45.000Z"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2025-04-11T13:40:12.000Z"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Authentication credentials were missing or invalid"
+        },
+        "403": {
+          "description": "Forbidden - User doesn't have permission to access this farm"
+        },
+        "404": {
+          "description": "Farm not found"
+        },
+        "500": {
+          "description": "Internal Server Error"
+        }
+      }
+    }
+  }
+}
