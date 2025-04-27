@@ -36,7 +36,7 @@ router.post(
 router.get(
     '/:id',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
-    validateRoleMiddleware.validate([Role.OWNER]),
+    validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
     (req, res, next) => validateModuleShow.validate(req, res, next),
     (req, res) => moduleController.show(req, res)
 );
