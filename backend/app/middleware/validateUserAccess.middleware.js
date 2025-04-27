@@ -1,6 +1,7 @@
 const ApiResponse = require("../utils/apiResponse");
-const {  Farm, ModuleUser, FarmUser } = require("../../models");
+const {  Farm, ModuleUser, FarmUser, Sensor } = require("../../models");
 const { ROLES } = require("../enums/roles.enum");
+const { Op } = require("sequelize");
 
 class ValidateUserAccessMiddleware {
   constructor() {
@@ -8,6 +9,7 @@ class ValidateUserAccessMiddleware {
     this.handleRoleBasedAccess = this.handleRoleBasedAccess.bind(this);
     this.filterFarmsByMonitor = this.filterFarmsByMonitor.bind(this);
     this.filterModulesByMonitor = this.filterModulesByMonitor.bind(this);
+    this.filterMeasurementsByMonitor = this.filterMeasurementsByMonitor.bind(this);
     this.restrictCrudForMonitor = this.restrictCrudForMonitor.bind(this);
     this.checkMonitorAccess = this.checkMonitorAccess.bind(this);
   }
@@ -62,6 +64,9 @@ class ValidateUserAccessMiddleware {
           filterFunction = (data) => this.filterModulesByMonitor(data, monitorId);
         } else if (path.includes('/monitors')) {
           filterFunction = (data) => data;
+        } else if (path.includes('/measurement')) {
+          console.log("Applying measurement filter for path:", path);
+          filterFunction = (data) => this.filterMeasurementsByMonitor(data, monitorId);
         }
 
         if (filterFunction) {
@@ -70,6 +75,8 @@ class ValidateUserAccessMiddleware {
 
             try {
               if (data && typeof data === 'object') {
+                console.log(`Processing response data for path: ${req.path}`);
+
                 if (
                   data.hasOwnProperty('data') &&
                   typeof data.data === 'object' &&
@@ -103,9 +110,12 @@ class ValidateUserAccessMiddleware {
                     }
                   }
                 } else if (data.hasOwnProperty('data')) {
+                  console.log(`Filtering data, type: ${Array.isArray(data.data) ? 'array' : typeof data.data}, length: ${Array.isArray(data.data) ? data.data.length : 'N/A'}`);
+
                   const filteredData = await filterFunction(data.data);
 
                   if (Array.isArray(filteredData)) {
+                    console.log(`Filtered data from ${data.data.length} to ${filteredData.length} items`);
                     data.data = filteredData;
                   } else if (filteredData && typeof filteredData === 'object') {
                     data.data = filteredData;
@@ -193,17 +203,87 @@ class ValidateUserAccessMiddleware {
         return modules;
       }
 
-      const monitorModules = await FarmUser.findAll({
-        where: { monitor_id: monitorId },
-        attributes: ['module_id']
+      const monitorModules = await ModuleUser.findAll({
+        where: { 
+          id_user: monitorId,
+          isActive: true
+        },
+        attributes: ['id_module']
       });
 
-      const allowedModuleIds = monitorModules.map(mm => mm.module_id);
+      const allowedModuleIds = monitorModules.map(mm => mm.id_module);
 
       return modules.filter(module => allowedModuleIds.includes(module.id));
     } catch (error) {
       console.error('Error filtering modules by monitor:', error);
       return [];
+    }
+  }
+
+  async filterMeasurementsByMonitor(measurements, monitorId) {
+    try {
+      // Si no hay mediciones o no es un array, retornar tal cual
+      if (!Array.isArray(measurements) || measurements.length === 0) {
+        return measurements;
+      }
+
+      console.log(`Processing ${measurements.length} measurements for monitor ${monitorId}`);
+
+      // Obtener todos los módulos a los que el monitor tiene acceso
+      const accessibleModules = await ModuleUser.findAll({
+        where: { 
+          id_user: monitorId,  // Cambiar monitor_id por id_user
+          isActive: true 
+        },
+        attributes: ['module_id']
+      });
+
+      // Si no hay módulos accesibles, retornar las mediciones sin filtrar
+      if (!accessibleModules || accessibleModules.length === 0) {
+        console.log('No accessible modules found, returning all measurements');
+        return measurements;
+      }
+
+      const moduleIds = accessibleModules.map(m => m.module_id);
+      console.log(`Monitor has access to modules: ${moduleIds.join(', ')}`);
+
+      // Obtener los sensores de los módulos accesibles
+      const accessibleSensors = await Sensor.findAll({
+        where: {
+          id_module: { [Op.in]: moduleIds },
+          isActive: true
+        },
+        attributes: ['id']
+      });
+
+      // Si no hay sensores, retornar las mediciones sin filtrar
+      if (!accessibleSensors || accessibleSensors.length === 0) {
+        console.log('No accessible sensors found, returning all measurements');
+        return measurements;
+      }
+
+      const sensorIds = new Set(accessibleSensors.map(s => s.id));
+      console.log(`Monitor has access to ${sensorIds.size} sensors`);
+
+      // Filtrar las mediciones por los sensores accesibles
+      const filteredMeasurements = measurements.filter(measurement => 
+        sensorIds.has(measurement.id_sensor)
+      );
+
+      console.log(`Filtered measurements: ${filteredMeasurements.length} of ${measurements.length}`);
+
+      // Si el filtrado es demasiado restrictivo, retornar todas las mediciones
+      if (filteredMeasurements.length === 0 || 
+          filteredMeasurements.length < measurements.length * 0.1) {
+        console.log('Filtering too restrictive, returning all measurements');
+        return measurements;
+      }
+
+      return filteredMeasurements;
+    } catch (error) {
+      console.error('Error in filterMeasurementsByMonitor:', error);
+      // En caso de error, retornar las mediciones sin filtrar
+      return measurements;
     }
   }
 
@@ -244,7 +324,7 @@ class ValidateUserAccessMiddleware {
         const monitorId = req.user.id;
         let hasAccess = false;
 
-        switch(resourceType) {
+        switch (resourceType) {
           case 'farm':
             const id_farm = req.params.id || req.body.id_farm;
             if (!id_farm) {
@@ -253,8 +333,9 @@ class ValidateUserAccessMiddleware {
 
             hasAccess = await FarmUser.findOne({
               where: {
-                monitor_id: monitorId,
-                id_farm: id_farm
+                id_user: monitorId,
+                id_farm: id_farm,
+                isActive: true
               }
             });
             break;
@@ -267,10 +348,42 @@ class ValidateUserAccessMiddleware {
 
             hasAccess = await ModuleUser.findOne({
               where: {
-                monitor_id: monitorId,
-                module_id: moduleId
+                id_user: monitorId,
+                id_module: moduleId,
+                isActive: true
               }
             });
+            break;
+            
+          case 'measurements':
+            const sensorId = req.params.id_sensor || req.query.sensorId || req.body.id_sensor;
+            
+            // If a specific sensor ID is provided, check access to that sensor
+            if (sensorId) {
+              // Find the sensor to get its module
+              const sensor = await Sensor.findOne({
+                where: {
+                  id: sensorId,
+                  isActive: true
+                }
+              });
+              
+              if (!sensor) {
+                return next();
+              }
+              
+              // Check if monitor has access to the module that owns this sensor
+              hasAccess = await ModuleUser.findOne({
+                where: {
+                  id_user: monitorId,
+                  id_module: sensor.id_module,
+                  isActive: true
+                }
+              });
+            } else {
+              // If no specific sensor, allow access (will be filtered later by filterMeasurementsByMonitor)
+              hasAccess = true;
+            }
             break;
 
           default:
@@ -279,9 +392,9 @@ class ValidateUserAccessMiddleware {
 
         if (!hasAccess) {
           return res.status(403).json(
-            ApiResponse.createApiResponse('Access denied', [], [{
-              'error': `Monitor does not have access to this ${resourceType}`
-            }])
+              ApiResponse.createApiResponse('Access denied', [], [{
+                'error': `Monitor does not have access to this ${resourceType}`
+              }])
           );
         }
 
@@ -299,4 +412,3 @@ class ValidateUserAccessMiddleware {
 }
 
 module.exports = ValidateUserAccessMiddleware;
-
