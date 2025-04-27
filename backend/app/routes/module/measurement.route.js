@@ -32,7 +32,7 @@ router.get(
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
     validateUserAccessMiddleware.extendRoleValidation(),
-    validateUserAccessMiddleware.checkMonitorAccess('measurements'),
+    validateUserAccessMiddleware.checkMonitorAccess('measurement'),
     validateUserAccessMiddleware.handleRoleBasedAccess(),
     (req, res) => measurementController.getMeasurementsByModule(req, res)
 );
