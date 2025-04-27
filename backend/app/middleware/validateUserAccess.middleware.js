@@ -55,78 +55,38 @@ class ValidateUserAccessMiddleware {
         const originalJson = res.json;
         const monitorId = req.user.id;
 
-        const path = req.path;
+        const normalizedPath = req.originalUrl || req.path;
 
         let filterFunction = null;
-        if (path.startsWith('/farms') || path === '/') {
-          filterFunction = (data) => this.filterFarmsByMonitor(data, monitorId);
-        } else if (path.includes('/modules') || path.includes('/module/')) {
-          filterFunction = (data) => this.filterModulesByMonitor(data, monitorId);
-        } else if (path.includes('/monitors')) {
-          filterFunction = (data) => data;
-        } else if (path.includes('/measurement')) {
-          console.log("Applying measurement filter for path:", path);
+        if (normalizedPath.includes('/measurement')) {
           filterFunction = (data) => this.filterMeasurementsByMonitor(data, monitorId);
+        } else if (normalizedPath.includes('/modules') || normalizedPath.includes('/module/')) {
+          filterFunction = (data) => this.filterModulesByMonitor(data, monitorId);
+        } else if (normalizedPath.includes('/monitors')) {
+          filterFunction = (data) => data;
+        } else if (normalizedPath.startsWith('/farms')) {
+          filterFunction = (data) => this.filterFarmsByMonitor(data, monitorId);
         }
 
         if (filterFunction) {
+          const originalJsonBound = originalJson.bind(res);
           res.json = async function(data) {
-            res.json = originalJson;
-
             try {
-              if (data && typeof data === 'object') {
-                console.log(`Processing response data for path: ${req.path}`);
-
-                if (
-                  data.hasOwnProperty('data') &&
-                  typeof data.data === 'object' &&
-                  !Array.isArray(data.data) &&
-                  Object.keys(data.data).length === 0 &&
-                  data.meta?.pagination?.total > 0
-                ) {
-                  if (req.path.startsWith('/farms') || req.path === '/') {
-
-                    const monitorFarms = await FarmUser.findAll({
-                      where: { id_user: monitorId },
-                      attributes: ['id_farm']
-                    });
-
-                    if (monitorFarms && monitorFarms.length > 0) {
-                      const allowedFarmIds = monitorFarms.map(mf => mf.id_farm);
-
-                      const farms = await Farm.findAll({
-                        where: {
-                          id: allowedFarmIds,
-                          isActive: true
-                        }
-                      });
-
-                      data.data = farms.map(farm => farm.toJSON ? farm.toJSON() : farm);
-                    }
-                  } else {
-                    const filteredData = await filterFunction(data.data);
-                    if (Array.isArray(filteredData) && filteredData.length > 0) {
-                      data.data = filteredData;
-                    }
-                  }
-                } else if (data.hasOwnProperty('data')) {
-                  console.log(`Filtering data, type: ${Array.isArray(data.data) ? 'array' : typeof data.data}, length: ${Array.isArray(data.data) ? data.data.length : 'N/A'}`);
-
-                  const filteredData = await filterFunction(data.data);
-
-                  if (Array.isArray(filteredData)) {
-                    console.log(`Filtered data from ${data.data.length} to ${filteredData.length} items`);
-                    data.data = filteredData;
-                  } else if (filteredData && typeof filteredData === 'object') {
-                    data.data = filteredData;
-                  }
-                }
+              if (!data || typeof data !== 'object') {
+                return originalJsonBound(data);
               }
+
+              if (data.hasOwnProperty('data')) {
+                const filteredData = await filterFunction(data.data);
+                data.data = filteredData;
+              }
+
+              return originalJsonBound(data);
             } catch (error) {
               console.error("Error in response intercept:", error);
               console.error(error.stack);
+              return originalJsonBound(data);
             }
-            return originalJson.call(this, data);
           };
         }
 
@@ -204,7 +164,7 @@ class ValidateUserAccessMiddleware {
       }
 
       const monitorModules = await ModuleUser.findAll({
-        where: { 
+        where: {
           id_user: monitorId,
           isActive: true
         },
@@ -222,68 +182,57 @@ class ValidateUserAccessMiddleware {
 
   async filterMeasurementsByMonitor(measurements, monitorId) {
     try {
-      // Si no hay mediciones o no es un array, retornar tal cual
       if (!Array.isArray(measurements) || measurements.length === 0) {
         return measurements;
       }
 
-      console.log(`Processing ${measurements.length} measurements for monitor ${monitorId}`);
-
-      // Obtener todos los módulos a los que el monitor tiene acceso
-      const accessibleModules = await ModuleUser.findAll({
+      const monitorModules = await ModuleUser.findAll({
         where: { 
-          id_user: monitorId,  // Cambiar monitor_id por id_user
+          id_user: monitorId,
           isActive: true 
         },
-        attributes: ['module_id']
+        attributes: ['id_module']
       });
 
-      // Si no hay módulos accesibles, retornar las mediciones sin filtrar
-      if (!accessibleModules || accessibleModules.length === 0) {
-        console.log('No accessible modules found, returning all measurements');
-        return measurements;
+      if (monitorModules.length === 0) {
+        return [];
       }
 
-      const moduleIds = accessibleModules.map(m => m.module_id);
-      console.log(`Monitor has access to modules: ${moduleIds.join(', ')}`);
+      const allowedModuleIds = monitorModules.map(mm => mm.id_module);
 
-      // Obtener los sensores de los módulos accesibles
-      const accessibleSensors = await Sensor.findAll({
+      const allowedSensors = await Sensor.findAll({
         where: {
-          id_module: { [Op.in]: moduleIds },
+          id_module: { [Op.in]: allowedModuleIds },
           isActive: true
         },
         attributes: ['id']
       });
 
-      // Si no hay sensores, retornar las mediciones sin filtrar
-      if (!accessibleSensors || accessibleSensors.length === 0) {
-        console.log('No accessible sensors found, returning all measurements');
+      if (allowedSensors.length === 0) {
+        return [];
+      }
+
+      const allowedSensorIds = allowedSensors.map(sensor => Number(sensor.id));
+      
+      const dataSensorIds = [...new Set(measurements.map(m =>
+        Number(m.id_sensor || (m.sensor ? m.sensor.id : null))
+      ).filter(id => id !== null))];
+      
+      const allSensorsAllowed = dataSensorIds.every(id => allowedSensorIds.includes(id));
+      
+      if (allSensorsAllowed && dataSensorIds.length > 0) {
         return measurements;
       }
 
-      const sensorIds = new Set(accessibleSensors.map(s => s.id));
-      console.log(`Monitor has access to ${sensorIds.size} sensors`);
-
-      // Filtrar las mediciones por los sensores accesibles
-      const filteredMeasurements = measurements.filter(measurement => 
-        sensorIds.has(measurement.id_sensor)
-      );
-
-      console.log(`Filtered measurements: ${filteredMeasurements.length} of ${measurements.length}`);
-
-      // Si el filtrado es demasiado restrictivo, retornar todas las mediciones
-      if (filteredMeasurements.length === 0 || 
-          filteredMeasurements.length < measurements.length * 0.1) {
-        console.log('Filtering too restrictive, returning all measurements');
-        return measurements;
-      }
+      const filteredMeasurements = measurements.filter(measurement => {
+        const sensorId = Number(measurement.id_sensor || (measurement.sensor ? measurement.sensor.id : null));
+        return sensorId && allowedSensorIds.includes(sensorId);
+      });
 
       return filteredMeasurements;
     } catch (error) {
-      console.error('Error in filterMeasurementsByMonitor:', error);
-      // En caso de error, retornar las mediciones sin filtrar
-      return measurements;
+      console.error('Error filtering measurements:', error);
+      return [];
     }
   }
 
@@ -354,25 +303,22 @@ class ValidateUserAccessMiddleware {
               }
             });
             break;
-            
+
           case 'measurements':
             const sensorId = req.params.id_sensor || req.query.sensorId || req.body.id_sensor;
-            
-            // If a specific sensor ID is provided, check access to that sensor
+
             if (sensorId) {
-              // Find the sensor to get its module
               const sensor = await Sensor.findOne({
                 where: {
                   id: sensorId,
                   isActive: true
                 }
               });
-              
+
               if (!sensor) {
                 return next();
               }
-              
-              // Check if monitor has access to the module that owns this sensor
+
               hasAccess = await ModuleUser.findOne({
                 where: {
                   id_user: monitorId,
@@ -381,7 +327,6 @@ class ValidateUserAccessMiddleware {
                 }
               });
             } else {
-              // If no specific sensor, allow access (will be filtered later by filterMeasurementsByMonitor)
               hasAccess = true;
             }
             break;
