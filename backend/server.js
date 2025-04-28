@@ -27,6 +27,7 @@ const userSharedRoutes = require('./app/routes/shared/user.route');
 const userAdminRoutes = require('./app/routes/admin/user.admin.route');
 const authRoutes = require('./app/routes/auth.route');
 const farmRoutes = require('./app/routes/admin/farm.admin.route');
+const moduleAdminRoutes = require('./app/routes/admin/module.admin.route');
 const sharedModuleRoutes = require('./app/routes/shared/module.route');
 const sharedFarmRoutes = require('./app/routes/shared/farm.routes');
 const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
@@ -74,6 +75,7 @@ app.use('/api/v2/owner/users', ownerUserRoutes);
  * Admin Routes
  */
 app.use('/api/v2/admin/farms', farmRoutes);
+app.use('/api/v2/admin/modules', moduleAdminRoutes);
 app.use('/api/v2/admin/users', userAdminRoutes);
 
 /*
