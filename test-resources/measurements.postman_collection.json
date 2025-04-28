@@ -16,13 +16,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImRuaSI6IlNFTlNPUi0xNzQyOTQwMDI4NjY4IiwiaWF0IjoxNzQzMDQ4NjIxLCJleHAiOjE3NDMwNjY2MjF9.hkF3E6xflOadlnfQcdHa47NI1lFjL0LRWBoG9ubOlWo",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImRuaSI6IlNFTlNPUi0xNzQyOTQwMDI4NjY4IiwiaWF0IjoxNzQzNTM0MzEyLCJleHAiOjE3NDM1NTIzMTJ9.6UKNYKK24SbH4icciiMCsi16QnLUygZmlgTloko3sbI",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"type\": \"temperature\",\r\n    \"value\": 10.5,\r\n    \"date\": \"2025-03-25\",\r\n    \"time\": \"16:53\"\r\n}",
+							"raw": "{\r\n    \"type\": \"temperature\",\r\n    \"value\": 100.0,\r\n    \"date\": \"2025-03-25\",\r\n    \"time\": \"16:53\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -30,12 +30,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v2/module/measurement",
-							"protocol": "http",
+							"raw": "https://backend.acuaterra.tech/api/v2/module/measurement",
+							"protocol": "https",
 							"host": [
-								"localhost"
+								"backend",
+								"acuaterra",
+								"tech"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v2",
@@ -77,6 +78,59 @@
 			]
 		},
 		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "list measurements by module",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsImRuaSI6IjEwNjE0NjU5ODciLCJpYXQiOjE3NDU4MDUxNzMsImV4cCI6MTc0NTgyMzE3M30.Npyeh8-AlvuGPEVOIW-R-cx2qoOg_UI31cq3j2i5wDo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v2/admin/modules/14/measurements?startDate=2025-01-01&endDate=2025-04-27&period=daily&sensorType=Temperature",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"modules",
+								"14",
+								"measurements"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-04-27"
+								},
+								{
+									"key": "period",
+									"value": "daily"
+								},
+								{
+									"key": "sensorType",
+									"value": "Temperature"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "login Copy",
 			"event": [
 				{
@@ -106,7 +160,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n   // \"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\",\n   //\"email\": \"e5c70c80-09c5-11f0-b581-7dbcc11a1b59-module@acuaterra.tech\",\n   //\"password\": \"1fd8c7c95352\"\n   \"email\": \"8ff232e0-09c4-11f0-a8c0-676644a4555b-module@acuaterra.tech\",\n    \"password\": \"55f52b145337\"\n}",
+					"raw": "{   \n    //\"email\": \"owner_1@example.com\",\n    //\"email\": \"owner_2@example.com\",\n   //\"email\": \"user@example.com\",\n    //\"password\": \"r5ctmodc\"\n    //\"email\": \"admin@example.com\",\n     //\"email\": \"admin1@example.com\",\n    //\"password\": \"password\"\n    //\"email\": \"cristian_daranda@soy.sena.edu.co\",//admin\n    //\"password\": \"5q3a15n4\"\n    //\"email\": \"thearanda88@gmail.com\",//owner\n   // \"password\": \"t7wbk7i8\"\n    //\"email\": \"09ef0020-22d2-11f0-9784-a9459589f274-module@acuaterra.tech\",//sensor\n    //\"password\": \"19f4c0698565\"\n     \"email\": \"6c663cc0-232f-11f0-9466-8521fb14de7b-module@acuaterra.tech\",//sensor\n    \"password\": \"10df780d4abf\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -114,12 +168,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v2/auth/login",
-					"protocol": "http",
+					"raw": "https://backend.acuaterra.tech/api/v2/auth/login",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"backend",
+						"acuaterra",
+						"tech"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v2",

@@ -1,0 +1,216 @@
+{
+  "/api/v2/admin/modules/farm/{farmId}": {
+    "get": {
+      "tags": ["Admin/Modules"],
+      "summary": "Get modules by farm ID",
+      "description": "Retrieves a list of active modules associated with a specific farm, including their sensors and recent measurements. This endpoint is used for the reporting system to allow administrators to select modules for generating measurement reports.",
+      "parameters": [
+        {
+          "name": "farmId",
+          "in": "path",
+          "description": "ID of the farm to retrieve modules from",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "description": "Maximum number of modules to return",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 500
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Modules retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Modules retrieved successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 6
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Modulo Álvaro 3"
+                        },
+                        "id_farm": {
+                          "type": "integer",
+                          "example": 2
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-15T18:23:45.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-15T18:23:45.000Z"
+                        },
+                        "sensors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 3
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Sensor Temperature 45"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "Temperature",
+                                "description": "Type of sensor (Temperature, Proximity, etc.)"
+                              },
+                              "isActive": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "lastMeasurement": {
+                                "type": "object",
+                                "properties": {
+                                  "value": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 25.4,
+                                    "description": "Last recorded measurement value"
+                                  },
+                                  "date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "2025-04-26",
+                                    "description": "Date of last measurement"
+                                  },
+                                  "time": {
+                                    "type": "string",
+                                    "format": "time",
+                                    "example": "14:30:22",
+                                    "description": "Time of last measurement"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request - Invalid parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Request error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "field"
+                        },
+                        "value": {
+                          "type": "string",
+                          "example": "-1"
+                        },
+                        "msg": {
+                          "type": "string",
+                          "example": "El ID de la granja debe ser un número entero positivo"
+                        },
+                        "path": {
+                          "type": "string",
+                          "example": "farmId"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "params"
+                        }
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Authentication credentials were missing or invalid"
+        },
+        "403": {
+          "description": "Forbidden - User doesn't have admin privileges"
+        },
+        "404": {
+          "description": "Farm not found or no modules available for the farm"
+        },
+        "500": {
+          "description": "Internal Server Error"
+        }
+      },
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ]
+    }
+  }
+}
+

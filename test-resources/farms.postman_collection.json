@@ -181,6 +181,36 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "list modules by farm",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsImRuaSI6IjEwNjE0NjU5ODciLCJpYXQiOjE3NDU4MDEyMDMsImV4cCI6MTc0NTgxOTIwM30.cW0DViNZWgPZXczSiZnATVUCj1t864dBgzJTeT4bJZQ",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v2/admin/modules/farm/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v2",
+										"admin",
+										"modules",
+										"farm",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
