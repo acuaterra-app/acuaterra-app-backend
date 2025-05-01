@@ -54,13 +54,6 @@
               "id_farm": {
                 "type": "integer",
                 "description": "ID of the farm"
-              },
-              "users": {
-                "type": "array",
-                "items": {
-                  "type": "integer"
-                },
-                "description": "Array of user IDs with monitor role to assign to this module"
               }
             }
           }
@@ -84,10 +77,11 @@
                     "example": "Module updated successfully"
                   },
                   "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
+                    "type": "object",
+                    "properties": {
+                      "module": {
+                        "type": "object",
+                        "properties": {
                         "id": {
                           "type": "integer",
                           "example": 1
@@ -147,26 +141,6 @@
                           "format": "date-time",
                           "example": "2025-03-04T21:55:42.000Z"
                         },
-                        "users": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "example": 42
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "Monitor User"
-                              },
-                              "email": {
-                                "type": "string",
-                                "example": "monitor@example.com"
-                              }
-                            }
-                          }
-                        },
                         "creator": {
                           "type": "object",
                           "properties": {
@@ -194,23 +168,12 @@
                             "name": {
                               "type": "string",
                               "example": "Farm 1"
-                            },
-                            "address": {
-                              "type": "string",
-                              "example": "123 Main St"
-                            },
-                            "latitude": {
-                              "type": "string",
-                              "example": "12.34"
-                            },
-                            "longitude": {
-                              "type": "string",
-                              "example": "-45.67"
                             }
                           }
                         }
                       }
                     }
+                  }
                   },
                   "errors": {
                     "type": "array",
@@ -247,14 +210,13 @@
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Invalid module data provided"
-                        }
-                      }
-                    }
+                      "type": "string"
+                    },
+                    "example": [
+                      "Invalid module data provided",
+                      "Name is required",
+                      "A module with the specified name already exists"
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -284,14 +246,11 @@
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Authentication required to access this resource"
-                        }
-                      }
-                    }
+                      "type": "string"
+                    },
+                    "example": [
+                      "Authentication required to access this resource"
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -321,14 +280,12 @@
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Only monitor users can be assigned to modules"
-                        }
-                      }
-                    }
+                      "type": "string"
+                    },
+                    "example": [
+                      "Only owner users can update modules",
+                      "Access denied for this operation"
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -341,6 +298,7 @@
         },
         "404": {
           "description": "Not found - Module with specified ID does not exist or is inactive",
+          "content": {
             "application/json": {
               "schema": {
                 "type": "object",
@@ -357,14 +315,12 @@
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Module with given ID does not exist"
-                        }
-                      }
-                    }
+                      "type": "string"
+                    },
+                    "example": [
+                      "Module with given ID does not exist",
+                      "The requested module is inactive"
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -394,14 +350,13 @@
                   "errors": {
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string",
-                          "example": "Error validating module update permissions"
-                        }
-                      }
-                    }
+                      "type": "string"
+                    },
+                    "example": [
+                      "Error validating module update permissions",
+                      "Database transaction error",
+                      "Error updating module components"
+                    ]
                   },
                   "meta": {
                     "type": "object",
@@ -415,4 +370,4 @@
       }
     }
   }
-
+}

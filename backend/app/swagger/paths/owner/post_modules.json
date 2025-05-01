@@ -61,13 +61,6 @@
               "created_by_user_id": {
                 "type": "integer",
                 "description": "ID of the user who created the module"
-              },
-              "users": {
-                "type": "array",
-                "items": {
-                  "type": "integer"
-                },
-                "description": "Array of user IDs to associate with the module"
               }
             }
           }
@@ -145,63 +138,61 @@
                             "format": "date-time",
                             "example": "2025-03-04T21:55:42.000Z"
                           },
-                          "updatedAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
                           "isActive": {
                             "type": "boolean",
                             "example": true,
                             "description": "Indicates whether the module is active in the system"
                           },
                           "updatedAt": {
-                            "creator": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "integer",
-                                  "example": 1
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "example": "John Doe"
-                                },
-                                "email": {
-                                  "type": "string",
-                                  "example": "johndoe@example.com"
-                                }
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "creator": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "John Doe"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "johndoe@example.com"
                               }
-                            },
-                            "farm": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "integer",
-                                  "example": 1
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "example": "Farm 1"
-                                }
+                            }
+                          },
+                          "farm": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Farm 1"
                               }
                             }
                           }
-                        },
-                        "sensorUser": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "integer",
-                              "example": 2
-                            },
-                            "email": {
-                              "type": "string",
-                              "example": "123e4567-e89b-12d3-a456-426614174000-module@acuaterra.tech"
-                            },
-                            "role": {
-                              "type": "string",
-                              "example": "sensor"
-                            }
+                        }
+                      },
+                      "sensorUser": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "123e4567-e89b-12d3-a456-426614174000-module@acuaterra.tech"
+                          },
+                          "role": {
+                            "type": "string",
+                            "example": "sensor"
                           }
                         }
                       }
@@ -210,110 +201,110 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid request parameters"
+          }
+        },
+        "400": {
+          "description": "Bad request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Invalid request parameters"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "data": {
-                      "type": "array",
-                      "items": {},
-                      "example": []
-                    },
-                    "errors": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "Name is required",
-                        "A module with the specified name already exists",
-                        "Creator user not found",
-                        "Error creating sensors",
-                        "Error sending email"
-                      ]
-                    },
-                    "meta": {
-                      "type": "object",
-                      "example": {}
-                    }
+                    "example": [
+                      "Name is required",
+                      "A module with the specified name already exists",
+                      "Creator user not found",
+                      "Error creating sensors",
+                      "Error sending email"
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
                   }
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Unauthorized access"
+          }
+        },
+        "401": {
+          "description": "Unauthorized access",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized access"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "data": {
-                      "type": "array",
-                      "items": {},
-                      "example": []
-                    },
-                    "errors": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "Authentication required to access this resource"
-                      ]
-                    },
-                    "meta": {
-                      "type": "object",
-                      "example": {}
-                    }
+                    "example": [
+                      "Authentication required to access this resource"
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
                   }
                 }
               }
             }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Internal server error"
+          }
+        },
+        "500": {
+          "description": "Internal server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {},
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "data": {
-                      "type": "array",
-                      "items": {},
-                      "example": []
-                    },
-                    "errors": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "Error creating module and its components",
-                        "Database transaction error",
-                        "Error sending email"
-                      ]
-                    },
-                    "meta": {
-                      "type": "object",
-                      "example": {}
-                    }
+                    "example": [
+                      "Error creating module and its components",
+                      "Database transaction error",
+                      "Error sending email"
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
                   }
                 }
               }
