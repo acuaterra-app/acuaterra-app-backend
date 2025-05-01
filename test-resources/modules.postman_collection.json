@@ -115,7 +115,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"name\": \"PruebaUnoEditandoMod\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 36,\r\n  \"users\": [45, 44, 43]\r\n}",
+									"raw": "{\r\n  \"name\": \"PruebaUnoEditandoMod\",\r\n  \"location\": \"Ubicación del módulo 123\",\r\n  \"latitude\": \"12.34\",\r\n  \"longitude\": \"-45.67\",\r\n  \"species_fish\": \"Especie de pez\",\r\n  \"fish_quantity\": \"10\",\r\n  \"fish_age\": \"5\",\r\n  \"dimensions\": \"1x1x1\",\r\n  \"id_farm\": 36\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
