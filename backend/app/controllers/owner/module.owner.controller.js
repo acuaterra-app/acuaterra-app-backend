@@ -167,6 +167,35 @@ class ModuleOwnerController {
             return res.status(500).json(response);
         }
     }
+
+    async reactivateModule(req, res) {
+        try {
+            const { id } = req.params;
+            const reactivatedModule = await this.moduleOwnerService.reactivateModule(id);
+            
+            const response = ApiResponse.createApiResponse(
+                "Module reactivated successfully",
+                [reactivatedModule],
+                []
+            );
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error("Error reactivating module:", error);
+            const response = ApiResponse.createApiResponse(
+                "Failed to reactivate module",
+                [],
+                [{ msg: error.message }]
+            );
+
+            if (error.message.includes("not found")) {
+                return res.status(404).json(response);
+            } else if (error.message.includes("permission") || error.message.includes("Forbidden")) {
+                return res.status(403).json(response);
+            }
+
+            return res.status(500).json(response);
+        }
+    }
 }
 
 module.exports = ModuleOwnerController;

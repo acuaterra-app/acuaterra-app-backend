@@ -2,7 +2,7 @@
   "/api/v2/owner/modules/{id}": {
     "delete": {
       "tags": ["Owner/Modules"],
-      "summary": "Delete a module",
+      "summary": "Deactivate a module",
       "description": "Soft deletes an existing module by setting isActive status to false. This operation deactivates the module in the system without permanently removing data, allowing for potential reactivation in the future. Deactivated modules will no longer appear in regular queries.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to deactivate\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to\n  - Middleware validates module existence and ownership access",
       "security": [
         {
@@ -14,7 +14,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Unique identifier of the module to delete",
+          "description": "Unique identifier of the module to deactivate",
           "schema": {
             "type": "integer",
             "example": 6
