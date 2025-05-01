@@ -52,10 +52,19 @@ class MeasurementService {
         }
     }
 
-    async getMeasurementsByOwnerModule(userId, sensorId = null, limit = 100) {
+    async getMeasurementsByOwnerModule(userId, moduleId = null, sensorId = null, limit = 100) {
         try {
-            const modules = await Module.findAll({
+            if (!moduleId || !sensorId) {
+                return { 
+                    success: true, 
+                    message: 'No measurements available', 
+                    data: [] 
+                };
+            }
+
+            const module = await Module.findOne({
                 where: {
+                    id: moduleId,
                     isActive: true,
                     [Op.or]: [
                         { created_by_user_id: userId },
@@ -69,45 +78,35 @@ class MeasurementService {
                     required: false,
                     through: { attributes: [] },
                     where: { isActive: true }
-                }],
-                attributes: ['id'],
-                order: [['id', 'ASC']]
+                }]
             });
-            
-            if (!modules.length) {
+
+            if (!module) {
                 return { 
                     success: true, 
-                    message: 'No active modules', 
+                    message: 'Module not found or unauthorized', 
                     data: [] 
                 };
             }
-            
-            const moduleIds = modules.map(m => m.id);
-            const sensorQuery = { 
-                isActive: true, 
-                id_module: { [Op.in]: moduleIds }
-            };
-            
-            if (sensorId) sensorQuery.id = sensorId;
-            
-            const sensors = await Sensor.findAll({
-                where: sensorQuery,
-                attributes: ['id'],
-                order: [['id', 'ASC']]
+            const sensor = await Sensor.findOne({
+                where: {
+                    id: sensorId,
+                    id_module: moduleId,
+                    isActive: true
+                }
             });
-            
-            if (!sensors.length) {
+
+            if (!sensor) {
                 return { 
                     success: true, 
-                    message: 'No active sensors', 
+                    message: 'Sensor not found', 
                     data: [] 
                 };
             }
-            
-            const sensorIds = sensors.map(s => s.id);
+
             const measurements = await Measurement.findAll({
                 where: { 
-                    id_sensor: { [Op.in]: sensorIds }
+                    id_sensor: sensorId
                 },
                 order: [['date', 'DESC'], ['time', 'DESC']],
                 limit: limit,

@@ -8,7 +8,7 @@ const ValidateUserAccessMiddleware = require("../../middleware/validateUserAcces
 const { ROLES : Role } = require("../../enums/roles.enum");
 const MeasurementController = require('../../controllers/module/measurement.controller');
 const MeasurementService = require('../../services/module/measurement.service');
-const { createMeasurementValidation} = require('../../validators/module/measurement.validator');
+const { createMeasurementValidation, getMeasurementsValidation } = require('../../validators/module/measurement.validator');
 const ValidateSensorThresholdMiddleware = require("../../middleware/validateSensorThreshold.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
@@ -31,6 +31,7 @@ router.get(
     '/',
     validateTokenMiddleware.validate.bind(validateTokenMiddleware),
     validateRoleMiddleware.validate([Role.OWNER, Role.MONITOR]),
+    validate(getMeasurementsValidation),
     validateUserAccessMiddleware.extendRoleValidation(),
     validateUserAccessMiddleware.checkMonitorAccess('measurement'),
     validateUserAccessMiddleware.handleRoleBasedAccess(),
