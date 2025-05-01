@@ -66,4 +66,11 @@ router.post(
     (req, res) => moduleController.assignMonitor(req, res)
 );
 
+router.patch(
+    '/:id',
+    validateTokenMiddleware.validate.bind(validateTokenMiddleware),
+    validateRoleMiddleware.validate([Role.OWNER]),
+    (req, res) => moduleController.reactivateModule(req, res)
+);
+
 module.exports = router;

@@ -139,18 +139,18 @@
 							"response": []
 						},
 						{
-							"name": "delete module",
+							"name": "desactive module",
 							"request": {
 								"method": "DELETE",
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImRuaSI6IjY0NTM4MDM1MTYiLCJpYXQiOjE3NDI2Njc3ODgsImV4cCI6MTc0MjY4NTc4OH0.xIoo8CyQbsxjF527htdm-7uAHRos7SxeWIC4lDPxwcQ",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsImRuaSI6IjEwNjE0NTk4NyIsImlhdCI6MTc0NjA3MDkzNywiZXhwIjoxNzQ2MDg4OTM3fQ.rRYVHy91-CtlMZz56KIcYD5sIIo1v8CWjaFbkViZvz0",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{server}}/api/v2/owner/modules/40",
+									"raw": "{{server}}/api/v2/owner/modules/17",
 									"host": [
 										"{{server}}"
 									],
@@ -159,7 +159,7 @@
 										"v2",
 										"owner",
 										"modules",
-										"40"
+										"17"
 									]
 								}
 							},
@@ -226,6 +226,33 @@
 										"modules",
 										"32",
 										"monitors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "activate module",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsImRuaSI6IjEwNjE0NTk4NyIsImlhdCI6MTc0NjA3MDkzNywiZXhwIjoxNzQ2MDg4OTM3fQ.rRYVHy91-CtlMZz56KIcYD5sIIo1v8CWjaFbkViZvz0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server}}/api/v2/owner/modules/17",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v2",
+										"owner",
+										"modules",
+										"17"
 									]
 								}
 							},

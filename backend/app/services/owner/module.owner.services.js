@@ -374,7 +374,7 @@ class ModuleOwnerService {
                 }
             });
 
-            await this.softDeleteModule(id);
+            await this.disableModule(id);
 
             return moduleToDelete;
         } catch (error) {
@@ -445,6 +445,200 @@ class ModuleOwnerService {
             await transaction.rollback();
             console.error(`Error performing soft delete of module: ${moduleId}:`, error);
             throw new Error(`Error deleting module: ${error.message}`);
+        }
+    }
+
+    async disableModule(moduleId) {
+        let transaction = null;
+
+        try {
+            transaction = await sequelize.transaction();
+
+            const moduleToDisable = await Module.findByPk(moduleId, {
+                transaction
+            });
+
+            if (!moduleToDisable) {
+                await transaction.rollback();
+                throw new Error('Module not found');
+            }
+
+            const sensors = await Sensor.findAll({
+                where: { 
+                    id_module: moduleId,
+                    isActive: true 
+                },
+                attributes: ['id'],
+                transaction
+            });
+            
+            const sensorIds = sensors.map(sensor => sensor.id);
+
+            await moduleToDisable.update({
+                isActive: false
+            }, { transaction });
+
+            if (sensorIds.length > 0) {
+                await Sensor.update(
+                    { isActive: false },
+                    {
+                        where: { id_module: moduleId },
+                        transaction
+                    }
+                );
+
+                await Threshold.update(
+                    { isActive: false },
+                    {
+                        where: { id_sensor: { [Op.in]: sensorIds } },
+                        transaction
+                    }
+                );
+
+                await Measurement.update(
+                    { isActive: false },
+                    {
+                        where: { id_sensor: { [Op.in]: sensorIds } },
+                        transaction
+                    }
+                );
+            }
+
+            await transaction.commit();
+
+            const disabledModule = await Module.findByPk(moduleId, {
+                include: [
+                    {
+                        model: Farm,
+                        as: 'farm',
+                        attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        }
+                    },
+                    {
+                        model: User,
+                        as: 'creator',
+                        attributes: ['id', 'name', 'email']
+                    },
+                    {
+                        model: User,
+                        as: 'users',
+                        attributes: ['id', 'name', 'email', 'dni'],
+                        through: { attributes: [] },
+                        where: {
+                            isActive: true
+                        }
+                    },
+                    {
+                        model: Sensor,
+                        as: 'sensors',
+                        attributes: ['id', 'name', 'type', 'isActive']
+                    }
+                ]
+            });
+
+            return disabledModule;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            console.error(`Error disabling module: ${error.message}`);
+            throw new Error(`Error disabling module: ${error.message}`);
+        }
+    }
+
+    async reactivateModule(moduleId) {
+        let transaction = null;
+
+        try {
+            transaction = await sequelize.transaction();
+
+            const moduleToReactivate = await Module.findOne({
+                where: {
+                    id: moduleId,
+                    isActive: false
+                },
+                transaction
+            });
+
+            if (!moduleToReactivate) {
+                await transaction.rollback();
+                throw new Error('Inactive module not found');
+            }
+
+            const sensors = await Sensor.findAll({
+                where: { id_module: moduleId },
+                attributes: ['id'],
+                transaction
+            });
+            
+            const sensorIds = sensors.map(sensor => sensor.id);
+
+            await moduleToReactivate.update({
+                isActive: true
+            }, { transaction });
+
+            if (sensorIds.length > 0) {
+                await Sensor.update(
+                    { isActive: true },
+                    {
+                        where: { id_module: moduleId },
+                        transaction
+                    }
+                );
+
+                await Threshold.update(
+                    { isActive: true },
+                    {
+                        where: { id_sensor: { [Op.in]: sensorIds } },
+                        transaction
+                    }
+                );
+                
+            }
+
+            await transaction.commit();
+
+            const reactivatedModule = await Module.findByPk(moduleId, {
+                include: [
+                    {
+                        model: Farm,
+                        as: 'farm',
+                        attributes: ['id', 'name'],
+                        where: {
+                            isActive: true
+                        }
+                    },
+                    {
+                        model: User,
+                        as: 'creator',
+                        attributes: ['id', 'name', 'email']
+                    },
+                    {
+                        model: User,
+                        as: 'users',
+                        attributes: ['id', 'name', 'email', 'dni'],
+                        through: { attributes: [] },
+                        where: {
+                            isActive: true
+                        }
+                    },
+                    {
+                        model: Sensor,
+                        as: 'sensors',
+                        attributes: ['id', 'name', 'type', 'isActive']
+                    }
+                ]
+            });
+
+            return reactivatedModule;
+        } catch (error) {
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+            console.error(`Error reactivating module: ${error.message}`);
+            throw new Error(`Error reactivating module: ${error.message}`);
         }
     }
 

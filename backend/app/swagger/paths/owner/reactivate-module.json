@@ -1,0 +1,334 @@
+{
+  "/api/v2/owner/modules/{id}": {
+    "patch": {
+      "tags": ["Owner/Modules"],
+      "summary": "Reactivate a module",
+      "description": "Reactivates a previously deactivated module by setting isActive status back to true. This operation restores the module and its associated components (sensors and thresholds) to an active state. Note that historical measurements remain inactive.\n\n## Path Parameters\n\n- **id**\n  - **Type**: Integer\n  - **Description**: Unique identifier of the module to reactivate\n  - **Required**: Yes\n\n## Access Control\n\n- **Authentication**: Required\n- **Role**: OWNER\n- **Permissions**:\n  - Owner must be associated with the farm that the module belongs to",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique identifier of the module to reactivate",
+          "schema": {
+            "type": "integer",
+            "example": 6
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Module successfully reactivated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Module reactivated successfully"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 6
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Module stunning"
+                        },
+                        "location": {
+                          "type": "string",
+                          "example": "5914 Southwest Wing"
+                        },
+                        "latitude": {
+                          "type": "string",
+                          "example": "12.34"
+                        },
+                        "longitude": {
+                          "type": "string",
+                          "example": "-45.67"
+                        },
+                        "species_fish": {
+                          "type": "string",
+                          "example": "Carpa"
+                        },
+                        "fish_quantity": {
+                          "type": "string",
+                          "example": "8"
+                        },
+                        "fish_age": {
+                          "type": "string",
+                          "example": "2"
+                        },
+                        "dimensions": {
+                          "type": "string",
+                          "example": "2x2x2"
+                        },
+                        "id_farm": {
+                          "type": "integer",
+                          "example": 7
+                        },
+                        "created_by_user_id": {
+                          "type": "integer",
+                          "example": 42
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-04-26T19:09:55.000Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-05-01T04:21:12.000Z"
+                        },
+                        "farm": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 7
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Granja la Masia"
+                            }
+                          }
+                        },
+                        "creator": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "example": 42
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": "Francisco Hernandez"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "francisco@acuaterra.tech"
+                            }
+                          }
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 45
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Lamine Yamal"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "lamineyamal@acuaterra.tech"
+                              },
+                              "dni": {
+                                "type": "string",
+                                "example": "789654123"
+                              }
+                            }
+                          }
+                        },
+                        "sensors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "example": 25
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Sensor de Temperatura"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "temperature"
+                              },
+                              "isActive": {
+                                "type": "boolean",
+                                "example": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have access to reactivate the module",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "type": "authorization",
+                        "msg": "You don't have permission to reactivate this module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found - Inactive module with specified ID does not exist",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Failed to reactivate module"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Error reactivating module: Inactive module not found"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error reactivating module"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "type": "server",
+                        "msg": "Internal server error while reactivating module"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
