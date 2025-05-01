@@ -70,10 +70,29 @@ class MeasurementController {
     async getMeasurementsByModule(req, res) {
         try {
             const userId = req.user.id;
-            const sensorId = req.query.sensorId;
+            const moduleId = req.query.moduleId ? parseInt(req.query.moduleId) : null;
+            const sensorId = req.query.sensorId ? parseInt(req.query.sensorId) : null;
             const limit = req.query.limit ? parseInt(req.query.limit) : 100;
 
-            const result = await this.measurementService.getMeasurementsByOwnerModule(userId, sensorId, limit);
+            if (!moduleId) {
+                const response = ApiResponse.createApiResponse(
+                    'Module ID is required',
+                    [],
+                    [{msg: 'Module ID is required'}]
+                );
+                return res.status(400).json(response);
+            }
+
+            if (!sensorId) {
+                const response = ApiResponse.createApiResponse(
+                    'Sensor ID is required',
+                    [],
+                    [{msg: 'Sensor ID is required'}]
+                );
+                return res.status(400).json(response);
+            }
+
+            const result = await this.measurementService.getMeasurementsByOwnerModule(userId, moduleId, sensorId, limit);
 
             if (!result.success) {
                 console.error(`Service error: ${result.message}`);
