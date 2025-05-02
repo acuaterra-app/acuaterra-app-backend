@@ -367,8 +367,8 @@
     },
     "get": {
       "tags": ["Module/Measurements"],
-      "summary": "Get measurements list",
-      "description": "Retrieves measurements for the authenticated user's active module sensors, ordered by date and time in descending order (newest first).\n\n## Required Authentication\n- Requires a valid JWT token\n- User must have OWNER or MONITOR role\n- Retrieves measurements from active modules created by or assigned to the user\n- Only returns measurements from active sensors\n\n## Optional Query Parameters\n- sensorId: Optional. Filters measurements for a specific active sensor by ID",
+      "summary": "Get measurements for a specific module and sensor",
+      "description": "Retrieves measurements for a specific module and sensor, filtrados por los permisos de acceso del usuario autenticado.\n\n## Autorización\n- El usuario debe ser el creador del módulo (created_by_user_id) o un usuario asignado\n- Tanto el módulo como el sensor deben estar activos (isActive: true)\n\n## Parámetros de Consulta\n- moduleId: Obligatorio. ID del módulo del que se recuperarán las mediciones\n- sensorId: Obligatorio. ID del sensor del que se recuperarán las mediciones\n- limit: Opcional. Número máximo de mediciones a devolver (predeterminado: 100)\n\n## Formato de Respuesta\nTodas las respuestas siguen este formato:\n- success: booleano que indica el resultado de la operación\n- message: cadena que describe el resultado\n- data: array de mediciones con detalles del sensor\n\n## Validación\n1. Verifica si se proporcionan moduleId y sensorId\n2. Verifica que el módulo exista y que el usuario tenga acceso\n3. Verifica que el sensor exista y esté activo\n4. Devuelve las mediciones ordenadas por fecha y hora (DESC)\n\n## URL de Ejemplo\n`/api/v2/module/measurement?moduleId=19&sensorId=29&limit=50`",
       "security": [
         {
           "bearerAuth": []
@@ -376,26 +376,49 @@
       ],
       "parameters": [
         {
-          "name": "sensorId",
+          "name": "moduleId",
           "in": "query",
-          "required": false,
+          "required": true,
           "schema": {
             "type": "integer"
           },
-          "description": "ID of the specific active sensor to retrieve measurements for. If not provided, returns measurements from all active sensors associated with the active module."
+          "description": "ID del módulo del que se recuperarán las mediciones"
+        },
+        {
+          "name": "sensorId",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID del sensor del que se recuperarán las mediciones"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": 100
+          },
+          "description": "Número máximo de mediciones a devolver"
         }
       ],
       "responses": {
         "200": {
-          "description": "Measurements retrieved successfully",
+          "description": "Operación completada con éxito",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
                   "message": {
                     "type": "string",
-                    "example": "Measurements retrieved successfully"
+                    "example": "Measurements retrieved"
                   },
                   "data": {
                     "type": "array",
@@ -463,22 +486,22 @@
             }
           }
         },
-        "204": {
-          "description": "No active measurements found",
+        "400": {
+          "description": "Faltan parámetros requeridos",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
                   "message": {
                     "type": "string",
-                    "example": "No active measurements found"
+                    "example": "No measurements available"
                   },
                   "data": {
-                    "type": "array",
-                    "example": []
-                  },
-                  "errors": {
                     "type": "array",
                     "example": []
                   }
@@ -488,12 +511,16 @@
           }
         },
         "401": {
-          "description": "Unauthorized - Invalid or missing token",
+          "description": "No autorizado - Token inválido o faltante",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
                   "message": {
                     "type": "string",
                     "example": "Unauthorized"
@@ -501,22 +528,6 @@
                   "data": {
                     "type": "array",
                     "example": []
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "example": [
-                      {
-                        "msg": "Invalid token"
-                      }
-                    ]
                   }
                 }
               }
@@ -524,35 +535,23 @@
           }
         },
         "403": {
-          "description": "Forbidden - User does not have required role",
+          "description": "Módulo no encontrado o acceso no autorizado",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
                   "message": {
                     "type": "string",
-                    "example": "Forbidden"
+                    "example": "Module not found or unauthorized"
                   },
                   "data": {
                     "type": "array",
                     "example": []
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "example": [
-                      {
-                        "msg": "User does not have required role"
-                      }
-                    ]
                   }
                 }
               }
@@ -560,12 +559,16 @@
           }
         },
         "404": {
-          "description": "Not Found - Sensor not found or inactive",
+          "description": "Sensor no encontrado o inactivo",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
                   "message": {
                     "type": "string",
                     "example": "Sensor not found"
@@ -573,26 +576,6 @@
                   "data": {
                     "type": "array",
                     "example": []
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string"
-                        },
-                        "msg": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "example": [
-                      {
-                        "type": "resource",
-                        "msg": "Sensor is not active or not found"
-                      }
-                    ]
                   }
                 }
               }
@@ -600,35 +583,23 @@
           }
         },
         "500": {
-          "description": "Internal Server Error",
+          "description": "Error interno del servidor",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
                   "message": {
                     "type": "string",
-                    "example": "Error retrieving measurements"
+                    "example": "Error message"
                   },
                   "data": {
                     "type": "array",
                     "example": []
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "msg": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "example": [
-                      {
-                        "msg": "Internal server error"
-                      }
-                    ]
                   }
                 }
               }

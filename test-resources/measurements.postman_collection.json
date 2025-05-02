@@ -54,12 +54,12 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZG5pIjoiMDIzMTI2NjM5MiIsImlhdCI6MTc0MzA0NzgzMywiZXhwIjoxNzQzMDY1ODMzfQ.ZNlDi4WU2yskQYEgpWcbwSlUy_MC9TQrFYJ22EA69u4",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDIsImRuaSI6IjEwNjE0NTk4NyIsImlhdCI6MTc0NjEzNjkwMSwiZXhwIjoxNzQ2MTU0OTAxfQ.xJHr77MCVobOR3uxAa9Wam5WNXM7moHtUQ-jEqtlJ9w",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/api/v2/module/measurement",
+							"raw": "http://localhost:3000/api/v2/module/measurement?moduleId=19&sensorId=29",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -70,6 +70,16 @@
 								"v2",
 								"module",
 								"measurement"
+							],
+							"query": [
+								{
+									"key": "moduleId",
+									"value": "19"
+								},
+								{
+									"key": "sensorId",
+									"value": "29"
+								}
 							]
 						}
 					},
