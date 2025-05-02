@@ -1,6 +1,6 @@
-const { Notification, User, Rol } = require('../../../models');
+const { Notification, User, Rol, ModuleUser } = require('../../../models');
 const { ROLES } = require('../../enums/roles.enum');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
 
 /**
@@ -10,7 +10,6 @@ class ListNotificationsService {
 
   async getNotificationsForUserPaginated(userId, page = 1, limit = 10, state = null) {
     try {
-      // First, check if the user has the required roles
       const user = await User.findByPk(userId, {
         include: [{
           model: Rol,
@@ -25,34 +24,64 @@ class ListNotificationsService {
 
       const offset = (page - 1) * limit;
 
-      // Build where clause based on state parameter
-      const whereClause = {
-        id_user: userId
-      };
-
-      // If state is provided and valid, add state filter
+      let whereClause = {};
+      
+      if (user.rol.id === ROLES.MONITOR) {
+        const assignedModules = await ModuleUser.findAll({
+          where: {
+            id_user: userId,
+            isActive: true
+          },
+          attributes: ['id_module']
+        });
+        
+        const moduleIds = assignedModules.map(module => module.id_module);
+        
+        if (moduleIds.length === 0) {
+          whereClause.id_user = userId;
+        } else {
+          whereClause = {
+            [Op.or]: [
+              { id_user: userId },
+              {
+                [Op.and]: [
+                  {
+                    type: {
+                      [Op.in]: ['module_alert', 'sensor_reading', 'module_notification', 'sensor_alert']
+                    }
+                  },
+                  {
+                    [Op.or]: [
+                      Sequelize.literal(`JSON_EXTRACT(data, '$.moduleId') IN (${moduleIds.join(',')})`),
+                      Sequelize.literal(`JSON_EXTRACT(data, '$.id_module') IN (${moduleIds.join(',')})`)
+                    ]
+                  }
+                ]
+              }
+            ]
+          };
+        }
+      } else {
+        whereClause.id_user = userId;
+      }
+      
       if (state === 'read') {
         whereClause.state = NOTIFICATION_STATE.READ;
       } else if (state === 'unread') {
         whereClause.state = NOTIFICATION_STATE.UNREAD;
       }
-      // When no state is provided, we'll return all notifications but with custom ordering
 
-      // Get total count of notifications for pagination info
       const totalCount = await Notification.count({
         where: whereClause
       });
 
-      // Define the ordering based on the state parameter
       let orderCriteria;
       if (state === null) {
-        // When no state is provided, order by state (unread first) and then by createdAt (newest first)
         orderCriteria = [
-          ['state', 'DESC'], // DESC ordering puts 'unread' before 'read' alphabetically
+          ['state', 'DESC'],
           ['createdAt', 'DESC']
         ];
       } else {
-        // When a state filter is applied, just order by createdAt
         orderCriteria = [['createdAt', 'DESC']];
       }
 
@@ -64,24 +93,21 @@ class ListNotificationsService {
         offset: parseInt(offset)
       });
 
-      // Transform notification data structure
       const transformedNotifications = notifications.map(notification => {
         const notificationObj = notification.toJSON();
         const { title, message, data: existingData = {}, date_hour, type, ...rest } = notificationObj;
         
-        // Prepare the transformed notification with the new structure
         return {
           title,
           message,
           data: {
-            ...rest, // Include all other properties (id, type, state, etc.)
-            metaData: {type, ...existingData}, // Include existing data properties (farmId, messageType, etc.)
-            dateHour: date_hour // Rename date_hour to dateHour
+            ...rest,
+            metaData: {type, ...existingData},
+            dateHour: date_hour
           }
         };
       });
 
-      // Calculate total pages
       const totalPages = Math.ceil(totalCount / limit);
 
       return {
