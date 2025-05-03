@@ -14,7 +14,8 @@ class SensorAlertHandlerService {
         };
       }
 
-      const module = await Module.findByPk(measurement.moduleId, {
+      const moduleIdParam = measurement.id_module || measurement.moduleId;
+      const module = await Module.findByPk(moduleIdParam, {
         include: [{
           model: User,
           as: 'creator',
@@ -23,11 +24,13 @@ class SensorAlertHandlerService {
       });
 
       if (!module) {
-        throw new Error(`Module not found with ID ${measurement.moduleId}`);
+        const moduleIdParam = measurement.id_module || measurement.moduleId;
+        throw new Error(`Module not found with ID ${moduleIdParam}`);
       }
 
       if (!module.creator) {
-        logger.warn(`No creator found for module ${measurement.moduleId}`);
+        const moduleIdParam = measurement.id_module || measurement.moduleId;
+        logger.warn(`No creator found for module ${moduleIdParam}`);
         return {
           success: false,
           message: 'Module creator not found'
@@ -69,7 +72,7 @@ class SensorAlertHandlerService {
           });
           notifiedUsers.push(module.creator.id);
           logger.info('Sensor alert sent to owner successfully', {
-            moduleId: measurement.moduleId,
+            moduleId: measurement.id_module || measurement.moduleId,
             sensorType: measurement.sensorType,
             creatorId: module.creator.id
           });
@@ -81,7 +84,9 @@ class SensorAlertHandlerService {
       }
       
       try {
-        const associatedUsers = await this.getUsersForModule(measurement.moduleId);
+        const moduleIdParam = measurement.id_module || measurement.moduleId;
+        logger.info(`Retrieving monitor users for module ${moduleIdParam}`);
+        const associatedUsers = await this.getUsersForModule(moduleIdParam);
         
         for (const user of associatedUsers) {
           if (user.id === module.creator.id) {
@@ -114,11 +119,13 @@ class SensorAlertHandlerService {
           }
         }
       } catch (error) {
-        logger.warn(`Error retrieving associated users for module ${measurement.moduleId}: ${error.message}`);
+        const moduleIdParam = measurement.id_module || measurement.moduleId;
+        logger.warn(`Error retrieving associated users for module ${moduleIdParam}: ${error.message}`);
       }
 
       if (notifiedUsers.length === 0) {
-        logger.warn(`No notifications were sent for module ${measurement.moduleId} as no users with device_id were found`);
+        const moduleIdParam = measurement.id_module || measurement.moduleId;
+        logger.warn(`No notifications were sent for module ${moduleIdParam} as no users with device_id were found`);
         return {
           success: true,
           message: 'Alert processed but no notifications were sent (no users with device_id)',
@@ -127,7 +134,7 @@ class SensorAlertHandlerService {
       }
 
       logger.info('Sensor alerts processed successfully', {
-        moduleId: measurement.moduleId,
+        moduleId: measurement.id_module || measurement.moduleId,
         sensorType: measurement.sensorType,
         value: measurement.value,
         notifiedUsers: notifiedUsers
@@ -149,31 +156,46 @@ class SensorAlertHandlerService {
     }
   }
 
-  async getUsersForModule(moduleId) {
+  async getUsersForModule(id_module) {
     try {
+      logger.debug(`Retrieving active monitor users for module ID: ${id_module}`);
+      
       const moduleUsers = await ModuleUser.findAll({
-        where: { moduleId },
+        where: { 
+          id_module,
+          isActive: true
+        },
         include: [{
           model: User,
-          attributes: ['id', 'name', 'email', 'device_id']
+          attributes: ['id', 'name', 'email', 'device_id'],
+          required: true
         }]
       });
 
       if (!moduleUsers || moduleUsers.length === 0) {
-        logger.warn(`No users found for module ${moduleId}`);
+        logger.warn(`No active users found for module ${id_module}`);
         return [];
       }
 
-      const users = moduleUsers.map(mu => mu.User).filter(user => user);
+      const users = moduleUsers
+        .map(mu => mu.User)
+        .filter(user => user);
+        
+      const usersWithDeviceId = users.filter(user => user.device_id);
       
-      logger.info(`Found ${users.length} users associated with module ${moduleId}`);
-      logger.debug(`Users with device_id: ${users.filter(user => user.device_id).length} of ${users.length}`);
+      logger.info(`Found ${users.length} active users associated with module ${id_module}`);
+      logger.info(`Users with device_id: ${usersWithDeviceId.length} of ${users.length}`);
       
-      return users;
+      if (users.length > 0 && usersWithDeviceId.length === 0) {
+        logger.warn('Found active users for module but none have device_id configured');
+      }
+      
+      return usersWithDeviceId;
     } catch (error) {
       logger.error('Error getting users for module', {
-        moduleId,
-        error: error.message
+        id_module,
+        error: error.message,
+        stack: error.stack
       });
       return [];
     }
