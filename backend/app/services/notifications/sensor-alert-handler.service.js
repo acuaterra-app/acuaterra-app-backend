@@ -85,13 +85,11 @@ class SensorAlertHandlerService {
       
       try {
         const moduleIdParam = measurement.id_module || measurement.moduleId;
-        logger.info(`Retrieving monitor users for module ${moduleIdParam}`);
-        const associatedUsers = await this.getUsersForModule(moduleIdParam);
+        logger.info(`Retrieving monitor users for module ${moduleIdParam}, excluding owner (ID: ${module.creator.id})`);
+        const associatedUsers = await this.getUsersForModule(moduleIdParam, module.creator.id);
         
         for (const user of associatedUsers) {
-          if (user.id === module.creator.id) {
-            continue;
-          }
+          // Owner is now excluded in the getUsersForModule function
           
           if (user.device_id) {
             try {
@@ -156,9 +154,16 @@ class SensorAlertHandlerService {
     }
   }
 
-  async getUsersForModule(id_module) {
+  /**
+   * Retrieves active users for a module, excluding the module creator (owner)
+   * 
+   * @param {number} id_module - The module ID to fetch users for
+   * @param {number} creatorId - The ID of the module creator to exclude
+   * @returns {Promise<Array>} - Array of users with device_id
+   */
+  async getUsersForModule(id_module, creatorId) {
     try {
-      logger.debug(`Retrieving active monitor users for module ID: ${id_module}`);
+      logger.debug(`Retrieving active monitor users for module ID: ${id_module}, excluding creator ID: ${creatorId}`);
       
       const moduleUsers = await ModuleUser.findAll({
         where: { 
@@ -167,6 +172,7 @@ class SensorAlertHandlerService {
         },
         include: [{
           model: User,
+          where: creatorId ? { id: { [sequelize.Op.ne]: creatorId } } : {}, // Exclude creator if creatorId provided
           attributes: ['id', 'name', 'email', 'device_id'],
           required: true
         }]
