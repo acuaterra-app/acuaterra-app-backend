@@ -99,7 +99,13 @@ module.exports = (sequelize) => {
       where: { isActive: true }
     },
     scopes: {
-      all: {}
+      all: {},
+      active: {
+        where: { isActive: true }
+      },
+      inactive: {
+        where: { isActive: false }
+      }
     }
   });
   
