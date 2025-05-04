@@ -3,7 +3,7 @@
     "get": {
       "tags": ["Shared/Modules"],
       "summary": "Get all modules for a specific farm",
-      "description": "Retrieves a paginated list of all active modules (isActive=true) for the specified farm with detailed information including creator and farm data. Only active users and farms are included in the relationships. This endpoint implements role-based access control through the validateUserAccessMiddleware. When accessed by an OWNER, all modules in the farm are returned. When accessed by a MONITOR, the middleware first verifies the monitor has access to the specified farm, then filters the modules to only include those the monitor has been assigned to.",
+      "description": "Retrieves a paginated list of all modules (both active and inactive) for the specified farm with detailed information including creator and farm data. Both active and inactive users and farms are included in the relationships. This endpoint implements role-based access control through the validateUserAccessMiddleware. When accessed by an OWNER, all modules in the farm are returned. When accessed by a MONITOR, the middleware first verifies the monitor has access to the specified farm, then filters the modules to only include those the monitor has been assigned to. This updated version displays all modules regardless of their activation status to support module activation/deactivation functionality.",
       "parameters": [
         {
           "in": "path",
@@ -71,6 +71,7 @@
                   },
                   "data": {
                     "type": "array",
+                    "description": "Array of modules (both active and inactive)",
                     "items": {
                       "type": "object",
                       "properties": {
@@ -207,7 +208,79 @@
                           }
                         }
                       }
-                    }
+                    },
+                    "example": [
+                      {
+                        "id": 2,
+                        "name": "Module stunning",
+                        "location": "5914 Southwest Wing",
+                        "latitude": "-87.8914",
+                        "longitude": "29.9271",
+                        "species_fish": "Trout",
+                        "fish_quantity": "300",
+                        "fish_age": "9",
+                        "dimensions": "4x2x1", 
+                        "id_farm": 2,
+                        "created_by_user_id": 1,
+                        "isActive": true,
+                        "createdAt": "2025-03-04T21:55:42.000Z",
+                        "updatedAt": "2025-03-04T21:55:42.000Z",
+                        "creator": {
+                          "id": 1,
+                          "name": "Jerry Lind",
+                          "email": "admin@example.com",
+                          "dni": "6167217327",
+                          "id_rol": 1,
+                          "rol": {
+                            "id": 1,
+                            "name": "Administrator"
+                          }
+                        },
+                        "farm": {
+                          "id": 2,
+                          "name": "West Hartford", 
+                          "address": "969 Schneider Pike",
+                          "latitude": "52.1592",
+                          "longitude": "146.6592",
+                          "isActive": true
+                        }
+                      },
+                      {
+                        "id": 3,
+                        "name": "Inactive Module Example",
+                        "location": "North Sector",
+                        "latitude": "-85.7123",
+                        "longitude": "28.5432",
+                        "species_fish": "Tilapia",
+                        "fish_quantity": "200",
+                        "fish_age": "5",
+                        "dimensions": "3x2x1",
+                        "id_farm": 2,
+                        "created_by_user_id": 1,
+                        "isActive": false,
+                        "createdAt": "2025-03-05T10:15:22.000Z",
+                        "updatedAt": "2025-05-02T14:32:45.000Z",
+                        "creator": {
+                          "id": 1,
+                          "name": "Jerry Lind",
+                          "email": "admin@example.com",
+                          "dni": "6167217327",
+                          "id_rol": 1,
+                          "rol": {
+                            "id": 1,
+                            "name": "Administrator"
+                          }
+                        },
+                        "farm": {
+                          "id": 2,
+                          "name": "West Hartford",
+                          "address": "969 Schneider Pike",
+                          "latitude": "52.1592",
+                          "longitude": "146.6592",
+                          "isActive": true
+                        }
+                      }
+                    ]
                   },
                   "errors": {
                     "type": "array",
@@ -224,19 +297,23 @@
                         "properties": {
                           "total": {
                             "type": "integer",
-                            "example": 3
+                            "example": 5,
+                            "description": "Total count of modules (both active and inactive)"
                           },
                           "totalPages": {
                             "type": "integer",
-                            "example": 3
+                            "example": 3,
+                            "description": "Total number of pages based on limit parameter"
                           },
                           "currentPage": {
                             "type": "integer",
-                            "example": 2
+                            "example": 1,
+                            "description": "Current page number"
                           },
                           "perPage": {
                             "type": "integer",
-                            "example": 1
+                            "example": 2,
+                            "description": "Number of records per page"
                           },
                           "hasNext": {
                             "type": "boolean",
