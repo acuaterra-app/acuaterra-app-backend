@@ -1,0 +1,208 @@
+{
+  "/api/v2/admin/dashboard/stats": {
+    "get": {
+      "summary": "Get farm and module statistics",
+      "tags": ["Admin/Dashboard"],
+      "description": "Retrieves statistics about farms and modules, specifically counting active vs inactive entities. The data is formatted for direct use in chart visualizations.\n\n## Response Details\n\n### Structure\n- **farms**: Statistics for farms\n  - **labels**: Array of status labels ('Active', 'Inactive')\n  - **datasets**: Array containing data for charting\n    - **data**: Array of counts corresponding to the labels\n\n- **modules**: Statistics for modules\n  - **labels**: Array of status labels ('Active', 'Inactive')\n  - **datasets**: Array containing data for charting\n    - **data**: Array of counts corresponding to the labels\n\n## Frontend Usage\nThe response format is compatible with chart libraries like Chart.js, allowing for direct use in visualizations without additional data transformation.\n\n## Authorization\n- Requires valid authentication token\n- User must have ADMIN role permissions",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Statistics retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Statistics successfully retrieved"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "farms": {
+                        "type": "object",
+                        "properties": {
+                          "labels": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": ["Active", "Inactive"],
+                            "description": "Labels for farm status categories"
+                          },
+                          "datasets": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "data": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer"
+                                  },
+                                  "example": [10, 2],
+                                  "description": "Counts of active and inactive farms"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "modules": {
+                        "type": "object",
+                        "properties": {
+                          "labels": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": ["Active", "Inactive"],
+                            "description": "Labels for module status categories"
+                          },
+                          "datasets": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "data": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer"
+                                  },
+                                  "example": [25, 5],
+                                  "description": "Counts of active and inactive modules"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Authentication required to access this resource"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "You do not have permission to access these statistics"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving statistics"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Error retrieving statistics: Database error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
