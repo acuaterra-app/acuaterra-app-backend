@@ -22,24 +22,34 @@
                     "example": "Dashboard metrics successfully retrieved"
                   },
                   "data": {
-                    "type": "object",
-                    "properties": {
-                      "totalFarms": {
-                        "type": "integer",
-                        "example": 8,
-                        "description": "Total count of active farms"
-                      },
-                      "totalModules": {
-                        "type": "integer",
-                        "example": 25,
-                        "description": "Total count of active modules"
-                      },
-                      "totalUsers": {
-                        "type": "integer",
-                        "example": 42,
-                        "description": "Total count of active users with roles 1, 2, or 3"
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "totalFarms": {
+                          "type": "integer",
+                          "example": 8,
+                          "description": "Total count of active farms"
+                        },
+                        "totalModules": {
+                          "type": "integer",
+                          "example": 25,
+                          "description": "Total count of active modules"
+                        },
+                        "totalUsers": {
+                          "type": "integer",
+                          "example": 42,
+                          "description": "Total count of active users with roles 1, 2, or 3"
+                        }
                       }
-                    }
+                    },
+                    "example": [
+                      {
+                        "totalFarms": 8,
+                        "totalModules": 25,
+                        "totalUsers": 42
+                      }
+                    ]
                   },
                   "errors": {
                     "type": "array",

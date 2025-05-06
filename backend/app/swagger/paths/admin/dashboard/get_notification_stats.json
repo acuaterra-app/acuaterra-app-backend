@@ -77,38 +77,52 @@
                     "example": "Notification statistics successfully retrieved"
                   },
                   "data": {
-                    "type": "object",
-                    "properties": {
-                      "labels": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
+                    "type": "array", 
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "example": ["Week 18 of 2025", "Week 19 of 2025", "Week 20 of 2025"],
+                          "description": "Time period labels for x-axis display in charts"
                         },
-                        "example": ["Week 18 of 2025", "Week 19 of 2025", "Week 20 of 2025"],
-                        "description": "Time period labels for x-axis display in charts"
-                      },
-                      "datasets": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "label": {
-                              "type": "string",
-                              "example": "Alert Notification",
-                              "description": "Label for the dataset, describing what the data represents"
-                            },
-                            "data": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer"
+                        "datasets": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "example": "Alert Notification",
+                                "description": "Label for the dataset, describing what the data represents"
                               },
-                              "example": [19, 24, 15],
-                              "description": "Count of notifications for each time period"
+                              "data": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer"
+                                },
+                                "example": [19, 24, 15],
+                                "description": "Count of notifications for each time period"
+                              }
                             }
                           }
                         }
                       }
-                    }
+                    },
+                    "example": [
+                      {
+                        "labels": ["Week 18 of 2025", "Week 19 of 2025", "Week 20 of 2025"],
+                        "datasets": [
+                          {
+                            "label": "Alert Notification",
+                            "data": [19, 24, 15]
+                          }
+                        ]
+                      }
+                    ]
                   },
                   "errors": {
                     "type": "array",
@@ -124,7 +138,7 @@
                 "Weekly grouping example": {
                   "value": {
                     "message": "Notification statistics successfully retrieved",
-                    "data": {
+                    "data": [{
                       "labels": ["Week 18 of 2025"],
                       "datasets": [
                         {
@@ -132,7 +146,7 @@
                           "data": [19]
                         }
                       ]
-                    },
+                    }],
                     "errors": [],
                     "meta": {}
                   }
@@ -140,7 +154,7 @@
                 "Monthly grouping example": {
                   "value": {
                     "message": "Notification statistics successfully retrieved",
-                    "data": {
+                    "data": [{
                       "labels": ["January 2025", "February 2025", "March 2025"],
                       "datasets": [
                         {
@@ -148,7 +162,7 @@
                           "data": [45, 32, 28]
                         }
                       ]
-                    },
+                    }],
                     "errors": [],
                     "meta": {}
                   }

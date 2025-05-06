@@ -22,67 +22,90 @@
                     "example": "Statistics successfully retrieved"
                   },
                   "data": {
-                    "type": "object",
-                    "properties": {
-                      "farms": {
-                        "type": "object",
-                        "properties": {
-                          "labels": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "farms": {
+                          "type": "object",
+                          "properties": {
+                            "labels": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["Active", "Inactive"],
+                              "description": "Labels for farm status categories"
                             },
-                            "example": ["Active", "Inactive"],
-                            "description": "Labels for farm status categories"
-                          },
-                          "datasets": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "data": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer"
-                                  },
-                                  "example": [10, 2],
-                                  "description": "Counts of active and inactive farms"
+                            "datasets": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "data": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "integer"
+                                    },
+                                    "example": [10, 2],
+                                    "description": "Counts of active and inactive farms"
+                                  }
                                 }
                               }
                             }
                           }
-                        }
-                      },
-                      "modules": {
-                        "type": "object",
-                        "properties": {
-                          "labels": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
+                        },
+                        "modules": {
+                          "type": "object",
+                          "properties": {
+                            "labels": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["Active", "Inactive"],
+                              "description": "Labels for module status categories"
                             },
-                            "example": ["Active", "Inactive"],
-                            "description": "Labels for module status categories"
-                          },
-                          "datasets": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "data": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer"
-                                  },
-                                  "example": [25, 5],
-                                  "description": "Counts of active and inactive modules"
+                            "datasets": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "data": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "integer"
+                                    },
+                                    "example": [25, 5],
+                                    "description": "Counts of active and inactive modules"
+                                  }
                                 }
                               }
                             }
                           }
                         }
                       }
-                    }
+                    },
+                    "example": [
+                      {
+                        "farms": {
+                          "labels": ["Active", "Inactive"],
+                          "datasets": [
+                            {
+                              "data": [10, 2]
+                            }
+                          ]
+                        },
+                        "modules": {
+                          "labels": ["Active", "Inactive"],
+                          "datasets": [
+                            {
+                              "data": [25, 5]
+                            }
+                          ]
+                        }
+                      }
+                    ]
                   },
                   "errors": {
                     "type": "array",

@@ -11,7 +11,7 @@ class DashboardAdminController {
 
             const response = ApiResponse.createApiResponse(
                 "Dashboard metrics successfully retrieved",
-                metrics,
+                [metrics],
                 []
             );
 
@@ -36,7 +36,7 @@ class DashboardAdminController {
 
             const response = ApiResponse.createApiResponse(
                 "Statistics successfully retrieved",
-                {
+                [{
                     farms: {
                         labels: ['Active', 'Inactive'],
                         datasets: [{
@@ -49,7 +49,7 @@ class DashboardAdminController {
                             data: [moduleStats.active, moduleStats.inactive]
                         }]
                     }
-                },
+                }],
                 []
             );
 
@@ -78,7 +78,7 @@ class DashboardAdminController {
 
             const response = ApiResponse.createApiResponse(
                 "Notification statistics successfully retrieved",
-                stats,
+                [stats],
                 []
             );
 
