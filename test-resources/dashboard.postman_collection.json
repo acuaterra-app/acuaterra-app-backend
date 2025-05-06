@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "f63382d3-c756-4b08-9e9e-a72e5c81dc04",
+		"name": "dashboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37390175"
+	},
+	"item": [
+		{
+			"name": "general metrics",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsImRuaSI6IjEwNjE0NjU5ODciLCJpYXQiOjE3NDY1MDQ2NDMsImV4cCI6MTc0NjUyMjY0M30.hEKuaREd2SuAbIXpYEMHmBp177nWbUzd2ByMcBSZq60",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/v2/admin/dashboard/metrics",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"admin",
+						"dashboard",
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metrics farms and modules",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsImRuaSI6IjEwNjE0NjU5ODciLCJpYXQiOjE3NDY1MDQ2NDMsImV4cCI6MTc0NjUyMjY0M30.hEKuaREd2SuAbIXpYEMHmBp177nWbUzd2ByMcBSZq60",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/v2/admin/dashboard/stats",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"admin",
+						"dashboard",
+						"stats"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metrics farms and modules Copy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsImRuaSI6IjEwNjE0NjU5ODciLCJpYXQiOjE3NDY1NDg0OTQsImV4cCI6MTc0NjU2NjQ5NH0.JP4fkizKSU3cruxWkyA5ZEB6QCQIBwD3FP6HfLXEkhE",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/v2/admin/dashboard/notifications?farmId=7&moduleIds=17,19&startDate=2025-05-01T00:00:00.000Z&endDate=2025-05-05T23:59:59.999Z&groupBy=weekly",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"admin",
+						"dashboard",
+						"notifications"
+					],
+					"query": [
+						{
+							"key": "farmId",
+							"value": "7"
+						},
+						{
+							"key": "moduleIds",
+							"value": "17,19"
+						},
+						{
+							"key": "startDate",
+							"value": "2025-05-01T00:00:00.000Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-05-05T23:59:59.999Z"
+						},
+						{
+							"key": "groupBy",
+							"value": "weekly"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

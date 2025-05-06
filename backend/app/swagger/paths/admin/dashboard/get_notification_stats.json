@@ -1,0 +1,267 @@
+{
+  "/api/v2/admin/dashboard/notifications": {
+    "get": {
+      "summary": "Get notification statistics",
+      "tags": ["Admin/Dashboard"],
+      "description": "Retrieves statistics about sensor alert notifications, grouped by time periods (weekly or monthly). The data is returned in a format ready for charting and visualization.\n\n## Query Parameters\n\n- **farmId**: (Optional) Filter notifications for a specific farm\n  - Type: Integer\n  - Description: Unique identifier of a farm\n\n- **moduleIds**: (Optional) Filter notifications for specific modules\n  - Type: String (comma-separated integers)\n  - Description: Comma-separated list of module IDs\n  - Example: `1,2,3`\n\n- **startDate**: (Optional) Start date for filtering notifications\n  - Type: String (ISO date format)\n  - Description: Include notifications created on or after this date\n  - Example: `2025-01-01`\n\n- **endDate**: (Optional) End date for filtering notifications\n  - Type: String (ISO date format)\n  - Description: Include notifications created on or before this date\n  - Example: `2025-05-01`\n\n- **groupBy**: (Optional) Time period for grouping notifications\n  - Type: String\n  - Description: Group notifications by week or month\n  - Default: `weekly`\n  - Options: `weekly`, `monthly`\n\n## Response Details\n\n### Structure\n- **labels**: Array of time period labels (e.g., 'Week 18 of 2025', 'May 2025')\n- **datasets**: Array containing data for charting\n  - **label**: String describing the data series\n  - **data**: Array of notification counts for each time period\n\n## Frontend Usage\nThe response format is compatible with chart libraries like Chart.js, allowing for direct use in visualizations without additional data transformation.\n\n## Authorization\n- Requires valid authentication token\n- User must have ADMIN role permissions",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "parameters": [
+        {
+          "name": "farmId",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "Filter notifications for a specific farm"
+        },
+        {
+          "name": "moduleIds",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Comma-separated list of module IDs to filter notifications",
+          "example": "1,2,3"
+        },
+        {
+          "name": "startDate",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": "Start date for filtering notifications (ISO format)",
+          "example": "2025-01-01"
+        },
+        {
+          "name": "endDate",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": "End date for filtering notifications (ISO format)",
+          "example": "2025-05-01"
+        },
+        {
+          "name": "groupBy",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": ["weekly", "monthly"],
+            "default": "weekly"
+          },
+          "description": "Time period grouping for notification statistics",
+          "example": "weekly"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Notification statistics retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Notification statistics successfully retrieved"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "labels": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["Week 18 of 2025", "Week 19 of 2025", "Week 20 of 2025"],
+                        "description": "Time period labels for x-axis display in charts"
+                      },
+                      "datasets": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string",
+                              "example": "Alert Notification",
+                              "description": "Label for the dataset, describing what the data represents"
+                            },
+                            "data": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              },
+                              "example": [19, 24, 15],
+                              "description": "Count of notifications for each time period"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              },
+              "examples": {
+                "Weekly grouping example": {
+                  "value": {
+                    "message": "Notification statistics successfully retrieved",
+                    "data": {
+                      "labels": ["Week 18 of 2025"],
+                      "datasets": [
+                        {
+                          "label": "Alert Notification",
+                          "data": [19]
+                        }
+                      ]
+                    },
+                    "errors": [],
+                    "meta": {}
+                  }
+                },
+                "Monthly grouping example": {
+                  "value": {
+                    "message": "Notification statistics successfully retrieved",
+                    "data": {
+                      "labels": ["January 2025", "February 2025", "March 2025"],
+                      "datasets": [
+                        {
+                          "label": "Alert Notification",
+                          "data": [45, 32, 28]
+                        }
+                      ]
+                    },
+                    "errors": [],
+                    "meta": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Authentication required to access this resource"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "You do not have permission to access notification statistics"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving notification statistics"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Error retrieving notification statistics: Database error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

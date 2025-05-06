@@ -1,0 +1,165 @@
+{
+  "/api/v2/admin/dashboard/metrics": {
+    "get": {
+      "summary": "Get dashboard general metrics",
+      "tags": ["Admin/Dashboard"],
+      "description": "Retrieves general dashboard metrics including total counts of active farms, modules, and users. This provides a high-level overview of the system's key entities.\n\n## Response Details\n\n### Metrics Provided\n- **totalFarms**: Count of active farms in the system\n- **totalModules**: Count of active modules across all farms\n- **totalUsers**: Count of active users with roles 1, 2, or 3\n\n## Authorization\n- Requires valid authentication token\n- User must have ADMIN role permissions",
+      "security": [
+        {
+          "apiKey": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Metrics retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Dashboard metrics successfully retrieved"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "totalFarms": {
+                        "type": "integer",
+                        "example": 8,
+                        "description": "Total count of active farms"
+                      },
+                      "totalModules": {
+                        "type": "integer",
+                        "example": 25,
+                        "description": "Total count of active modules"
+                      },
+                      "totalUsers": {
+                        "type": "integer",
+                        "example": 42,
+                        "description": "Total count of active users with roles 1, 2, or 3"
+                      }
+                    }
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized - Invalid or missing token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Unauthorized - Invalid or missing token"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "Authentication required to access this resource"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden - User does not have required permissions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Access denied"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "msg": "You do not have permission to access dashboard metrics"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving dashboard metrics"
+                  },
+                  "data": {
+                    "type": "array",
+                    "example": []
+                  },
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "msg": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "msg": "Error retrieving dashboard metrics: Database error"
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "type": "object",
+                    "example": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
