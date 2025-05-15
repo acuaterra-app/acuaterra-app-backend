@@ -96,11 +96,7 @@ async getMeasurementsByModuleId(moduleId, params) {
                 return {
                     success: true,
                     message: 'No measurements found for the given parameters',
-                    data: {
-                        rawData: [],
-                        groupedData: [],
-                        stats: {}
-                    }
+                    data: []
                 };
             }
 
@@ -113,11 +109,11 @@ async getMeasurementsByModuleId(moduleId, params) {
             return {
                 success: true,
                 message: 'Measurements retrieved successfully',
-                data: {
+                data: [{
                     rawData: measurements,
                     chartData: formattedData,
                     stats: stats
-                }
+                }]
             };
         } catch (error) {
             console.error(`Error retrieving measurements for module ${moduleId}:`, error);
