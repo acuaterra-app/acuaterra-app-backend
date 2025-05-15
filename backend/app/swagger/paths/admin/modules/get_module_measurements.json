@@ -79,8 +79,10 @@
                     "example": "Measurements retrieved successfully"
                   },
                   "data": {
-                    "type": "object",
-                    "properties": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
                       "rawData": {
                         "type": "array",
                         "description": "Unprocessed measurements",
@@ -192,6 +194,39 @@
                         }
                       }
                     }
+                    },
+                    "example": [{
+                      "rawData": [
+                        {
+                          "id": 123,
+                          "value": 25.7,
+                          "date": "2025-04-26",
+                          "time": "14:30:22",
+                          "sensor": {
+                            "id": 3,
+                            "name": "Sensor Temperature 45",
+                            "type": "Temperature"
+                          }
+                        }
+                      ],
+                      "chartData": {
+                        "labels": ["2025-04-26"],
+                        "datasets": [
+                          {
+                            "label": "Sensor Temperature 45 (Temperature)",
+                            "data": [25.7],
+                            "minValues": [25.7],
+                            "maxValues": [25.7]
+                          }
+                        ]
+                      },
+                      "stats": {
+                        "count": 1,
+                        "minValue": 25.7,
+                        "maxValue": 25.7,
+                        "avgValue": 25.7
+                      }
+                    }]
                   },
                   "errors": {
                     "type": "array",
@@ -279,7 +314,7 @@
       },
       "security": [
         {
-          "bearerAuth": []
+          "apiKey": []
         }
       ]
     }
