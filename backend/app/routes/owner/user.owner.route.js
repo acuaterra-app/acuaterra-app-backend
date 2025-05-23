@@ -9,15 +9,15 @@ const UserOwnerController = require('../../controllers/owner/user.owner.controll
 const ValidateTokenMiddleware = require('../../middleware/validateToken.middleware');
 const BlackListService = require('../../services/shared/blacklist.service');
 const UserOwnerService = require("../../services/owner/user.owner.service");
-const ValidateModuleAccessMiddleware = require("../../middleware/validateModuleAccess.middleware");
-const ValidateUsrMonitorUpdateMiddleware = require("../../middleware/validateUserMonitorUpdate.middleware");
+const ValidateModuleAccessMiddleware = require("../../middleware/module/validateModuleAccess.middleware");
+const ValidateUsrMonitorUpdateMiddleware = require("../../middleware/monitor/validateUserMonitorUpdate.middleware");
 
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const ValidateUserMonitorCreationMiddleware = require("../../middleware/validateUserMonitorCreation.middleware");
-const ValidateMonitorDisableMiddleware = require("../../middleware/validateMonitorDisable.middleware");
-const ValidateMonitorReactivateMiddleware = require("../../middleware/validateMonitorReactivate.middleware");
-const ValidateOwnerMonitorAccessMiddleware = require("../../middleware/validateOwnerMonitorAccess.middleware");
+const ValidateUserMonitorCreationMiddleware = require("../../middleware/monitor/validateUserMonitorCreation.middleware");
+const ValidateMonitorDisableMiddleware = require("../../middleware/monitor/validateMonitorDisable.middleware");
+const ValidateMonitorReactivateMiddleware = require("../../middleware/monitor/validateMonitorReactivate.middleware");
+const ValidateOwnerMonitorAccessMiddleware = require("../../middleware/monitor/validateOwnerMonitorAccess.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const userOwnerService = new UserOwnerService();

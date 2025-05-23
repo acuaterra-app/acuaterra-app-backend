@@ -8,11 +8,11 @@ const { validate } = require("../../middleware/validate.middleware");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
 const { validateCreateModule, validateUpdateModule } = require("../../validators/owner/module.owner.validator");
 const { ROLES : Role } = require("../../enums/roles.enum");
-const ValidateModuleCreateMiddleware = require("../../middleware/validateModuleCreate.middleware");
-const ValidateModuleUpdateMiddleware = require("../../middleware/validateModuleUpdate.middleware");
-const ValidateModuleDeleteMiddleware = require("../../middleware/validateModuleDelete.middleware");
-const ValidateModuleShowMiddleware = require("../../middleware/validateModuleShow.middleware");
-const ValidateModuleMonitorAssignmentMiddleware = require("../../middleware/validateModuleMonitorAssignment.middleware");
+const ValidateModuleCreateMiddleware = require("../../middleware/module/validateModuleCreate.middleware");
+const ValidateModuleUpdateMiddleware = require("../../middleware/module/validateModuleUpdate.middleware");
+const ValidateModuleDeleteMiddleware = require("../../middleware/module/validateModuleDelete.middleware");
+const ValidateModuleShowMiddleware = require("../../middleware/module/validateModuleShow.middleware");
+const ValidateModuleMonitorAssignmentMiddleware = require("../../middleware/module/validateModuleMonitorAssignment.middleware");
 
 const validateTokenMiddleware = new ValidateTokenMiddleware(new BlackListService());
 const moduleOwnerService = new ModuleOwnerService();

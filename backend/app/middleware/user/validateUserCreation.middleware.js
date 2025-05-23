@@ -1,5 +1,5 @@
-const {ROLES: Role} = require("../enums/roles.enum");
-const ApiResponse = require("../utils/apiResponse");
+const {ROLES: Role} = require("../../enums/roles.enum");
+const ApiResponse = require("../../utils/apiResponse");
 
 class ValidateUserCreationMiddleware {
     constructor() {

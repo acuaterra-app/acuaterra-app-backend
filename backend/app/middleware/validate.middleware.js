@@ -2,7 +2,6 @@ const ApiResponse = require('../utils/apiResponse');
 
 const validateMiddleware = validations => {
     return async (req, res, next) => {
-        // sequential processing, stops running validations chain if one fails.
         for (const validation of validations) {
 
             const result = await validation.run(req);

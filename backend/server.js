@@ -6,15 +6,11 @@ const cors = require('cors');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const swaggerConfig = require('./app/swagger/index.js');
-// Import the new ray module
 
-// Initialize express app
 const app = express();
 
-// Serve static files from the public directory
 app.use(express.static('public'));
 
-// Set up swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 app.get('/', (req, res) => {

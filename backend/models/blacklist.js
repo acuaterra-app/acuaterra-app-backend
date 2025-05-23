@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Blacklist extends Model {
 
     static associate(models) {
-      //
+
     }
   }
   Blacklist.init({

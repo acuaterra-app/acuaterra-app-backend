@@ -3,7 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    // IMPORTANT: Replace SENSOR_ID_1 and SENSOR_ID_2 with actual sensor IDs from your database
     await queryInterface.bulkInsert('thresholds', [
       {
         id_sensor: 1,

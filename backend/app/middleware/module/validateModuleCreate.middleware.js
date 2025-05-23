@@ -1,6 +1,6 @@
-const { FarmUser, User } = require('../../models');
-const { ROLES } = require('../enums/roles.enum');
-const ApiResponse = require('../utils/apiResponse');
+const { FarmUser, User } = require('../../../models');
+const { ROLES } = require('../../enums/roles.enum');
+const ApiResponse = require('../../utils/apiResponse');
 
 class ValidateModuleCreateMiddleware {
     async validate(req, res, next) {

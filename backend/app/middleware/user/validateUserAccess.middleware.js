@@ -1,6 +1,6 @@
-const ApiResponse = require("../utils/apiResponse");
-const {  Farm, ModuleUser, FarmUser, Sensor } = require("../../models");
-const { ROLES } = require("../enums/roles.enum");
+const ApiResponse = require("../../utils/apiResponse");
+const {  Farm, ModuleUser, FarmUser, Sensor } = require("../../../models");
+const { ROLES } = require("../../enums/roles.enum");
 const { Op } = require("sequelize");
 
 class ValidateUserAccessMiddleware {

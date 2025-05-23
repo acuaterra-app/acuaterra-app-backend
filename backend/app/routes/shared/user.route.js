@@ -11,8 +11,8 @@ const UserService = require("../../services/shared/user.service");
 const Mailer = require('../../utils/Mailer');
 const { ROLES: Role } = require("../../enums/roles.enum");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const ValidateUserCreationMiddleware = require("../../middleware/validateUserCreation.middleware");
-const ValidateUserUpdateMiddleware = require("../../middleware/validateUserUpdate.middleware");
+const ValidateUserCreationMiddleware = require("../../middleware/user/validateUserCreation.middleware");
+const ValidateUserUpdateMiddleware = require("../../middleware/user/validateUserUpdate.middleware");
 
 const validateUserUpdateMiddleware = new ValidateUserUpdateMiddleware();
 const mailer = new Mailer(process.env.RESEND_API_KEY);

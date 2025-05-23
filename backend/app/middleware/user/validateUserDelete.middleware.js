@@ -1,5 +1,5 @@
-const { ROLES: Role } = require("../enums/roles.enum");
-const ApiResponse = require("../utils/apiResponse");
+const { ROLES: Role } = require("../../enums/roles.enum");
+const ApiResponse = require("../../utils/apiResponse");
 
 class ValidateUserDeleteMiddleware {
     async validate(req, res, next) {
@@ -23,7 +23,7 @@ class ValidateUserDeleteMiddleware {
                 );
             }
 
-            const { User } = require('../../models');
+            const { User } = require('../../../models');
             const userToDelete = await User.findByPk(userIdToDelete);
 
             if (!userToDelete) {

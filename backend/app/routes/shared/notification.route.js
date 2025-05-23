@@ -12,7 +12,6 @@ const { ROLES } = require('../../enums/roles.enum');
 const blackListService = new BlackListService();
 const validateTokenMiddleware = new ValidateTokenMiddleware(blackListService);
 
-// Get paginated notifications for authenticated user (owner or monitor)
 router.get(
   '/',
   [
@@ -23,7 +22,6 @@ router.get(
   NotificationController.index
 );
 
-// Mark a notification as read
 router.patch(
   '/:id/read',
   [

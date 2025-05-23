@@ -1,5 +1,5 @@
-const ApiResponse = require('../utils/apiResponse');
-const { ROLES } = require('../enums/roles.enum');
+const ApiResponse = require('../../utils/apiResponse');
+const { ROLES } = require('../../enums/roles.enum');
 
 class ValidateUserMonitorCreationMiddleware {
     constructor() {}

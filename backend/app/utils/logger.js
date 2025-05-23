@@ -3,7 +3,6 @@
  * This can be replaced with a more robust logging solution like winston or pino
  */
 
-// Log levels
 const LEVELS = {
   ERROR: 'ERROR',
   WARN: 'WARN',
@@ -11,10 +10,8 @@ const LEVELS = {
   DEBUG: 'DEBUG',
 };
 
-// Default to INFO level if not specified
 const LOG_LEVEL = (process.env.LOG_LEVEL || 'INFO').toUpperCase();
 
-// Determine if a level should be logged based on the current LOG_LEVEL
 const shouldLog = (level) => {
   const levels = Object.values(LEVELS);
   const currentIndex = levels.indexOf(LOG_LEVEL);
@@ -23,7 +20,6 @@ const shouldLog = (level) => {
   return levelIndex <= currentIndex;
 };
 
-// Format the log message
 const formatMessage = (level, message, data) => {
   const timestamp = new Date().toISOString();
   let output = `${timestamp} [${level}] ${message}`;
@@ -43,7 +39,6 @@ const formatMessage = (level, message, data) => {
   return output;
 };
 
-// Logger implementation
 const logger = {
   error: (message, data) => {
     if (shouldLog(LEVELS.ERROR)) {
