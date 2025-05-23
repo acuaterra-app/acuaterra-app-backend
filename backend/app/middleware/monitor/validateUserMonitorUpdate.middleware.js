@@ -1,5 +1,5 @@
-const { User, Farm, Module, sequelize } = require('../../models');
-const ApiResponse = require('../utils/apiResponse');
+const { User, Farm, Module, sequelize } = require('../../../models');
+const ApiResponse = require('../../utils/apiResponse');
 
 class ValidateUserMonitorUpdateMiddleware {
     constructor() {}

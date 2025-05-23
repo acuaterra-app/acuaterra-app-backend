@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class FarmUser extends Model {
     static associate(models) {
-      //
+
     }
   }
 

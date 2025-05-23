@@ -6,7 +6,7 @@ const ValidateTokenMiddleware = require("../../middleware/validateToken.middlewa
 const BlackListService = require("../../services/shared/blacklist.service");
 const { validate } = require("../../middleware/validate.middleware");
 const ValidateRoleMiddleware = require("../../middleware/validateRole.middleware");
-const ValidateUserAccessMiddleware = require("../../middleware/validateUserAccess.middleware");
+const ValidateUserAccessMiddleware = require("../../middleware/user/validateUserAccess.middleware");
 const { validateFarmPaginate } = require("../../validators/shared/farm.validator");
 const { ROLES : Role } = require("../../enums/roles.enum");
 

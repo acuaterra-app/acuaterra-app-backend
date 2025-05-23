@@ -1,5 +1,5 @@
-const { Farm, User, Module } = require('../../models');
-const ApiResponse = require("../utils/apiResponse");
+const { Farm, User, Module } = require('../../../models');
+const ApiResponse = require("../../utils/apiResponse");
 const { Op } = require('sequelize');
 
 class ValidateModuleAccessMiddleware {

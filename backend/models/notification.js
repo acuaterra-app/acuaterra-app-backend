@@ -3,8 +3,7 @@ const {NOTIFICATION_STATE} = require("../app/enums/notification-state.enum");
 module.exports = (sequelize) => {
   class Notification extends Model {
     static associate(models) {
-      // Removed association with Module
-      
+
       Notification.belongsTo(models.User, {
         foreignKey: 'id_user',
         onDelete: 'CASCADE'
@@ -18,10 +17,9 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    // Foreign key to associate notifications with users
     id_user: {
       type: DataTypes.INTEGER,
-      allowNull: true, // Allow null for notifications not tied to specific users
+      allowNull: true,
       references: {
         model: 'users',
         key: 'id'

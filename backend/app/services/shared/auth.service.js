@@ -98,12 +98,8 @@ class AuthService {
         const options = { expiresIn: '15m' };
         const token = jwt.sign(payload, secret, options);
 
-        // TODO: url pendiente por hacer para el front
-        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const baseUrl = process.env.FRONTEND_URL ;
         const resetPasswordUrl = `${baseUrl}/reset-password?token=${token}`;
-
-        // TODO: log solo para prueba apenas se implemente from QUITAR
-        console.log(token)
 
         const templatePath = path.join(__dirname, '../../../app/views/emails/password_reset.ejs');
         const template = fs.readFileSync(templatePath, 'utf8');
