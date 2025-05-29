@@ -3,7 +3,7 @@
     "get": {
       "tags": ["Shared/Notifications"],
       "summary": "List user notifications",
-      "description": "Retrieves a paginated list of notifications for the authenticated user with OWNER or MONITOR role.",
+"description": "Retrieves a paginated list of notifications for the authenticated user with OWNER or MONITOR role, limited to current day and previous day.",
       "parameters": [
         {
           "in": "query",
@@ -43,8 +43,8 @@
         }
       ],
       "responses": {
-        "200": {
-          "description": "Successful operation - notifications retrieved",
+"200": {
+          "description": "Successful operation - notifications retrieved from current day and previous day",
           "content": {
             "application/json": {
               "schema": {
@@ -105,8 +105,9 @@
                       "pagination": {
                         "type": "object",
                         "properties": {
-                          "totalItems": {
+"totalItems": {
                             "type": "integer",
+                            "description": "Total notifications within the last 48 hours",
                             "example": 25
                           },
                           "totalPages": {
