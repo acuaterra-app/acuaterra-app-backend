@@ -1,7 +1,7 @@
 const { Notification, User, Rol, ModuleUser } = require('../../../models');
 const { ROLES } = require('../../enums/roles.enum');
 const { Op, Sequelize } = require('sequelize');
-const {NOTIFICATION_STATE} = require("../../enums/notification-state.enum");
+const { NOTIFICATION_STATE } = require("../../enums/notification-state.enum");
 
 /**
  * Service for retrieving notifications for users with owner or monitor roles
@@ -24,8 +24,20 @@ class ListNotificationsService {
 
       const offset = (page - 1) * limit;
 
-      let whereClause = {};
-      
+      const oneDayAgo = new Date();
+      oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+      oneDayAgo.setHours(0, 0, 0, 0);
+
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+
+      let whereClause = {
+        id_user: userId,
+        date_hour: {
+          [Op.between]: [oneDayAgo, today]
+        }
+      };
+
       if (user.rol.id === ROLES.MONITOR) {
         const assignedModules = await ModuleUser.findAll({
           where: {
@@ -34,20 +46,26 @@ class ListNotificationsService {
           },
           attributes: ['id_module']
         });
-        
+
         const moduleIds = assignedModules.map(module => module.id_module);
-        
-        if (moduleIds.length === 0) {
-          whereClause.id_user = userId;
-        } else {
+
+        if (moduleIds.length > 0) {
           whereClause = {
             [Op.or]: [
-              { id_user: userId },
+              {
+                id_user: userId,
+                date_hour: {
+                  [Op.between]: [oneDayAgo, today]
+                }
+              },
               {
                 [Op.and]: [
                   {
                     type: {
                       [Op.in]: ['module_alert', 'sensor_reading', 'module_notification', 'sensor_alert']
+                    },
+                    date_hour: {
+                      [Op.between]: [oneDayAgo, today]
                     }
                   },
                   {
@@ -61,10 +79,8 @@ class ListNotificationsService {
             ]
           };
         }
-      } else {
-        whereClause.id_user = userId;
       }
-      
+
       if (state === 'read') {
         whereClause.state = NOTIFICATION_STATE.READ;
       } else if (state === 'unread') {
@@ -75,15 +91,9 @@ class ListNotificationsService {
         where: whereClause
       });
 
-      let orderCriteria;
-      if (state === null) {
-        orderCriteria = [
-          ['state', 'DESC'],
-          ['createdAt', 'DESC']
-        ];
-      } else {
-        orderCriteria = [['createdAt', 'DESC']];
-      }
+      const orderCriteria = state === null
+          ? [['state', 'DESC'], ['createdAt', 'DESC']]
+          : [['createdAt', 'DESC']];
 
       const notifications = await Notification.findAll({
         where: whereClause,
@@ -95,8 +105,15 @@ class ListNotificationsService {
 
       const transformedNotifications = notifications.map(notification => {
         const notificationObj = notification.toJSON();
-        const { title, message, data: existingData = {}, date_hour, type, ...rest } = notificationObj;
-        
+        const {
+          title,
+          message,
+          data: existingData = {},
+          date_hour,
+          type,
+          ...rest
+        } = notificationObj;
+
         return {
           title,
           message,
@@ -127,4 +144,3 @@ class ListNotificationsService {
 }
 
 module.exports = new ListNotificationsService();
-
