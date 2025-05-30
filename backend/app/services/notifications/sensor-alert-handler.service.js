@@ -218,7 +218,7 @@ class SensorAlertHandlerService {
     };
 
     const sensorName = sensorNames[sensorType] || sensorType;
-    return `Alert ${sensorName}`;
+    return `Alerta de ${sensorName}`;
   }
 
   generateAlertMessage(measurement, thresholdInfo) {
@@ -227,16 +227,16 @@ class SensorAlertHandlerService {
 
     let condition = '';
     if (value < min) {
-      condition = 'below the minimum';
+      condition = 'por debajo del mínimo';
     } else if (value > max) {
-      condition = 'above the maximum';
+      condition = 'por encima del máximo';
     } else {
-      condition = 'out of range';
+      condition = 'fuera de rango';
     }
 
     const units = this.getSensorUnits(sensorType);
     
-    return `Value of ${value}${units} is ${condition}. Allowed range: ${min}-${max}${units}`;
+    return `El valor de ${value}${units} está ${condition}. Rango permitido: ${min}-${max}${units}`;
   }
 
   getSensorUnits(sensorType) {
