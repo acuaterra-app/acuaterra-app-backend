@@ -317,7 +317,11 @@ class UserOwnerService {
                         model: Module,
                         as: 'assigned_modules',
                         attributes: ['id', 'name', 'location', 'species_fish'],
-                        through: { attributes: [] }
+                        required: false,
+                        through: { 
+                            attributes: [],
+                            where: { isActive: true } 
+                        }
                     }
                 ]
             });
@@ -366,7 +370,11 @@ class UserOwnerService {
                         model: Module,
                         as: 'assigned_modules',
                         attributes: ['id', 'name', 'location', 'species_fish'],
-                        through: { attributes: [] }
+                        required: false,
+                        through: { 
+                            attributes: [],
+                            where: { isActive: true } 
+                        }
                     }
                 ]
             });

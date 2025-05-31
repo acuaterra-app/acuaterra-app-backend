@@ -21,10 +21,12 @@ class ValidateMonitorReactivateMiddleware {
                         model: Module,
                         as: 'assigned_modules',
                         attributes: ['id', 'name', 'id_farm'],
+                        required: false,
                         include: [{
                             model: Farm,
                             as: 'farm',
-                            attributes: ['id', 'name']
+                            attributes: ['id', 'name'],
+                            required: false
                         }]
                     }
                 ]
