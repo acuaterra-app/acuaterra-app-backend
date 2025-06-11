@@ -30,6 +30,7 @@ const sharedFarmRoutes = require('./app/routes/shared/farm.routes');
 const ownerFarmRoutes = require('./app/routes/owner/farm.owner.route');
 const ownerModuleRoutes = require('./app/routes/owner/module.owner.route');
 const tempNotificationRoutes = require('./app/routes/temp/notification.route');
+const tempPowerAlertsRoutes = require('./app/routes/temp/power-alerts.route');
 const notificationRoutes = require('./app/routes/shared/notification.route');
 const ownerUserRoutes = require('./app/routes/owner/user.owner.route');
 const measurementRoutes = require('./app/routes/module/measurement.route');
@@ -80,6 +81,7 @@ app.use('/api/v2/admin/dashboard', dashboardAdminRoutes);
  * Temporary Routes
  */
 app.use('/api/v2/temp/notifications', tempNotificationRoutes);
+app.use('/api/v2/temp/power-alerts', tempPowerAlertsRoutes);
 
 /*
 * Module Routes

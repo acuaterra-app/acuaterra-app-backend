@@ -1,9 +1,10 @@
 const BaseNotification = require('./base-notification');
 const FarmNotification = require('./farm-notification');
 const SensorAlertNotification = require('./sensor-alert-notification');
+const PowerAlertNotification = require('./power-alert-notification');
 /**
  * Factory class for creating notification instances based on type
- * Supports: 'farm', 'sensor_alert'
+ * Supports: 'farm', 'sensor_alert', 'power_alert'
  */
 class NotificationFactory {
   /**
@@ -19,6 +20,8 @@ class NotificationFactory {
         return FarmNotification.createFromPayload(payload);
       case 'sensor_alert':
         return SensorAlertNotification.createFromPayload(payload);
+      case 'power_alert':
+        return PowerAlertNotification.createFromPayload(payload);
       default:
         throw new Error(`Unknown notification type: ${type}`);
     }
