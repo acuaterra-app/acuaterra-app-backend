@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e9d11360-97ec-4757-a65d-90973b12df21",
+		"_postman_id": "7973b62e-e552-4b5a-a3ec-8e6a1bfd9654",
 		"name": "fcm",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13906554"
+		"_exporter_id": "37390175"
 	},
 	"item": [
 		{
@@ -12,6 +12,131 @@
 				{
 					"name": "shared",
 					"item": [
+						{
+							"name": "Power notifications",
+							"item": [
+								{
+									"name": "send test notification power alerts Outage",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"moduleId\": 19,\r\n  \"eventType\": \"outage\",\r\n  \"severity\": \"critical\",\r\n  \"metadata\": {\r\n    \"batteryLevel\": 55,\r\n    \"estimatedDuration\": \"2-4 horas\",\r\n    \"affectedSensors\": [\"power_monitor\", \"main_supply\"]\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{serverLocal}}/api/v2/temp/power-alerts/simulate",
+											"host": [
+												"{{serverLocal}}"
+											],
+											"path": [
+												"api",
+												"v2",
+												"temp",
+												"power-alerts",
+												"simulate"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "send test notification power alerts Restored",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"moduleId\": 19,\r\n  \"eventType\": \"restored\",\r\n  \"severity\": \"info\",\r\n  \"metadata\": {\r\n    \"batteryLevel\": 100,\r\n    \"estimatedDuration\": \"N/A\",\r\n    \"affectedSensors\": []\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{serverLocal}}/api/v2/temp/power-alerts/simulate",
+											"host": [
+												"{{serverLocal}}"
+											],
+											"path": [
+												"api",
+												"v2",
+												"temp",
+												"power-alerts",
+												"simulate"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "send test notification power alerts Low battery",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"moduleId\": 19,\r\n  \"eventType\": \"low_battery\",\r\n  \"severity\": \"warning\",\r\n  \"metadata\": {\r\n    \"batteryLevel\": 15,\r\n    \"estimatedDuration\": \"30-60 minutos\",\r\n    \"affectedSensors\": [\"battery_monitor\"]\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{serverLocal}}/api/v2/temp/power-alerts/simulate",
+											"host": [
+												"{{serverLocal}}"
+											],
+											"path": [
+												"api",
+												"v2",
+												"temp",
+												"power-alerts",
+												"simulate"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "send test notification power alerts Votaje drop",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"moduleId\": 19,\r\n  \"eventType\": \"voltage_drop\",\r\n  \"severity\": \"error\",\r\n  \"metadata\": {\r\n    \"batteryLevel\": 75,\r\n    \"estimatedDuration\": \"Desconocida\",\r\n    \"affectedSensors\": [\"voltage_monitor\", \"main_supply\"]\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{serverLocal}}/api/v2/temp/power-alerts/simulate",
+											"host": [
+												"{{serverLocal}}"
+											],
+											"path": [
+												"api",
+												"v2",
+												"temp",
+												"power-alerts",
+												"simulate"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
 						{
 							"name": "notifications",
 							"request": {
@@ -43,6 +168,14 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "diagnostico",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				},
@@ -64,7 +197,37 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"to\": \"eI7cEsV1TJKbeI0yZfjzx9:APA91bErHxdiAGqAaX5PQKCeGx08JJKYUEmt2fz4SSCn2lvOMsOS_KVmhuK6bJz_R_ddcyQNjRvpNzRPB6roIghzr2Vp2QUdPC9-AmiPPzKKzt4uhfjkNl0\",\n  \"title\": \"Granja creada\",\n  \"user_id\": 2,\n  \"message\": \"Warning\",\n  \"type\": \"farm\",\n  \"data\": {\n    \"farmId\": \"1\",\n    \"messageType\": \"warning\" // info, error, warning, sucess\n  }\n}",
+							"raw": "{\n  \"to\": \"eI7cEsV1TJKbeI0yZfjzx9:APA91bErHxdiAGqAaX5PQKCeGx08JJKYUEmt2fz4SSCn2lvOMsOS_KVmhuK6bJz_R_ddcyQNjRvpNzRPB6roIghzr2Vp2QUdPC9-AmiPPzKKzt4uhfjkNl0\",\n  \"title\": \"Granja en alerta\",\n  \"user_id\": 2,\n  \"message\": \"Warning\",\n  \"type\": \"farm\",\n  \"data\": {\n    \"farmId\": \"1\",\n    \"messageType\": \"warning\" // info, error, warning, sucess\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v2/temp/notifications/send",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"temp",
+								"notifications",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "notification module",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n  \"to\": \"eI7cEsV1TJKbeI0yZfjzx9:APA91bErHxdiAGqAaX5PQKCeGx08JJKYUEmt2fz4SSCn2lvOMsOS_KVmhuK6bJz_R_ddcyQNjRvpNzRPB6roIghzr2Vp2QUdPC9-AmiPPzKKzt4uhfjkNl0>\",\r\n    \"title\": \"Alerta de Temperatura\",\r\n    \"user_id\": 2,\r\n    \"message\": \"Warning\",\r\n    \"type\": \"sensor_alert\",\r\n    \"data\": {\r\n        \"moduleId\": \"1\",\r\n        \"moduleName\": \"Módulo 1\",\r\n        \"sensorType\": \"temperature\",\r\n        \"value\": \"108.0\",\r\n        \"messageType\": \"warning\",\r\n        \"threshold\": {\r\n        \"min\": \"20\",\r\n        \"max\": \"30\"\r\n    }\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -134,6 +297,35 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "serverLocal",
+			"value": "http://localhost:3000",
+			"type": "string"
 		}
 	]
 }
