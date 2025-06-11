@@ -1,0 +1,380 @@
+{
+  "/api/v2/temp/power-alerts/simulate": {
+    "post": {
+      "tags": ["Temporary Power Alerts"],
+      "summary": "Simulate a power event (like power outage) for a specific module",
+      "description": "Simulates hardware sensor behavior for power interruption events in aquaculture modules",
+      "operationId": "simulatePowerEvent",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["moduleId"],
+              "properties": {
+                "moduleId": {
+                  "type": "integer",
+                  "description": "ID of the module to simulate power event for",
+                  "example": 1
+                },
+                "eventType": {
+                  "type": "string",
+                  "enum": ["outage", "restored", "low_battery", "voltage_drop", "power_fluctuation"],
+                  "description": "Type of power event to simulate",
+                  "default": "outage",
+                  "example": "outage"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": ["info", "warning", "error", "critical"],
+                  "description": "Severity level of the event (auto-determined if not provided)",
+                  "example": "critical"
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Additional metadata for the power event",
+                  "properties": {
+                    "batteryLevel": {
+                      "type": "integer",
+                      "description": "Current battery level percentage",
+                      "example": 85
+                    },
+                    "estimatedDuration": {
+                      "type": "string",
+                      "description": "Estimated duration of the outage",
+                      "example": "2-4 horas"
+                    },
+                    "affectedSensors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of affected sensors",
+                      "example": ["power_monitor", "main_supply"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Power event simulated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Power alert simulation completed successfully"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "event": {
+                        "type": "object",
+                        "description": "The simulated power event details"
+                      },
+                      "result": {
+                        "type": "object",
+                        "description": "Processing result with notified users"
+                      },
+                      "notifiedUsers": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "description": "Array of user IDs that were notified"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "moduleId is required"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Module not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Module not found"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal server error while processing power alert"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/v2/temp/power-alerts/send-direct": {
+    "post": {
+      "tags": ["Temporary Power Alerts"],
+      "summary": "Send a direct power alert to a specific user or device",
+      "description": "Sends a power alert notification directly to a user or device without module-based processing",
+      "operationId": "sendDirectPowerAlert",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["moduleId"],
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "description": "FCM token of the target device (alternative to user_id)",
+                  "example": "eEwI0djLS8qJSrKHhaMWDI:APA91bHGsvbeLZv..."
+                },
+                "user_id": {
+                  "type": "integer",
+                  "description": "ID of the user to notify (alternative to 'to')",
+                  "example": 2
+                },
+                "moduleId": {
+                  "type": "integer",
+                  "description": "ID of the affected module",
+                  "example": 1
+                },
+                "eventType": {
+                  "type": "string",
+                  "enum": ["outage", "restored", "low_battery", "voltage_drop", "power_fluctuation"],
+                  "description": "Type of power event",
+                  "default": "outage",
+                  "example": "outage"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": ["info", "warning", "error", "critical"],
+                  "description": "Severity level of the event",
+                  "default": "critical",
+                  "example": "critical"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Custom notification title (auto-generated if not provided)",
+                  "example": "🚨 Interrupción Eléctrica"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Custom notification message (auto-generated if not provided)",
+                  "example": "Se ha detectado una interrupción eléctrica en el módulo"
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Additional metadata for the power event",
+                  "properties": {
+                    "batteryLevel": {
+                      "type": "integer",
+                      "example": 75
+                    },
+                    "estimatedDuration": {
+                      "type": "string",
+                      "example": "Desconocida"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Direct power alert sent successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Direct power alert sent successfully"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "alert": {
+                        "type": "object",
+                        "description": "Details of the sent alert"
+                      },
+                      "result": {
+                        "type": "object",
+                        "description": "FCM sending result"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Missing required parameters"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Error sending direct power alert"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/api/v2/temp/power-alerts/event-types": {
+    "get": {
+      "tags": ["Temporary Power Alerts"],
+      "summary": "Get available power event types for simulation",
+      "description": "Returns a list of all available power event types that can be simulated",
+      "operationId": "getAvailableEventTypes",
+      "responses": {
+        "200": {
+          "description": "Available event types retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Available power event types retrieved successfully"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "eventTypes": {
+                        "type": "object",
+                        "description": "Available event types with descriptions and examples"
+                      },
+                      "usage": {
+                        "type": "object",
+                        "description": "Usage instructions for the endpoints"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Error retrieving event types"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
