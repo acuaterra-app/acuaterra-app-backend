@@ -39,7 +39,10 @@ class UserService {
                 where: {
                     isActive: true,
                     id_rol: {
-                        [Op.or]: roles,
+                        [Op.and]: [
+                            roles.length > 0 ? { [Op.or]: roles } : {},
+                            { [Op.ne]: 4 }
+                        ]
                     }
                 },
                 limit,
