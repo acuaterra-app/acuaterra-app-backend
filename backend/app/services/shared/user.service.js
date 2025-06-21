@@ -38,8 +38,13 @@ class UserService {
                 order: [[sortField, sortOrder]],
                 where: {
                     isActive: true,
-                    id_rol: {
-                        [Op.or]: roles,
+                    id_rol: roles.length > 0 ? {
+                        [Op.and]: [
+                            { [Op.or]: roles },
+                            { [Op.ne]: 4 } 
+                        ]
+                    } : {
+                        [Op.ne]: 4
                     }
                 },
                 limit,
