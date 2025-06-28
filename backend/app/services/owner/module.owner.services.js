@@ -336,7 +336,12 @@ class ModuleOwnerService {
                         model: User,
                         as: 'users',
                         attributes: ['id', 'name', 'email', 'dni'],
-                        through: { attributes: [] },
+                        through: { 
+                            attributes: [],
+                            where: {
+                                isActive: true
+                            }
+                        },
                         required: false,
                         where: {
                             isActive: true
