@@ -151,7 +151,7 @@ class NotificationService {
    */
   async sendToFCM(fcmPayload) {
     try {
-      // Create the FCM message
+      // Create the FCM message with high priority configurations for alerts
       const message = {
         token: fcmPayload.to,
         notification: {
@@ -164,6 +164,33 @@ class NotificationService {
           state: String(fcmPayload.data.state),
           metaData: JSON.stringify(fcmPayload.data.metaData),
           dateHour: String(fcmPayload.data.dateHour)
+        },
+        // Configuraciones de alta prioridad para notificaciones de alerta
+        android: {
+          priority: 'high',
+          notification: {
+            priority: 'high',
+            channel_id: 'alerts',
+            default_sound: true,
+            default_vibrate_timings: true,
+            notification_priority: 'PRIORITY_HIGH'
+          }
+        },
+        apns: {
+          headers: {
+            'apns-priority': '10'
+          },
+          payload: {
+            aps: {
+              sound: 'default',
+              'content-available': 1
+            }
+          }
+        },
+        webpush: {
+          headers: {
+            Urgency: 'high'
+          }
         }
       };
       

@@ -95,10 +95,37 @@ class FirebaseService {
 
       const token = notification.user.device_id;
 
-      // Create the FCM message
+      // Create the FCM message with high priority configurations for alerts
       const message = {
         notification: fcmPayload.notification,
         data: fcmPayload.data,
+        // Configuraciones de alta prioridad para notificaciones de alerta
+        android: {
+          priority: 'high',
+          notification: {
+            priority: 'high',
+            channel_id: 'alerts',
+            default_sound: true,
+            default_vibrate_timings: true,
+            notification_priority: 'PRIORITY_HIGH'
+          }
+        },
+        apns: {
+          headers: {
+            'apns-priority': '10'
+          },
+          payload: {
+            aps: {
+              sound: 'default',
+              'content-available': 1
+            }
+          }
+        },
+        webpush: {
+          headers: {
+            Urgency: 'high'
+          }
+        }
       };
 
       // Determine if we're sending to a topic or a device token
