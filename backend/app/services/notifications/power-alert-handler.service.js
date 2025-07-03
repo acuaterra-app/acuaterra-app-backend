@@ -1,7 +1,8 @@
 const NotificationService = require('./notification.service');
 const NotificationFactory = require('./notification.factory');
 const logger = require('../../utils/logger');
-const { Module, User, ModuleUser } = require('../../../models');
+const { Module, User, ModuleUser, sequelize } = require('../../../models');
+const { Op } = sequelize;
 
 /**
  * Service to handle power/energy related alerts
@@ -154,7 +155,6 @@ class PowerAlertHandlerService {
    */
   async getUsersForModule(id_module, creatorId) {
     try {
-      const { Op } = require('sequelize');
       logger.debug(`Retrieving active monitor users for module ID: ${id_module}, excluding creator ID: ${creatorId}`);
       
       const moduleUsers = await ModuleUser.findAll({
