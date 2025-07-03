@@ -1,7 +1,8 @@
 const NotificationService = require('./notification.service');
 const NotificationFactory = require('./notification.factory');
 const logger = require('../../utils/logger');
-const { Module, User, ModuleUser } = require('../../../models');
+const { Module, User, ModuleUser, sequelize } = require('../../../models');
+const { Op } = sequelize;
 
 class SensorAlertHandlerService {
 
@@ -172,7 +173,7 @@ class SensorAlertHandlerService {
         },
         include: [{
           model: User,
-          where: creatorId ? { id: { [sequelize.Op.ne]: creatorId } } : {}, // Exclude creator if creatorId provided
+          where: creatorId ? { id: { [Op.ne]: creatorId } } : {}, // Exclude creator if creatorId provided
           attributes: ['id', 'name', 'email', 'device_id'],
           required: true
         }]
