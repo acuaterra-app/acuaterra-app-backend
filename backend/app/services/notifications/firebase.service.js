@@ -183,10 +183,46 @@ class FirebaseService {
         });
       }
 
+      // Add high priority configurations for alert notifications if not already present
+      if (!message.android) {
+        message.android = {
+          priority: 'high',
+          notification: {
+            priority: 'high',
+            channel_id: 'alerts',
+            default_sound: true,
+            default_vibrate_timings: true,
+            notification_priority: 'PRIORITY_HIGH'
+          }
+        };
+      }
+
+      if (!message.apns) {
+        message.apns = {
+          headers: {
+            'apns-priority': '10'
+          },
+          payload: {
+            aps: {
+              sound: 'default',
+              'content-available': 1
+            }
+          }
+        };
+      }
+
+      if (!message.webpush) {
+        message.webpush = {
+          headers: {
+            Urgency: 'high'
+          }
+        };
+      }
+
       // Send the message to FCM
       const response = await admin.messaging().send(message);
 
-      logger.info('FCM message sent successfully', { messageId: response });
+      logger.info('FCM message sent successfully with high priority configurations', { messageId: response });
       return { success: true, messageId: response };
     } catch (error) {
       logger.error('Failed to send FCM message', error);
